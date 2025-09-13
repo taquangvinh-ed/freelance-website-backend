@@ -25,6 +25,8 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("org.hibernate:hibernate-core:6.0.0.Final")
+	implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
 }
 
 tasks.withType<Test> {
