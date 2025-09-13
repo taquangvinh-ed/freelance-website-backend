@@ -17,4 +17,9 @@ public class ProjectsModel {
 
     @OneToOne(mappedBy = "project")
     private PortfoliosModel portfolio;
+
+    @ManyToOne
+    @JoinColumn(name="category_id", nullable=false)
+    private Categories category;
+
 }

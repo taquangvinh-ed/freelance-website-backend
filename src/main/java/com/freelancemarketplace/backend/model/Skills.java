@@ -12,4 +12,7 @@ public class Skills {
 
     @ManyToMany(mappedBy = "skills")
     private Set<PortfoliosModel> portfolios;
+
+    @ManyToMany(mappedBy = "skills")
+    private Set<Categories> categories;
 }

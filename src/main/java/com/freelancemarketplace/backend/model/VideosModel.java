@@ -3,7 +3,7 @@ package com.freelancemarketplace.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-public class VideosModel {
+public class VideosModel extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
