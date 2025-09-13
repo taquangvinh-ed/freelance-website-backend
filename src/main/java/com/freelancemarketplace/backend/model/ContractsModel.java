@@ -3,12 +3,12 @@ package com.freelancemarketplace.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-public class CertificatesModel {
+public class ContractsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long certificate_id;
+    private Long contract_id;
 
     @ManyToOne
     @JoinColumn(name = "freelancer_id")
-    private FreelancersModel freelancerCertificates;
+    private FreelancersModel contractFreelancer;
 }

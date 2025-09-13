@@ -13,4 +13,9 @@ public class ProductsModel {
 
     @OneToMany(mappedBy = "product")
     private List<VideosModel> videos;
+
+    //The freelancer who creates the product
+    @ManyToOne
+    @JoinColumn(name="freelancer_id")
+    private FreelancersModel freelancerProduct;
 }

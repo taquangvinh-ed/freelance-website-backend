@@ -12,4 +12,9 @@ public class ExperiencesModel extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "location_id")
     private LocationsModel experience_location;
+
+    //The experiences that belong to a freelancer
+    @ManyToOne
+    @JoinColumn(name = "freelancer_id")
+    private FreelancersModel freelancerExperiences;
 }

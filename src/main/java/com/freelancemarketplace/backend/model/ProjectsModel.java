@@ -26,4 +26,8 @@ public class ProjectsModel {
     @JoinColumn(name= "budget_id")
     private Budgets budget;
 
+    @ManyToOne
+    @JoinColumn(name ="freelancer_id")
+    private FreelancersModel projectFreelancer;
+
 }

@@ -15,4 +15,10 @@ public class Skills {
 
     @ManyToMany(mappedBy = "skills")
     private Set<Categories> categories;
+
+    //Freelancers that use this skill
+    @ManyToMany(mappedBy = "skills")
+    private Set<FreelancersModel> freelancers;
+
+
 }

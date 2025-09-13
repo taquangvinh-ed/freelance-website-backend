@@ -13,4 +13,13 @@ public class TeamsModel {
 
     @OneToMany(mappedBy = "team")
     private List<VideosModel> videos;
+
+    @ManyToMany
+    @JoinTable(
+        name = "team_freelancers",
+        joinColumns = @JoinColumn(name = "team_id"),
+        inverseJoinColumns = @JoinColumn(name = "freelancer_id")
+    )
+    private List<FreelancersModel> teamFreelancers;
+
 }
