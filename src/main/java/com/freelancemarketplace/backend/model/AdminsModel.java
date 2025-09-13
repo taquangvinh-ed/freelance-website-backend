@@ -13,5 +13,8 @@ public class AdminsModel {
     @OneToMany(mappedBy = "admin")
     private Set<QandAModel> questions_and_answers;
 
+    @OneToMany(mappedBy = "admin")
+    private Set<Notifications> notifications;
+
 
 }
