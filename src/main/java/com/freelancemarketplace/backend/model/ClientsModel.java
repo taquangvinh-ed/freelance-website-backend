@@ -21,4 +21,8 @@ public class ClientsModel extends BaseEntity{
     @OneToOne
     @JoinColumn(name = "analytics_id")
     private AnalyticsModel client_analytics;
+
+    @ManyToOne
+    @JoinColumn(name="location_id")
+    private LocationsModel client_location;
 }

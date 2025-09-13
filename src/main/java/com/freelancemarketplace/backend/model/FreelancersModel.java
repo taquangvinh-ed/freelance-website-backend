@@ -28,4 +28,8 @@ public class FreelancersModel extends BaseEntity{
     @OneToOne
     @JoinColumn(name = "analytics_id")
     private AnalyticsModel freelancer_analytics;
+
+    @ManyToOne
+    @JoinColumn(name="location_id")
+    private LocationsModel freelancer_location;
 }
