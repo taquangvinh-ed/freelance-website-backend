@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class FreelancersModel extends BaseEntity{
@@ -15,4 +16,12 @@ public class FreelancersModel extends BaseEntity{
 
     @OneToOne(mappedBy = "freelancer")
     private PortfoliosModel portfolio;
+
+    @ManyToMany
+    @JoinTable(
+            name = "frelancer_languages",
+            joinColumns = @JoinColumn(name = "freelancer_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    private Set <LanguagesModel> freelancer_languages;
 }
