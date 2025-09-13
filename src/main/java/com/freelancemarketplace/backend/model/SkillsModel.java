@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Skills {
+public class SkillsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long skill_id;
@@ -20,5 +20,6 @@ public class Skills {
     @ManyToMany(mappedBy = "skills")
     private Set<FreelancersModel> freelancers;
 
-
+    @ManyToMany(mappedBy = "skillsTests")
+    private Set<TestsModel> testsList;
 }

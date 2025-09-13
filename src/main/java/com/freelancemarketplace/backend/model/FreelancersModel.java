@@ -2,7 +2,6 @@ package com.freelancemarketplace.backend.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -65,7 +64,7 @@ public class FreelancersModel extends BaseEntity{
             joinColumns = @JoinColumn(name = "freelancer_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
-    private Set<Skills> skills;
+    private Set<SkillsModel> skills;
 
     @OneToMany(mappedBy = "freelancerCertificates" )
     private Set<CertificatesModel> certificatesList;
@@ -98,7 +97,7 @@ public class FreelancersModel extends BaseEntity{
     @OneToMany(mappedBy = "freelancerProduct")
     private Set<ProductsModel> productsList;
 
-    public FreelancersModel(Long freelancer_id, String first_name, String last_name, String title, String description, String profile_picture, String email, String phone_number, String password_hash, Boolean isVerified, Double hourly_rate, Double wallet, Integer connections, Integer hours_per_week, Boolean isBlocked, Set<VideosModel> videoList, PortfoliosModel portfolio, Set<LanguagesModel> freelancer_languages, AnalyticsModel freelancer_analytics, LocationsModel freelancer_location, Set<MessagesModel> messagesList, Set<ContractsModel> contractsList, Set<ProjectsModel> projectsList, Set<Skills> skills, Set<CertificatesModel> certificatesList, Set<EducationsModel> educationList, Set<ProposalsModal> proposalsList, Set<TestsModel> testsList, Set<TestimonialsModel> testimonialsList, Set<TeamsModel> teams, Set<ExperiencesModel> experiencesList, Set<PaymentsModel> paymentsList, Set<ReportsModel> reportsList, Set<ProductsModel> productsList) {
+    public FreelancersModel(Long freelancer_id, String first_name, String last_name, String title, String description, String profile_picture, String email, String phone_number, String password_hash, Boolean isVerified, Double hourly_rate, Double wallet, Integer connections, Integer hours_per_week, Boolean isBlocked, Set<VideosModel> videoList, PortfoliosModel portfolio, Set<LanguagesModel> freelancer_languages, AnalyticsModel freelancer_analytics, LocationsModel freelancer_location, Set<MessagesModel> messagesList, Set<ContractsModel> contractsList, Set<ProjectsModel> projectsList, Set<SkillsModel> skills, Set<CertificatesModel> certificatesList, Set<EducationsModel> educationList, Set<ProposalsModal> proposalsList, Set<TestsModel> testsList, Set<TestimonialsModel> testimonialsList, Set<TeamsModel> teams, Set<ExperiencesModel> experiencesList, Set<PaymentsModel> paymentsList, Set<ReportsModel> reportsList, Set<ProductsModel> productsList) {
         this.freelancer_id = freelancer_id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -319,11 +318,11 @@ public class FreelancersModel extends BaseEntity{
         this.projectsList = projectsList;
     }
 
-    public Set<Skills> getSkills() {
+    public Set<SkillsModel> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<Skills> skills) {
+    public void setSkills(Set<SkillsModel> skills) {
         this.skills = skills;
     }
 

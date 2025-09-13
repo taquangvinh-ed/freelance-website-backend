@@ -21,7 +21,7 @@ public class Categories extends BaseEntity{
             joinColumns = @JoinColumn(name="category_id"),
             inverseJoinColumns = @JoinColumn(name="skill_id")
     )
-    private Set<Skills> skills;
+    private Set<SkillsModel> skills;
 
     @OneToMany(mappedBy = "category")
     private Set<ProjectsModel> projects;
@@ -29,7 +29,7 @@ public class Categories extends BaseEntity{
     public Categories() {
     }
 
-    public Categories(Long category_id, String category_name, String category_image, Set<Skills> skills, Set<ProjectsModel> projects) {
+    public Categories(Long category_id, String category_name, String category_image, Set<SkillsModel> skills, Set<ProjectsModel> projects) {
         this.category_id = category_id;
         this.category_name = category_name;
         this.category_image = category_image;
@@ -61,11 +61,11 @@ public class Categories extends BaseEntity{
         this.category_image = category_image;
     }
 
-    public Set<Skills> getSkills() {
+    public Set<SkillsModel> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<Skills> skills) {
+    public void setSkills(Set<SkillsModel> skills) {
         this.skills = skills;
     }
 

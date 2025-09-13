@@ -31,13 +31,13 @@ public class PortfoliosModel extends BaseEntity{
     @OneToOne
     @JoinColumn(name = "project_id", nullable = false)
     private ProjectsModel project;
-    private Set<Skills> skills;
+    private Set<SkillsModel> skills;
 
     @ManyToOne
     @JoinColumn(name = "freelancer_id", nullable = false)
     private FreelancersModel freelancer;
 
-    public PortfoliosModel(Long portfolio_id, String project_titel, Timestamp completion_date, String project_url, String description, Set<String> file_urls, ProjectsModel project, Set<Skills> skills, FreelancersModel freelancer) {
+    public PortfoliosModel(Long portfolio_id, String project_titel, Timestamp completion_date, String project_url, String description, Set<String> file_urls, ProjectsModel project, Set<SkillsModel> skills, FreelancersModel freelancer) {
         this.portfolio_id = portfolio_id;
         this.project_titel = project_titel;
         this.completion_date = completion_date;
@@ -105,11 +105,11 @@ public class PortfoliosModel extends BaseEntity{
         this.project = project;
     }
 
-    public Set<Skills> getSkills() {
+    public Set<SkillsModel> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<Skills> skills) {
+    public void setSkills(Set<SkillsModel> skills) {
         this.skills = skills;
     }
 
