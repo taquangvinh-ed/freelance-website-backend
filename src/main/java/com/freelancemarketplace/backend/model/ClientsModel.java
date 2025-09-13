@@ -17,4 +17,8 @@ public class ClientsModel extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name="language_id")
     )
     private Set<LanguagesModel> client_languages;
+
+    @OneToOne
+    @JoinColumn(name = "analytics_id")
+    private AnalyticsModel client_analytics;
 }

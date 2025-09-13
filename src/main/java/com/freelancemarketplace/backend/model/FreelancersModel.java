@@ -24,4 +24,8 @@ public class FreelancersModel extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = "language_id")
     )
     private Set <LanguagesModel> freelancer_languages;
+
+    @OneToOne
+    @JoinColumn(name = "analytics_id")
+    private AnalyticsModel freelancer_analytics;
 }
