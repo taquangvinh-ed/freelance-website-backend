@@ -18,4 +18,7 @@ public class ProductsModel {
     @ManyToOne
     @JoinColumn(name="freelancer_id")
     private FreelancersModel freelancerProduct;
+
+    @OneToMany(mappedBy = "productMessages")
+    private List<MessagesModel> messages;
 }

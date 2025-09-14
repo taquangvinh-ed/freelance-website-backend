@@ -40,4 +40,8 @@ public class ProjectsModel {
     @OneToOne(mappedBy = "contractProject")
     private ContractsModel projectContract;
 
+    @OneToMany(mappedBy = "projectMessages")
+    private Set<MessagesModel> messages;
+
+
 }
