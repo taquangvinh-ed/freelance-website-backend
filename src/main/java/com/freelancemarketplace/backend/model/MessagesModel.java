@@ -11,4 +11,8 @@ public class MessagesModel {
     @ManyToOne
     @JoinColumn(name = "freelancer_id")
     private FreelancersModel freelancerMessages;
+
+    @ManyToOne
+    @JoinColumn(name ="proposal_id" )
+    private ProposalsModal proposalMessages;
 }

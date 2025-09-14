@@ -34,4 +34,7 @@ public class ProjectsModel {
     @OneToMany(mappedBy = "projectTestimonials" )
     private Set<TestimonialsModel> testimonials;
 
+    @OneToMany(mappedBy = "projectProposals")
+    private Set<ProposalsModal> proposalsList;
+
 }

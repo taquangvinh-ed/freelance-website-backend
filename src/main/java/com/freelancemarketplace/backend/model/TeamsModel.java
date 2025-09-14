@@ -27,4 +27,7 @@ public class TeamsModel {
     @OneToMany(mappedBy = "teamTestimonials")
     private Set<TestimonialsModel> testimonials;
 
+    @OneToMany(mappedBy = "teamProposals")
+    private Set<ProposalsModal> proposalsList;
+
 }

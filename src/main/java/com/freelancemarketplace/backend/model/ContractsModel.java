@@ -11,4 +11,7 @@ public class ContractsModel {
     @ManyToOne
     @JoinColumn(name = "freelancer_id")
     private FreelancersModel contractFreelancer;
+
+    @OneToOne(mappedBy = "contractProposal")
+    private ProposalsModal proposalContract;
 }
