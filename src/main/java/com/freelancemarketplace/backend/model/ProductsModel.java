@@ -25,4 +25,17 @@ public class ProductsModel {
 
     @ManyToMany(mappedBy = "productsList" )
     private Set<CompaniesModel> companyList;
+
+    @ManyToMany
+    @JoinTable(
+            name = "product_skills",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    private Set<SkillsModel> skills;
+
+    //The client who buys the product
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private ClientsModel clientProduct;
 }

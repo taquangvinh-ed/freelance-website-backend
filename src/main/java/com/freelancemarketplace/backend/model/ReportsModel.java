@@ -18,4 +18,8 @@ public class ReportsModel extends BaseEntity{
     @JoinColumn(name = "company_id")
     private CompaniesModel companyReports;
 
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private ClientsModel client_reports;
+
 }

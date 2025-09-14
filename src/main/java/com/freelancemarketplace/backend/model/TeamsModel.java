@@ -39,4 +39,12 @@ public class TeamsModel {
     @OneToMany(mappedBy = "teamMessages")
     private Set<MessagesModel> messages;
 
+    @ManyToMany
+    @JoinTable(
+        name = "team_skills",
+        joinColumns = @JoinColumn(name = "team_id"),
+        inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    private Set<SkillsModel> skills;
+
 }
