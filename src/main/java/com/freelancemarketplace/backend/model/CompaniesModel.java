@@ -20,4 +20,7 @@ public class CompaniesModel extends BaseEntity {
 
     @OneToMany(mappedBy = "companyTestimonials")
     private Set<TestimonialsModel> testimonials;
+
+    @OneToMany(mappedBy = "companyPayments")
+    private Set<PaymentsModel> paymentsCompany;
 }

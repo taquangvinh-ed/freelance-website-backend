@@ -30,5 +30,7 @@ public class ClientsModel extends BaseEntity{
     private Set<TestimonialsModel> testimonials;
 
 
+    @OneToMany(mappedBy = "clientPayments")
+    private Set<PaymentsModel> paymentsClient;
 
 }

@@ -2,6 +2,8 @@ package com.freelancemarketplace.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 public class ContractsModel {
     @Id
@@ -14,4 +16,9 @@ public class ContractsModel {
 
     @OneToOne(mappedBy = "contractProposal")
     private ProposalsModal proposalContract;
+
+    //The payments that belong to a contract
+    @OneToMany(mappedBy = "contractPayments")
+    private Set<PaymentsModel> paymentsContract;
+
 }

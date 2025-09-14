@@ -30,4 +30,7 @@ public class TeamsModel {
     @OneToMany(mappedBy = "teamProposals")
     private Set<ProposalsModal> proposalsList;
 
+    @OneToMany(mappedBy = "teamPayments")
+    private Set<PaymentsModel> paymentsTeam;
+
 }
