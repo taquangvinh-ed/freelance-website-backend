@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class ProjectsModel {
@@ -29,5 +30,8 @@ public class ProjectsModel {
     @ManyToOne
     @JoinColumn(name ="freelancer_id")
     private FreelancersModel projectFreelancer;
+
+    @OneToMany(mappedBy = "projectTestimonials" )
+    private Set<TestimonialsModel> testimonials;
 
 }

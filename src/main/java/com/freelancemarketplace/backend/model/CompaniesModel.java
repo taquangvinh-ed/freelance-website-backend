@@ -2,6 +2,8 @@ package com.freelancemarketplace.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 public class CompaniesModel extends BaseEntity {
     @Id
@@ -15,4 +17,7 @@ public class CompaniesModel extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private LocationsModel company_location;
+
+    @OneToMany(mappedBy = "companyTestimonials")
+    private Set<TestimonialsModel> testimonials;
 }

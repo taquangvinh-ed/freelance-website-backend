@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class TeamsModel {
@@ -21,5 +22,9 @@ public class TeamsModel {
         inverseJoinColumns = @JoinColumn(name = "freelancer_id")
     )
     private List<FreelancersModel> teamFreelancers;
+
+
+    @OneToMany(mappedBy = "teamTestimonials")
+    private Set<TestimonialsModel> testimonials;
 
 }

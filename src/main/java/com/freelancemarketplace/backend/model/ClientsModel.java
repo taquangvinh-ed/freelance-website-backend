@@ -25,4 +25,10 @@ public class ClientsModel extends BaseEntity{
     @ManyToOne
     @JoinColumn(name="location_id")
     private LocationsModel client_location;
+
+    @OneToMany(mappedBy = "clientTestimonials" )
+    private Set<TestimonialsModel> testimonials;
+
+
+
 }
