@@ -43,5 +43,10 @@ public class ProjectsModel {
     @OneToMany(mappedBy = "projectMessages")
     private Set<MessagesModel> messages;
 
+    //The company that posts the project
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private CompaniesModel projectCompany;
+
 
 }

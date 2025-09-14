@@ -12,4 +12,10 @@ public class ReportsModel extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "freelancer_id")
     private FreelancersModel freelancerReports;
+
+    //Company who is being reported
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private CompaniesModel companyReports;
+
 }
