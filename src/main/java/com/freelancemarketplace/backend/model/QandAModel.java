@@ -16,12 +16,7 @@ public class QandAModel extends BaseEntity{
     @JoinColumn(name = "admin_id")
     private AdminsModel admin;
 
-    public QandAModel(Long qanda_id, String question, String answer, String tag, AdminsModel admin) {
-        this.qanda_id = qanda_id;
-        this.question = question;
-        this.answer = answer;
-        this.tag = tag;
-        this.admin = admin;
+    public QandAModel() {
     }
 
     public Long getQanda_id() {

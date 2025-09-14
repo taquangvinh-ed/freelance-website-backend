@@ -40,18 +40,7 @@ public class ProposalsModal extends BaseEntity{
     @JoinColumn(name = "team_id")
     private TeamsModel teamProposals;
 
-    public ProposalsModal(Long proposal_id, String name, String description, String[] files, String status, Double price, FreelancersModel freelancerProposals, ProjectsModel projectProposals, Set<MessagesModel> messagesList, ContractsModel contractProposal, TeamsModel teamProposals) {
-        this.proposal_id = proposal_id;
-        this.name = name;
-        this.description = description;
-        this.files = files;
-        this.status = status;
-        this.price = price;
-        this.freelancerProposals = freelancerProposals;
-        this.projectProposals = projectProposals;
-        this.messagesList = messagesList;
-        this.contractProposal = contractProposal;
-        this.teamProposals = teamProposals;
+    public ProposalsModal() {
     }
 
     public Long getProposal_id() {

@@ -59,24 +59,6 @@ public class ProductsModel {
     @JoinColumn(name = "client_id")
     private ClientsModel clientProduct;
 
-    public ProductsModel(Long product_id, String name, String description, Double price, TailentTypes owner_type, RecuiterTypes buyer_type, String image, String product_link, Long views, Long time_of_download, Set<VideosModel> videos, FreelancersModel freelancerProduct, Set<MessagesModel> messages, Set<CompaniesModel> companyList, Set<SkillsModel> skills, ClientsModel clientProduct) {
-        this.product_id = product_id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.owner_type = owner_type;
-        this.buyer_type = buyer_type;
-        this.image = image;
-        this.product_link = product_link;
-        this.views = views;
-        this.time_of_download = time_of_download;
-        this.videos = videos;
-        this.freelancerProduct = freelancerProduct;
-        this.messages = messages;
-        this.companyList = companyList;
-        this.skills = skills;
-        this.clientProduct = clientProduct;
-    }
 
     public Long getProduct_id() {
         return product_id;

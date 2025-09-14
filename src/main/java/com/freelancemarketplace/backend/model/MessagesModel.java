@@ -48,20 +48,7 @@ public class MessagesModel {
     private ProductsModel productMessages;
 
 
-    public MessagesModel(Long message_id, String sender_type, String receiver_type, String content, Timestamp sent_at, MessageStatus status, FreelancersModel freelancerMessages, TeamsModel teamMessages, ClientsModel clientMessages, CompaniesModel companyMessages, ProposalsModal proposalMessages, ProjectsModel projectMessages, ProductsModel productMessages) {
-        this.message_id = message_id;
-        this.sender_type = sender_type;
-        this.receiver_type = receiver_type;
-        this.content = content;
-        this.sent_at = sent_at;
-        this.status = status;
-        this.freelancerMessages = freelancerMessages;
-        this.teamMessages = teamMessages;
-        this.clientMessages = clientMessages;
-        this.companyMessages = companyMessages;
-        this.proposalMessages = proposalMessages;
-        this.projectMessages = projectMessages;
-        this.productMessages = productMessages;
+    public MessagesModel() {
     }
 
     public Long getMessage_id() {

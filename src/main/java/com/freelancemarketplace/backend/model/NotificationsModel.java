@@ -22,13 +22,7 @@ public class NotificationsModel extends BaseEntity{
     @JoinColumn(name = "admin_id", nullable = false)
     private AdminsModel admin;
 
-    public NotificationsModel(Long notification_id, String title, String description, Timestamp datetime, String image_url, AdminsModel admin) {
-        this.notification_id = notification_id;
-        this.title = title;
-        this.description = description;
-        this.datetime = datetime;
-        this.image_url = image_url;
-        this.admin = admin;
+    public NotificationsModel() {
     }
 
     public Long getNotification_id() {

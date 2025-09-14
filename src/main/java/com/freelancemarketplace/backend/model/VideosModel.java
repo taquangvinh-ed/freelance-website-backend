@@ -19,31 +19,22 @@ public class VideosModel extends BaseEntity{
     private String video_description;
 
     @ManyToOne
-    @JoinColumn(name = "team_id", nullable = true)
+    @JoinColumn(name = "team_id")
     private TeamsModel team;
 
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = true)
+    @JoinColumn(name = "project_id")
     private ProjectsModel project;
 
     @ManyToOne
-    @JoinColumn(name = "freelancer_id", nullable = true)
-    private ProjectsModel freelancer;
+    @JoinColumn(name = "freelancer_id")
+    private FreelancersModel freelancer;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = true)
-    private ProjectsModel product;
+    @JoinColumn(name = "product_id")
+    private ProductsModel product;
 
-    public VideosModel(Long video_id, String video_url, Integer video_duration, String video_title, String video_description, TeamsModel team, ProjectsModel project, ProjectsModel freelancer, ProjectsModel product) {
-        this.video_id = video_id;
-        this.video_url = video_url;
-        this.video_duration = video_duration;
-        this.video_title = video_title;
-        this.video_description = video_description;
-        this.team = team;
-        this.project = project;
-        this.freelancer = freelancer;
-        this.product = product;
+    public VideosModel() {
     }
 
     public Long getVideo_id() {
@@ -102,19 +93,19 @@ public class VideosModel extends BaseEntity{
         this.project = project;
     }
 
-    public ProjectsModel getFreelancer() {
+    public FreelancersModel getFreelancer() {
         return freelancer;
     }
 
-    public void setFreelancer(ProjectsModel freelancer) {
+    public void setFreelancer(FreelancersModel freelancer) {
         this.freelancer = freelancer;
     }
 
-    public ProjectsModel getProduct() {
+    public ProductsModel getProduct() {
         return product;
     }
 
-    public void setProduct(ProjectsModel product) {
+    public void setProduct(ProductsModel product) {
         this.product = product;
     }
 }

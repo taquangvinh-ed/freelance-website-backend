@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.model;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -14,9 +14,6 @@ public class CompaniesModel extends BaseEntity {
 
     private String name;
 
-    @Type(JsonBinaryType.class)
-    @Column(columnDefinition = "jsonb")
-    private String description;
     private String website;
     private Boolean isVerified;
     private Boolean isBlocked;
@@ -27,9 +24,9 @@ public class CompaniesModel extends BaseEntity {
     private String wallet;
     private String phone_number;
 
-    @Type(JsonBinaryType.class)
-    @Column(columnDefinition = "jsonb")
-    private String social_media_links; // JSON string to hold various social media links
+//    @Type(JsonBinaryType.class)
+//    @Column(columnDefinition = "jsonb")
+//    private Map<String, Object> bio;
 
     @OneToOne
     @JoinColumn(name = "analytics_id")
@@ -65,29 +62,7 @@ public class CompaniesModel extends BaseEntity {
     @OneToMany(mappedBy = "projectCompany")
     private Set<ProjectsModel> projectsList;
 
-    public CompaniesModel(Long company_id, String name, String description, String website, Boolean isVerified, Boolean isBlocked, String logoUrl, String email, String password_hash, String picture_url, String wallet, String phone_number, String social_media_links, AnalyticsModel company_analytics, LocationsModel company_location, Set<TestimonialsModel> testimonials, Set<PaymentsModel> paymentsCompany, Set<ContractsModel> companyContracts, Set<MessagesModel> messages, Set<ReportsModel> reportsList, Set<ProductsModel> productsList, Set<ProjectsModel> projectsList) {
-        this.company_id = company_id;
-        this.name = name;
-        this.description = description;
-        this.website = website;
-        this.isVerified = isVerified;
-        this.isBlocked = isBlocked;
-        this.logoUrl = logoUrl;
-        this.email = email;
-        this.password_hash = password_hash;
-        this.picture_url = picture_url;
-        this.wallet = wallet;
-        this.phone_number = phone_number;
-        this.social_media_links = social_media_links;
-        this.company_analytics = company_analytics;
-        this.company_location = company_location;
-        this.testimonials = testimonials;
-        this.paymentsCompany = paymentsCompany;
-        this.companyContracts = companyContracts;
-        this.messages = messages;
-        this.reportsList = reportsList;
-        this.productsList = productsList;
-        this.projectsList = projectsList;
+    public CompaniesModel() {
     }
 
     public Long getCompany_id() {
@@ -106,13 +81,7 @@ public class CompaniesModel extends BaseEntity {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public String getWebsite() {
         return website;
@@ -186,13 +155,7 @@ public class CompaniesModel extends BaseEntity {
         this.phone_number = phone_number;
     }
 
-    public String getSocial_media_links() {
-        return social_media_links;
-    }
 
-    public void setSocial_media_links(String social_media_links) {
-        this.social_media_links = social_media_links;
-    }
 
     public AnalyticsModel getCompany_analytics() {
         return company_analytics;

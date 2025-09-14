@@ -15,11 +15,7 @@ public class BudgetsModel extends BaseEntity{
     @OneToOne(mappedBy = "budget")
     private ProjectsModel project;
 
-    public BudgetsModel(Long budget_id, String budget_type, Long budget_value, ProjectsModel project) {
-        this.budget_id = budget_id;
-        this.budget_type = budget_type;
-        this.budget_value = budget_value;
-        this.project = project;
+    public BudgetsModel() {
     }
 
     public Long getBudget_id() {

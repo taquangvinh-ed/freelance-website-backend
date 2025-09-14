@@ -21,15 +21,7 @@ public class EducationsModel extends BaseEntity{
     @JoinColumn(name = "freelancer_id")
     private FreelancersModel freelancerEducations;
 
-    public EducationsModel(Long education_id, String organization, String degree, String area_study, String start_date, String end_date, String description, FreelancersModel freelancerEducations) {
-        this.education_id = education_id;
-        this.organization = organization;
-        this.degree = degree;
-        this.area_study = area_study;
-        this.start_date = start_date;
-        this.end_date = end_date;
-        this.description = description;
-        this.freelancerEducations = freelancerEducations;
+    public EducationsModel() {
     }
 
     public Long getEducation_id() {

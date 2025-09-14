@@ -26,13 +26,7 @@ public class ReportsModel extends BaseEntity{
     @JoinColumn(name = "client_id")
     private ClientsModel client_reports;
 
-    public ReportsModel(Long report_id, String report_category, String report_reason, FreelancersModel freelancerReports, CompaniesModel companyReports, ClientsModel client_reports) {
-        this.report_id = report_id;
-        this.report_category = report_category;
-        this.report_reason = report_reason;
-        this.freelancerReports = freelancerReports;
-        this.companyReports = companyReports;
-        this.client_reports = client_reports;
+    public ReportsModel() {
     }
 
     public Long getReport_id() {

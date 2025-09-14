@@ -37,17 +37,7 @@ public class TestimonialsModel extends BaseEntity{
     @JoinColumn(name="team_id" )
     private TeamsModel teamTestimonials;
 
-    public TestimonialsModel(Long testimonial_id, String rating, String comment, String date, Boolean testiminial_back, FreelancersModel freelancerTestimonials, ProjectsModel projectTestimonials, ClientsModel clientTestimonials, CompaniesModel companyTestimonials, TeamsModel teamTestimonials) {
-        this.testimonial_id = testimonial_id;
-        this.rating = rating;
-        this.comment = comment;
-        this.date = date;
-        this.testiminial_back = testiminial_back;
-        this.freelancerTestimonials = freelancerTestimonials;
-        this.projectTestimonials = projectTestimonials;
-        this.clientTestimonials = clientTestimonials;
-        this.companyTestimonials = companyTestimonials;
-        this.teamTestimonials = teamTestimonials;
+    public TestimonialsModel() {
     }
 
     public Long getTestimonial_id() {

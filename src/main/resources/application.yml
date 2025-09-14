@@ -2,15 +2,19 @@ spring:
   application:
     name: FreelancerBackend
   datasource:
-    url: "jdbc:postgresql://localhost:5460/freelancer-db"
+    url: "jdbc:postgresql://localhost:5432/freelancer-test"
     username: postgres
-    password: root
+    password: $232$TQV
   jpa:
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        ddl-auto: update
+#  config:
+#    import: "application-dev.yml"
+#  profiles:
+#    active: "dev"
 logging:
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}

@@ -28,6 +28,9 @@ public class AnalyticsModel extends BaseEntity{
     @OneToOne(mappedBy = "company_analytics")
     private CompaniesModel company;
 
+    public AnalyticsModel() {
+    }
+
     public Long getAnalytics_id() {
         return analytics_id;
     }

@@ -78,29 +78,7 @@ public class ProjectsModel extends BaseEntity{
     )
     private Set<SkillsModel> skills;
 
-    public ProjectsModel(Long project_id, String title, String description, ProjectStatus status, Double budget_amount, Integer duration_days, Integer connections, Timestamp start_date, Timestamp end_date, Boolean is_Internship, List<VideosModel> videos, PortfoliosModel portfolio, CategoriesModel category, BudgetsModel budget, FreelancersModel projectFreelancer, Set<TestimonialsModel> testimonials, Set<ProposalsModal> proposalsList, ContractsModel projectContract, Set<MessagesModel> messages, CompaniesModel projectCompany, ClientsModel projectClient, Set<SkillsModel> skills) {
-        this.project_id = project_id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.budget_amount = budget_amount;
-        this.duration_days = duration_days;
-        this.connections = connections;
-        this.start_date = start_date;
-        this.end_date = end_date;
-        this.is_Internship = is_Internship;
-        this.videos = videos;
-        this.portfolio = portfolio;
-        this.category = category;
-        this.budget = budget;
-        this.projectFreelancer = projectFreelancer;
-        this.testimonials = testimonials;
-        this.proposalsList = proposalsList;
-        this.projectContract = projectContract;
-        this.messages = messages;
-        this.projectCompany = projectCompany;
-        this.projectClient = projectClient;
-        this.skills = skills;
+    public ProjectsModel() {
     }
 
     public Long getProject_id() {

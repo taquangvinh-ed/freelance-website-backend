@@ -32,18 +32,7 @@ public class LocationsModel extends BaseEntity{
     @OneToMany(mappedBy = "experience_location")
     private Set<ExperiencesModel> experienceList;
 
-    public LocationsModel(Long location_id, String postcode, String country, String state, String city, String details, Set<AdminsModel> adminList, Set<CompaniesModel> companyList, Set<FreelancersModel> freelancerList, Set<ClientsModel> clientList, Set<ExperiencesModel> experienceList) {
-        this.location_id = location_id;
-        this.postcode = postcode;
-        this.country = country;
-        this.state = state;
-        this.city = city;
-        this.details = details;
-        this.adminList = adminList;
-        this.companyList = companyList;
-        this.freelancerList = freelancerList;
-        this.clientList = clientList;
-        this.experienceList = experienceList;
+    public LocationsModel() {
     }
 
     public Long getLocation_id() {

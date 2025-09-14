@@ -52,20 +52,7 @@ public class ContractsModel extends BaseEntity{
     @JoinColumn(name = "project_id")
     private ProjectsModel contractProject;
 
-    public ContractsModel(Long contract_id, ContractTypes types, double amount, Timestamp start_date, Timestamp end_date, ContractStatus status, FreelancersModel contractFreelancer, ProposalsModal proposalContract, Set<PaymentsModel> paymentsContract, TeamsModel contractTeam, CompaniesModel contractCompany, ClientsModel contractClient, ProjectsModel contractProject) {
-        this.contract_id = contract_id;
-        this.types = types;
-        this.amount = amount;
-        this.start_date = start_date;
-        this.end_date = end_date;
-        this.status = status;
-        this.contractFreelancer = contractFreelancer;
-        this.proposalContract = proposalContract;
-        this.paymentsContract = paymentsContract;
-        this.contractTeam = contractTeam;
-        this.contractCompany = contractCompany;
-        this.contractClient = contractClient;
-        this.contractProject = contractProject;
+    public ContractsModel() {
     }
 
     public Long getContract_id() {

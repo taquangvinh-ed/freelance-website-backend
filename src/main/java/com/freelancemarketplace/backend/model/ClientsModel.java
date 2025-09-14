@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.model;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -19,13 +19,9 @@ public class ClientsModel extends BaseEntity{
     private String phone_number;
     private String profile_picture;
 
-    @Type(JsonBinaryType.class)
-    @Column(columnDefinition = "jsonb")
-    private String description;
-
-    @Type(JsonBinaryType.class)
-    @Column(columnDefinition = "jsonb")
-    private String social_links;
+//    @Type(JsonBinaryType.class)
+//    @Column(columnDefinition = "jsonb")
+//    private Map<String, Object> bio;
 
     private Boolean is_verified;
     private Boolean is_blocked;
@@ -72,28 +68,7 @@ public class ClientsModel extends BaseEntity{
     private Set<ProductsModel> products;
 
 
-    public ClientsModel(Long client_id, String first_name, String last_name, String email, String password_hash, String phone_number, String profile_picture, String description, String social_links, Boolean is_verified, Boolean is_blocked, Set<LanguagesModel> client_languages, AnalyticsModel client_analytics, LocationsModel client_location, Set<TestimonialsModel> testimonials, Set<PaymentsModel> paymentsClient, Set<ContractsModel> clientContracts, Set<MessagesModel> messages, Set<ProjectsModel> projects, Set<ReportsModel> reports, Set<ProductsModel> products) {
-        this.client_id = client_id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.password_hash = password_hash;
-        this.phone_number = phone_number;
-        this.profile_picture = profile_picture;
-        this.description = description;
-        this.social_links = social_links;
-        this.is_verified = is_verified;
-        this.is_blocked = is_blocked;
-        this.client_languages = client_languages;
-        this.client_analytics = client_analytics;
-        this.client_location = client_location;
-        this.testimonials = testimonials;
-        this.paymentsClient = paymentsClient;
-        this.clientContracts = clientContracts;
-        this.messages = messages;
-        this.projects = projects;
-        this.reports = reports;
-        this.products = products;
+    public ClientsModel() {
     }
 
     public Long getClient_id() {
@@ -152,21 +127,7 @@ public class ClientsModel extends BaseEntity{
         this.profile_picture = profile_picture;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getSocial_links() {
-        return social_links;
-    }
-
-    public void setSocial_links(String social_links) {
-        this.social_links = social_links;
-    }
 
     public Boolean getIs_verified() {
         return is_verified;

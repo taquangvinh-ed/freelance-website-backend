@@ -17,13 +17,7 @@ public class CertificatesModel extends BaseEntity {
     @JoinColumn(name = "freelancer_id")
     private FreelancersModel freelancerCertificates;
 
-    public CertificatesModel(Long certificate_id, String title, String organization, String date_obtained, String certificate_url, FreelancersModel freelancerCertificates) {
-        this.certificate_id = certificate_id;
-        this.title = title;
-        this.organization = organization;
-        this.date_obtained = date_obtained;
-        this.certificate_url = certificate_url;
-        this.freelancerCertificates = freelancerCertificates;
+    public CertificatesModel() {
     }
 
     public Long getCertificate_id() {

@@ -21,32 +21,24 @@ public class PortfoliosModel extends BaseEntity{
 
     private Set<String> file_urls;
 
-    @ManyToOne
+    @ManyToMany
     @JoinTable(
             name = "portfolio_skill",
             joinColumns = @JoinColumn(name = "portfolio_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
+    private Set<SkillsModel> skills;
+
 
     @OneToOne
     @JoinColumn(name = "project_id", nullable = false)
     private ProjectsModel project;
-    private Set<SkillsModel> skills;
 
     @ManyToOne
     @JoinColumn(name = "freelancer_id", nullable = false)
     private FreelancersModel freelancer;
 
-    public PortfoliosModel(Long portfolio_id, String project_titel, Timestamp completion_date, String project_url, String description, Set<String> file_urls, ProjectsModel project, Set<SkillsModel> skills, FreelancersModel freelancer) {
-        this.portfolio_id = portfolio_id;
-        this.project_titel = project_titel;
-        this.completion_date = completion_date;
-        this.project_url = project_url;
-        this.description = description;
-        this.file_urls = file_urls;
-        this.project = project;
-        this.skills = skills;
-        this.freelancer = freelancer;
+    public PortfoliosModel() {
     }
 
     public Long getPortfolio_id() {

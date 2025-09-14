@@ -29,13 +29,6 @@ public class CategoriesModel extends BaseEntity{
     public CategoriesModel() {
     }
 
-    public CategoriesModel(Long category_id, String category_name, String category_image, Set<SkillsModel> skills, Set<ProjectsModel> projects) {
-        this.category_id = category_id;
-        this.category_name = category_name;
-        this.category_image = category_image;
-        this.skills = skills;
-        this.projects = projects;
-    }
 
     public Long getCategory_id() {
         return category_id;

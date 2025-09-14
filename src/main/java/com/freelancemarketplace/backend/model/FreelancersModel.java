@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.model;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -16,9 +16,7 @@ public class FreelancersModel extends BaseEntity{
     private String last_name;
     private String title;
 
-    @Type(JsonBinaryType.class)
-    @Column(columnDefinition = "jsonb")
-    private String description;
+
     private String profile_picture;
     private String email;
     private String phone_number;
@@ -26,9 +24,9 @@ public class FreelancersModel extends BaseEntity{
     private Boolean isVerified;
     private Double hourly_rate;
 
-    @Type(JsonBinaryType.class)
-    @Column(columnDefinition = "jsonb")
-    private String social_links;
+//    @Type(JsonBinaryType.class)
+//    @Column(columnDefinition = "jsonb")
+//    private Map<String, Object> bio;
 
     private Double wallet;
     private Integer connections;
@@ -107,41 +105,7 @@ public class FreelancersModel extends BaseEntity{
     @OneToMany(mappedBy = "freelancerProduct")
     private Set<ProductsModel> productsList;
 
-    public FreelancersModel(Long freelancer_id, String first_name, String last_name, String title, String description, String profile_picture, String email, String phone_number, String password_hash, Boolean isVerified, Double hourly_rate, Double wallet, Integer connections, Integer hours_per_week, Boolean isBlocked, Set<VideosModel> videoList, PortfoliosModel portfolio, Set<LanguagesModel> freelancer_languages, AnalyticsModel freelancer_analytics, LocationsModel freelancer_location, Set<MessagesModel> messagesList, Set<ContractsModel> contractsList, Set<ProjectsModel> projectsList, Set<SkillsModel> skills, Set<CertificatesModel> certificatesList, Set<EducationsModel> educationList, Set<ProposalsModal> proposalsList, Set<TestsModel> testsList, Set<TestimonialsModel> testimonialsList, Set<TeamsModel> teams, Set<ExperiencesModel> experiencesList, Set<PaymentsModel> paymentsList, Set<ReportsModel> reportsList, Set<ProductsModel> productsList) {
-        this.freelancer_id = freelancer_id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.title = title;
-        this.description = description;
-        this.profile_picture = profile_picture;
-        this.email = email;
-        this.phone_number = phone_number;
-        this.password_hash = password_hash;
-        this.isVerified = isVerified;
-        this.hourly_rate = hourly_rate;
-        this.wallet = wallet;
-        this.connections = connections;
-        this.hours_per_week = hours_per_week;
-        this.isBlocked = isBlocked;
-        this.videoList = videoList;
-        this.portfolio = portfolio;
-        this.freelancer_languages = freelancer_languages;
-        this.freelancer_analytics = freelancer_analytics;
-        this.freelancer_location = freelancer_location;
-        this.messagesList = messagesList;
-        this.contractsList = contractsList;
-        this.projectsList = projectsList;
-        this.skills = skills;
-        this.certificatesList = certificatesList;
-        this.educationList = educationList;
-        this.proposalsList = proposalsList;
-        this.testsList = testsList;
-        this.testimonialsList = testimonialsList;
-        this.teams = teams;
-        this.experiencesList = experiencesList;
-        this.paymentsList = paymentsList;
-        this.reportsList = reportsList;
-        this.productsList = productsList;
+    public FreelancersModel() {
     }
 
     public Long getFreelancer_id() {
@@ -176,13 +140,7 @@ public class FreelancersModel extends BaseEntity{
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public String getProfile_picture() {
         return profile_picture;

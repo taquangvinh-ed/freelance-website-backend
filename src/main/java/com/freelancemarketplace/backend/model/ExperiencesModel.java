@@ -24,15 +24,7 @@ public class ExperiencesModel extends BaseEntity{
     @JoinColumn(name = "freelancer_id")
     private FreelancersModel freelancerExperiences;
 
-    public ExperiencesModel(Long experience_id, String title, String organization, String start_date, String end_date, String description, LocationsModel experience_location, FreelancersModel freelancerExperiences) {
-        this.experience_id = experience_id;
-        this.title = title;
-        this.organization = organization;
-        this.start_date = start_date;
-        this.end_date = end_date;
-        this.description = description;
-        this.experience_location = experience_location;
-        this.freelancerExperiences = freelancerExperiences;
+    public ExperiencesModel() {
     }
 
     public Long getExperience_id() {

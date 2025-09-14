@@ -19,11 +19,7 @@ public class LanguagesModel extends BaseEntity {
     @ManyToMany(mappedBy = "freelancer_languages")
     private Set<FreelancersModel> freelancers;
 
-    public LanguagesModel(Long language_id, String language_name, Set<ClientsModel> clients, Set<FreelancersModel> freelancers) {
-        this.language_id = language_id;
-        this.language_name = language_name;
-        this.clients = clients;
-        this.freelancers = freelancers;
+    public LanguagesModel() {
     }
 
     public Long getLanguage_id() {

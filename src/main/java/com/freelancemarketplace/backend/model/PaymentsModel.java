@@ -53,20 +53,7 @@ public class PaymentsModel extends BaseEntity{
     @JoinColumn(name = "team_id")
     private TeamsModel teamPayments;
 
-    public PaymentsModel(Long payment_id, RecuiterTypes recuiter, TailentTypes tailent, String amount, PaymentTypes payment_type, PaymentStatus status, String transaction_id, Timestamp paid_at, FreelancersModel freelancerPayments, ContractsModel contractPayments, ClientsModel clientPayments, CompaniesModel companyPayments, TeamsModel teamPayments) {
-        this.payment_id = payment_id;
-        this.recuiter = recuiter;
-        this.tailent = tailent;
-        this.amount = amount;
-        this.payment_type = payment_type;
-        this.status = status;
-        this.transaction_id = transaction_id;
-        this.paid_at = paid_at;
-        this.freelancerPayments = freelancerPayments;
-        this.contractPayments = contractPayments;
-        this.clientPayments = clientPayments;
-        this.companyPayments = companyPayments;
-        this.teamPayments = teamPayments;
+    public PaymentsModel() {
     }
 
     public Long getPayment_id() {
