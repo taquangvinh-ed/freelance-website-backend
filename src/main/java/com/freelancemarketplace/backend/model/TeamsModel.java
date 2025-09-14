@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class TeamsModel {
+public class TeamsModel extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

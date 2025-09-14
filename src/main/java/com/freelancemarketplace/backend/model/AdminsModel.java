@@ -2,13 +2,12 @@ package com.freelancemarketplace.backend.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
 
 import java.util.Set;
 
 @Entity
-public class AdminsModel {
+public class AdminsModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long admin_id;
@@ -37,13 +36,13 @@ public class AdminsModel {
     private Set<QandAModel> questions_and_answers;
 
     @OneToMany(mappedBy = "admin")
-    private Set<Notifications> notifications;
+    private Set<NotificationsModel> notifications;
 
     @ManyToOne
     @JoinColumn(name = "location_id", referencedColumnName = "location_id")
     private LocationsModel admin_location;
 
-    public AdminsModel(Long admin_id, String first_name, String last_name, String username, String email, String password_hash, String phone_number, String profile_picture_url, String title, String bio, String social_media_links, Set<QandAModel> questions_and_answers, Set<Notifications> notifications, LocationsModel admin_location) {
+    public AdminsModel(Long admin_id, String first_name, String last_name, String username, String email, String password_hash, String phone_number, String profile_picture_url, String title, String bio, String social_media_links, Set<QandAModel> questions_and_answers, Set<NotificationsModel> notifications, LocationsModel admin_location) {
         this.admin_id = admin_id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -159,11 +158,11 @@ public class AdminsModel {
         this.questions_and_answers = questions_and_answers;
     }
 
-    public Set<Notifications> getNotifications() {
+    public Set<NotificationsModel> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(Set<Notifications> notifications) {
+    public void setNotifications(Set<NotificationsModel> notifications) {
         this.notifications = notifications;
     }
 

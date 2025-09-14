@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Categories extends BaseEntity{
+public class CategoriesModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long category_id;
@@ -26,10 +26,10 @@ public class Categories extends BaseEntity{
     @OneToMany(mappedBy = "category")
     private Set<ProjectsModel> projects;
 
-    public Categories() {
+    public CategoriesModel() {
     }
 
-    public Categories(Long category_id, String category_name, String category_image, Set<SkillsModel> skills, Set<ProjectsModel> projects) {
+    public CategoriesModel(Long category_id, String category_name, String category_image, Set<SkillsModel> skills, Set<ProjectsModel> projects) {
         this.category_id = category_id;
         this.category_name = category_name;
         this.category_image = category_image;

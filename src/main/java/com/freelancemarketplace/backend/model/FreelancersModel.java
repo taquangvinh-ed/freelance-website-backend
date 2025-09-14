@@ -1,6 +1,8 @@
 package com.freelancemarketplace.backend.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 
 import java.util.Set;
 
@@ -13,6 +15,9 @@ public class FreelancersModel extends BaseEntity{
     private String first_name;
     private String last_name;
     private String title;
+
+    @Type(JsonBinaryType.class)
+    @Column(columnDefinition = "jsonb")
     private String description;
     private String profile_picture;
     private String email;
@@ -20,6 +25,11 @@ public class FreelancersModel extends BaseEntity{
     private String password_hash;
     private Boolean isVerified;
     private Double hourly_rate;
+
+    @Type(JsonBinaryType.class)
+    @Column(columnDefinition = "jsonb")
+    private String social_links;
+
     private Double wallet;
     private Integer connections;
     private Integer hours_per_week;

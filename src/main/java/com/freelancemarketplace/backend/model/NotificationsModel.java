@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-public class Notifications extends BaseEntity{
+public class NotificationsModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notification_id;
@@ -22,7 +22,7 @@ public class Notifications extends BaseEntity{
     @JoinColumn(name = "admin_id", nullable = false)
     private AdminsModel admin;
 
-    public Notifications(Long notification_id, String title, String description, Timestamp datetime, String image_url, AdminsModel admin) {
+    public NotificationsModel(Long notification_id, String title, String description, Timestamp datetime, String image_url, AdminsModel admin) {
         this.notification_id = notification_id;
         this.title = title;
         this.description = description;

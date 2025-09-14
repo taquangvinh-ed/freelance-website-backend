@@ -17,7 +17,7 @@ public class SkillsModel extends BaseEntity{
     private Set<PortfoliosModel> portfolios;
 
     @ManyToMany(mappedBy = "skills")
-    private Set<Categories> categories;
+    private Set<CategoriesModel> categories;
 
     //Freelancers that use this skill
     @ManyToMany(mappedBy = "skills")
@@ -38,7 +38,7 @@ public class SkillsModel extends BaseEntity{
     @ManyToMany(mappedBy = "skills" )
     private Set<TeamsModel> teams;
 
-    public SkillsModel(Long skill_id, String name, String description, Set<PortfoliosModel> portfolios, Set<Categories> categories, Set<FreelancersModel> freelancers, Set<TestsModel> testsList, Set<ProjectsModel> projectsList, Set<ProductsModel> productsList, Set<TeamsModel> teams) {
+    public SkillsModel(Long skill_id, String name, String description, Set<PortfoliosModel> portfolios, Set<CategoriesModel> categories, Set<FreelancersModel> freelancers, Set<TestsModel> testsList, Set<ProjectsModel> projectsList, Set<ProductsModel> productsList, Set<TeamsModel> teams) {
         this.skill_id = skill_id;
         this.name = name;
         this.description = description;
@@ -83,11 +83,11 @@ public class SkillsModel extends BaseEntity{
         this.portfolios = portfolios;
     }
 
-    public Set<Categories> getCategories() {
+    public Set<CategoriesModel> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<Categories> categories) {
+    public void setCategories(Set<CategoriesModel> categories) {
         this.categories = categories;
     }
 

@@ -13,6 +13,9 @@ public class CompaniesModel extends BaseEntity {
     private Long company_id;
 
     private String name;
+
+    @Type(JsonBinaryType.class)
+    @Column(columnDefinition = "jsonb")
     private String description;
     private String website;
     private Boolean isVerified;

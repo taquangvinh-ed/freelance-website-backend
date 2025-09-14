@@ -21,11 +21,12 @@ public class ClientsModel extends BaseEntity{
 
     @Type(JsonBinaryType.class)
     @Column(columnDefinition = "jsonb")
-    private String biography;
+    private String description;
 
     @Type(JsonBinaryType.class)
     @Column(columnDefinition = "jsonb")
     private String social_links;
+
     private Boolean is_verified;
     private Boolean is_blocked;
 
@@ -71,7 +72,7 @@ public class ClientsModel extends BaseEntity{
     private Set<ProductsModel> products;
 
 
-    public ClientsModel(Long client_id, String first_name, String last_name, String email, String password_hash, String phone_number, String profile_picture, String biography, String social_links, Boolean is_verified, Boolean is_blocked, Set<LanguagesModel> client_languages, AnalyticsModel client_analytics, LocationsModel client_location, Set<TestimonialsModel> testimonials, Set<PaymentsModel> paymentsClient, Set<ContractsModel> clientContracts, Set<MessagesModel> messages, Set<ProjectsModel> projects, Set<ReportsModel> reports, Set<ProductsModel> products) {
+    public ClientsModel(Long client_id, String first_name, String last_name, String email, String password_hash, String phone_number, String profile_picture, String description, String social_links, Boolean is_verified, Boolean is_blocked, Set<LanguagesModel> client_languages, AnalyticsModel client_analytics, LocationsModel client_location, Set<TestimonialsModel> testimonials, Set<PaymentsModel> paymentsClient, Set<ContractsModel> clientContracts, Set<MessagesModel> messages, Set<ProjectsModel> projects, Set<ReportsModel> reports, Set<ProductsModel> products) {
         this.client_id = client_id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -79,7 +80,7 @@ public class ClientsModel extends BaseEntity{
         this.password_hash = password_hash;
         this.phone_number = phone_number;
         this.profile_picture = profile_picture;
-        this.biography = biography;
+        this.description = description;
         this.social_links = social_links;
         this.is_verified = is_verified;
         this.is_blocked = is_blocked;
@@ -151,12 +152,12 @@ public class ClientsModel extends BaseEntity{
         this.profile_picture = profile_picture;
     }
 
-    public String getBiography() {
-        return biography;
+    public String getDescription() {
+        return description;
     }
 
-    public void setBiography(String biography) {
-        this.biography = biography;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getSocial_links() {

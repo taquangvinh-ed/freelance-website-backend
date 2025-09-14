@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
-public class ContractsModel {
+public class ContractsModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long contract_id;

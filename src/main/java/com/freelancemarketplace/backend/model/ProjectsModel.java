@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class ProjectsModel {
+public class ProjectsModel extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +38,11 @@ public class ProjectsModel {
 
     @ManyToOne
     @JoinColumn(name="category_id", nullable=false)
-    private Categories category;
+    private CategoriesModel category;
 
     @ManyToOne
     @JoinColumn(name= "budget_id")
-    private Budgets budget;
+    private BudgetsModel budget;
 
     @ManyToOne
     @JoinColumn(name ="freelancer_id")
@@ -78,7 +78,7 @@ public class ProjectsModel {
     )
     private Set<SkillsModel> skills;
 
-    public ProjectsModel(Long project_id, String title, String description, ProjectStatus status, Double budget_amount, Integer duration_days, Integer connections, Timestamp start_date, Timestamp end_date, Boolean is_Internship, List<VideosModel> videos, PortfoliosModel portfolio, Categories category, Budgets budget, FreelancersModel projectFreelancer, Set<TestimonialsModel> testimonials, Set<ProposalsModal> proposalsList, ContractsModel projectContract, Set<MessagesModel> messages, CompaniesModel projectCompany, ClientsModel projectClient, Set<SkillsModel> skills) {
+    public ProjectsModel(Long project_id, String title, String description, ProjectStatus status, Double budget_amount, Integer duration_days, Integer connections, Timestamp start_date, Timestamp end_date, Boolean is_Internship, List<VideosModel> videos, PortfoliosModel portfolio, CategoriesModel category, BudgetsModel budget, FreelancersModel projectFreelancer, Set<TestimonialsModel> testimonials, Set<ProposalsModal> proposalsList, ContractsModel projectContract, Set<MessagesModel> messages, CompaniesModel projectCompany, ClientsModel projectClient, Set<SkillsModel> skills) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
@@ -199,19 +199,19 @@ public class ProjectsModel {
         this.portfolio = portfolio;
     }
 
-    public Categories getCategory() {
+    public CategoriesModel getCategory() {
         return category;
     }
 
-    public void setCategory(Categories category) {
+    public void setCategory(CategoriesModel category) {
         this.category = category;
     }
 
-    public Budgets getBudget() {
+    public BudgetsModel getBudget() {
         return budget;
     }
 
-    public void setBudget(Budgets budget) {
+    public void setBudget(BudgetsModel budget) {
         this.budget = budget;
     }
 

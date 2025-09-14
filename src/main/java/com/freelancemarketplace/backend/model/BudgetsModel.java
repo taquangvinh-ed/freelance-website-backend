@@ -3,7 +3,7 @@ package com.freelancemarketplace.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-public class Budgets extends BaseEntity{
+public class BudgetsModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long budget_id;
@@ -15,7 +15,7 @@ public class Budgets extends BaseEntity{
     @OneToOne(mappedBy = "budget")
     private ProjectsModel project;
 
-    public Budgets(Long budget_id, String budget_type, Long budget_value, ProjectsModel project) {
+    public BudgetsModel(Long budget_id, String budget_type, Long budget_value, ProjectsModel project) {
         this.budget_id = budget_id;
         this.budget_type = budget_type;
         this.budget_value = budget_value;
