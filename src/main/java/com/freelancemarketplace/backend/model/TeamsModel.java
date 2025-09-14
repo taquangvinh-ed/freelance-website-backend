@@ -33,4 +33,7 @@ public class TeamsModel {
     @OneToMany(mappedBy = "teamPayments")
     private Set<PaymentsModel> paymentsTeam;
 
+    @OneToMany(mappedBy = "contractTeam")
+    private Set<ContractsModel> contractsTeam;
+
 }

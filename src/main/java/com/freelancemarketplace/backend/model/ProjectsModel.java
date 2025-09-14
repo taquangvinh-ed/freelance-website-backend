@@ -37,4 +37,7 @@ public class ProjectsModel {
     @OneToMany(mappedBy = "projectProposals")
     private Set<ProposalsModal> proposalsList;
 
+    @OneToOne(mappedBy = "contractProject")
+    private ContractsModel projectContract;
+
 }
