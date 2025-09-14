@@ -12,6 +12,17 @@ public class TeamsModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long team_id;
 
+    private String team_name;
+    private String team_description;
+    private String team_leader;
+    private Integer hourly_rate;
+    private String hour_per_week;
+    private String team_avatar;
+    private String team_banner;
+    private Integer connections;
+    private double wallet;
+    private Boolean is_verified;
+
     @OneToMany(mappedBy = "team")
     private List<VideosModel> videos;
 
