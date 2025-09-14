@@ -39,4 +39,7 @@ public class ClientsModel extends BaseEntity{
     @OneToMany(mappedBy = "clientMessages")
     private Set<MessagesModel> messages;
 
+    @OneToMany(mappedBy = "projectClient" )
+    private Set<ProjectsModel> projects;
+
 }

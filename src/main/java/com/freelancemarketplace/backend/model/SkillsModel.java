@@ -22,4 +22,8 @@ public class SkillsModel {
 
     @ManyToMany(mappedBy = "skillsTests")
     private Set<TestsModel> testsList;
+
+    //Projects that require this skill
+    @ManyToMany(mappedBy = "skills")
+    private Set<ProjectsModel> projectsList;
 }
