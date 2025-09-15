@@ -14,6 +14,13 @@ java {
 	}
 }
 
+
+configurations {
+	compileOnly {
+		extendsFrom(configurations.annotationProcessor.get())
+	}
+}
+
 repositories {
 	mavenCentral()
 }
@@ -25,8 +32,11 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-//	implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
+	implementation("org.mapstruct:mapstruct:1.6.3")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+
 }
 
 tasks.withType<Test> {

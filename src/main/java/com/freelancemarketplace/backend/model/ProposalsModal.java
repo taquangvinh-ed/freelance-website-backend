@@ -1,10 +1,16 @@
 package com.freelancemarketplace.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class ProposalsModal extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,94 +46,4 @@ public class ProposalsModal extends BaseEntity{
     @JoinColumn(name = "team_id")
     private TeamsModel teamProposals;
 
-    public ProposalsModal() {
-    }
-
-    public Long getProposal_id() {
-        return proposal_id;
-    }
-
-    public void setProposal_id(Long proposal_id) {
-        this.proposal_id = proposal_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String[] getFiles() {
-        return files;
-    }
-
-    public void setFiles(String[] files) {
-        this.files = files;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public FreelancersModel getFreelancerProposals() {
-        return freelancerProposals;
-    }
-
-    public void setFreelancerProposals(FreelancersModel freelancerProposals) {
-        this.freelancerProposals = freelancerProposals;
-    }
-
-    public ProjectsModel getProjectProposals() {
-        return projectProposals;
-    }
-
-    public void setProjectProposals(ProjectsModel projectProposals) {
-        this.projectProposals = projectProposals;
-    }
-
-    public Set<MessagesModel> getMessagesList() {
-        return messagesList;
-    }
-
-    public void setMessagesList(Set<MessagesModel> messagesList) {
-        this.messagesList = messagesList;
-    }
-
-    public ContractsModel getContractProposal() {
-        return contractProposal;
-    }
-
-    public void setContractProposal(ContractsModel contractProposal) {
-        this.contractProposal = contractProposal;
-    }
-
-    public TeamsModel getTeamProposals() {
-        return teamProposals;
-    }
-
-    public void setTeamProposals(TeamsModel teamProposals) {
-        this.teamProposals = teamProposals;
-    }
 }

@@ -1,11 +1,17 @@
 package com.freelancemarketplace.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class TestsModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,74 +49,4 @@ public class TestsModel extends BaseEntity{
     )
     private Set<SkillsModel> skillsTests;
 
-
-
-    public TestsModel() {
-    }
-
-    public Long getTest_id() {
-        return test_id;
-    }
-
-    public void setTest_id(Long test_id) {
-        this.test_id = test_id;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-
-    public Double getPassing_score() {
-        return passing_score;
-    }
-
-    public void setPassing_score(Double passing_score) {
-        this.passing_score = passing_score;
-    }
-
-    public String getCertificate_url() {
-        return certificate_url;
-    }
-
-    public void setCertificate_url(String certificate_url) {
-        this.certificate_url = certificate_url;
-    }
-
-    public FreelancersModel getFreelancerTests() {
-        return freelancerTests;
-    }
-
-    public void setFreelancerTests(FreelancersModel freelancerTests) {
-        this.freelancerTests = freelancerTests;
-    }
-
-    public Set<SkillsModel> getSkillsTests() {
-        return skillsTests;
-    }
-
-    public void setSkillsTests(Set<SkillsModel> skillsTests) {
-        this.skillsTests = skillsTests;
-    }
 }

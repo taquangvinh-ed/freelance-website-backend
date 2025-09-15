@@ -1,23 +1,21 @@
 spring:
   datasource:
-    url: "jdbc:postgresql://localhost:5470/freelancer-db"
-    username: postgres
-    password: root
+    url: ${TEST_DATABASE_URL}
+    username: ${TEST_DATABASE_USERNAME}
+    password: ${TEST_DATABASE_PASSWORD}
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        ddl-auto: create
   config:
     activate:
       on-profile: "dev"
 logging:
   level:
     org.springframework.type: TRACE
-    org.hibernate.engine.spi: DEBUG
-    org.hibernate.internal: TRACE
-    org.hibernate.persister: TRACE
+    org.hibernate.SQL: DEBUG
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}

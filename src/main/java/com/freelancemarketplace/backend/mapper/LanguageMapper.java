@@ -1,0 +1,16 @@
+package com.freelancemarketplace.backend.mapper;
+
+import com.freelancemarketplace.backend.dto.LanguageDTO;
+import com.freelancemarketplace.backend.model.LanguagesModel;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
+
+@Mapper
+public interface LanguageMapper {
+    LanguageMapper INSTANCE = Mappers.getMapper(LanguageMapper.class);
+
+    @Mapping(source = "language_name", target = "languageName")
+    LanguageDTO toDTO(LanguagesModel language);
+    LanguagesModel toEntity(LanguageDTO languageDto);
+}
