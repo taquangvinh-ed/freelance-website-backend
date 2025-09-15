@@ -23,7 +23,7 @@ public class LocationsModel extends BaseEntity{
     private String details;
 
 
-    @OneToMany(mappedBy = "admin_location")
+    @OneToMany(mappedBy = "location")
     private Set<AdminsModel> adminList;
 
     @OneToMany(mappedBy = "company_location")

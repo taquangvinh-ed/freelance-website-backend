@@ -36,6 +36,7 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	implementation("org.mapstruct:mapstruct:1.6.3")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.11.0")
 
 }
 

@@ -1,139 +1,50 @@
 package com.freelancemarketplace.backend.model;
 
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "Admin")
 public class AdminsModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long admin_id;
+    private Long id;
 
-    private String first_name;
-    private String last_name;
+    private String firstName;
+    private String lastName;
     private String username;
     private String email;
-    private String password_hash;
-    private String phone_number;
-    private String profile_picture_url;
+    private String passwordHash;
+    private String phoneNumber;
+    private String profilePictureUrl;
     private String title;
 
-//    @Type(JsonBinaryType.class)
-//    @Column(columnDefinition = "jsonb")
-//    private Bio bio;
+    @Type(JsonBinaryType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Bio bio;
 
 
     @OneToMany(mappedBy = "admin")
-    private Set<QandAModel> questions_and_answers;
+    private Set<QandAModel> questionsAndAnswers;
 
     @OneToMany(mappedBy = "admin")
     private Set<NotificationsModel> notifications;
 
     @ManyToOne
     @JoinColumn(name = "location_id", referencedColumnName = "location_id")
-    private LocationsModel admin_location;
+    private LocationsModel location;
 
 
-    public AdminsModel() {
-    }
-
-    public Long getAdmin_id() {
-        return admin_id;
-    }
-
-    public void setAdmin_id(Long admin_id) {
-        this.admin_id = admin_id;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword_hash() {
-        return password_hash;
-    }
-
-    public void setPassword_hash(String password_hash) {
-        this.password_hash = password_hash;
-    }
-
-    public String getPhone_number() {
-        return phone_number;
-    }
-
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
-    }
-
-    public String getProfile_picture_url() {
-        return profile_picture_url;
-    }
-
-    public void setProfile_picture_url(String profile_picture_url) {
-        this.profile_picture_url = profile_picture_url;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-
-
-    public Set<QandAModel> getQuestions_and_answers() {
-        return questions_and_answers;
-    }
-
-    public void setQuestions_and_answers(Set<QandAModel> questions_and_answers) {
-        this.questions_and_answers = questions_and_answers;
-    }
-
-    public Set<NotificationsModel> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(Set<NotificationsModel> notifications) {
-        this.notifications = notifications;
-    }
-
-    public LocationsModel getAdmin_location() {
-        return admin_location;
-    }
-
-    public void setAdmin_location(LocationsModel admin_location) {
-        this.admin_location = admin_location;
-    }
 }

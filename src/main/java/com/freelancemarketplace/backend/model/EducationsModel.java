@@ -1,8 +1,14 @@
 package com.freelancemarketplace.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class EducationsModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,70 +27,4 @@ public class EducationsModel extends BaseEntity{
     @JoinColumn(name = "freelancer_id")
     private FreelancersModel freelancerEducations;
 
-    public EducationsModel() {
-    }
-
-    public Long getEducation_id() {
-        return education_id;
-    }
-
-    public void setEducation_id(Long education_id) {
-        this.education_id = education_id;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
-    }
-
-    public String getDegree() {
-        return degree;
-    }
-
-    public void setDegree(String degree) {
-        this.degree = degree;
-    }
-
-    public String getArea_study() {
-        return area_study;
-    }
-
-    public void setArea_study(String area_study) {
-        this.area_study = area_study;
-    }
-
-    public String getStart_date() {
-        return start_date;
-    }
-
-    public void setStart_date(String start_date) {
-        this.start_date = start_date;
-    }
-
-    public String getEnd_date() {
-        return end_date;
-    }
-
-    public void setEnd_date(String end_date) {
-        this.end_date = end_date;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public FreelancersModel getFreelancerEducations() {
-        return freelancerEducations;
-    }
-
-    public void setFreelancerEducations(FreelancersModel freelancerEducations) {
-        this.freelancerEducations = freelancerEducations;
-    }
 }

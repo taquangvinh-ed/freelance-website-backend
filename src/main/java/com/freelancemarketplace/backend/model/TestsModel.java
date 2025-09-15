@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
@@ -21,32 +22,32 @@ public class TestsModel extends BaseEntity{
     private String title;
     private String description;
 
-//    @Type(JsonBinaryType.class)
-//    @Column(columnDefinition = "jsonb")
-//    private Question questions; //JSON string representing questions
-//
-//    @Type(JsonBinaryType.class)
-//    @Column(columnDefinition = "jsonb")
-//    private Answer answers; //JSON string representing answers
+
+    @OneToMany(mappedBy = "test")
+    private Set<QuestionsModel> questions;
 
     private Double passing_score; //e.g., 70.0 for 70%
 
+
     private String certificate_url;
 
-    @ManyToOne
+    @ManyToMany
     @JoinTable(
         name = "freelancer_tests",
         joinColumns = @JoinColumn(name = "test_id"),
         inverseJoinColumns = @JoinColumn(name = "freelancer_id")
     )
-    private FreelancersModel freelancerTests;
+    private Set<FreelancersModel> freelancerTests;
 
     @ManyToMany
     @JoinTable(
-        name = "test_questions",
+        name = "test_skills",
         joinColumns = @JoinColumn(name = "test_id"),
         inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     private Set<SkillsModel> skillsTests;
+
+    @OneToMany(mappedBy = "test")
+    private Set<FreelancerTestResults> testResults;
 
 }
