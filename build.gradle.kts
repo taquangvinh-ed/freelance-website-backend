@@ -35,6 +35,8 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	implementation("org.mapstruct:mapstruct:1.6.3")
+//	implementation("org.mapstruct:mapstruct-processor:1.6.3")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.11.0")
 
