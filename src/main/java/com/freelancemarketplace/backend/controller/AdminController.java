@@ -2,14 +2,17 @@ package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.dto.AdminDTO;
 import com.freelancemarketplace.backend.dto.LanguageDTO;
+import com.freelancemarketplace.backend.dto.NotificationDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
 import com.freelancemarketplace.backend.exception.LanguageException;
+import com.freelancemarketplace.backend.exception.NotificationException;
 import com.freelancemarketplace.backend.mapper.AdminMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.AdminService;
 import com.freelancemarketplace.backend.service.LanguageService;
+import com.freelancemarketplace.backend.service.NotificationService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +29,19 @@ public class AdminController {
 
     Logger logger = LoggerFactory.getLogger(AdminController.class);
 
-    private AdminService adminService;
-    private AdminMapper adminMapper;
-    private LanguageService languageService;
+    private final AdminService adminService;
+    private final AdminMapper adminMapper;
+    private final LanguageService languageService;
+    private final NotificationService notificationService;
 
     public AdminController(AdminService adminService,
                            AdminMapper adminMapper,
-                           LanguageService languageService) {
+                           LanguageService languageService,
+                           NotificationService notificationService) {
         this.adminService = adminService;
         this.adminMapper = adminMapper;
         this.languageService = languageService;
+        this.notificationService = notificationService;
     }
 
 
@@ -112,8 +118,8 @@ public class AdminController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDTO(
-                            ResponseStatusCode.SUCCESS,
-                            ResponseMessage.SUCCESS,
+                            ResponseStatusCode.CREATED,
+                            ResponseMessage.CREATED,
                             createdlanguage
                     ));
         }catch (RuntimeException e){
@@ -166,6 +172,22 @@ public class AdminController {
                     ));
         } catch (RuntimeException e) {
             throw new LanguageException("Message: " + e);
+        }
+    }
+
+    @PostMapping("/admin/notifications")
+    ResponseEntity<ResponseDTO>createNotification(@RequestBody NotificationDTO notificationDTO){
+        try {
+            NotificationDTO createdNotification = notificationService.createNotification(notificationDTO);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(
+                            ResponseStatusCode.CREATED,
+                            ResponseMessage.CREATED,
+                            createdNotification
+                    ));
+        } catch (RuntimeException e) {
+            throw new NotificationException("Message: "+e);
         }
     }
 }
