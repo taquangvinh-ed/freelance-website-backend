@@ -4,19 +4,18 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
-import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class TestsModel extends BaseEntity{
+@Table(name = "Tests")
+public class TestModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long test_id;
+    private Long testId;
 
     private  Integer duration; //in minutes
     private String title;
@@ -24,28 +23,28 @@ public class TestsModel extends BaseEntity{
 
 
     @OneToMany(mappedBy = "test")
-    private Set<QuestionsModel> questions;
+    private Set<QuestionModel> questions;
 
-    private Double passing_score; //e.g., 70.0 for 70%
+    private Double passingScore; //e.g., 70.0 for 70%
 
 
-    private String certificate_url;
+    private String certificateUrl;
 
     @ManyToMany
     @JoinTable(
         name = "freelancer_tests",
-        joinColumns = @JoinColumn(name = "test_id"),
-        inverseJoinColumns = @JoinColumn(name = "freelancer_id")
+        joinColumns = @JoinColumn(name = "testId"),
+        inverseJoinColumns = @JoinColumn(name = "freelancerId")
     )
-    private Set<FreelancersModel> freelancerTests;
+    private Set<FreelancerModel> freelancers;
 
     @ManyToMany
     @JoinTable(
         name = "test_skills",
-        joinColumns = @JoinColumn(name = "test_id"),
-        inverseJoinColumns = @JoinColumn(name = "skill_id")
+        joinColumns = @JoinColumn(name = "testId"),
+        inverseJoinColumns = @JoinColumn(name = "skillId")
     )
-    private Set<SkillsModel> skillsTests;
+    private Set<SkillModel> skills;
 
     @OneToMany(mappedBy = "test")
     private Set<FreelancerTestResults> testResults;

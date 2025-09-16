@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.BudgetsModel;
+import com.freelancemarketplace.backend.model.BudgetModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BudgetsRepository extends JpaRepository<BudgetsModel, Long> {
+public interface BudgetsRepository extends JpaRepository<BudgetModel, Long> {
   }

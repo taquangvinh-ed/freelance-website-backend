@@ -9,22 +9,23 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EducationsModel extends BaseEntity{
+@Table(name = "Educations")
+public class EducationModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long education_id;
+    private Long educationId;
 
     private String organization;
     private String degree;
-    private String area_study;
-    private String start_date;
-    private String end_date;
+    private String areaStudy;
+    private String startDate;
+    private String endDate;
     private String description;
 
 
 
     @ManyToOne
-    @JoinColumn(name = "freelancer_id")
-    private FreelancersModel freelancerEducations;
+    @JoinColumn(name = "freelancerId")
+    private FreelancerModel freelancer;
 
 }

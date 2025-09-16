@@ -13,8 +13,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class BaseEntity {
 
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
-    private Timestamp updated_at;
+    private Timestamp updatedAt;
 
 }

@@ -9,28 +9,30 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReportsModel extends BaseEntity{
+@Table(name = "Reports")
+public class ReportModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long report_id;
+    private Long reportId;
 
 
-    private String report_category;
-    private String report_reason;
+    private String reportCategory;
+
+    private String reportReason;
 
     //The freelancer who is being reported
     @ManyToOne
-    @JoinColumn(name = "freelancer_id")
-    private FreelancersModel freelancerReports;
+    @JoinColumn(name = "freelancerId")
+    private FreelancerModel freelancer;
 
     //Company who is being reported
     @ManyToOne
-    @JoinColumn(name = "company_id")
-    private CompaniesModel companyReports;
+    @JoinColumn(name = "companyId")
+    private CompanyModel company;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
-    private ClientsModel client_reports;
+    @JoinColumn(name = "clientId")
+    private ClientModel client;
 
 
 }

@@ -11,37 +11,38 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SkillsModel extends BaseEntity{
+@Table(name = "Skils")
+public class SkillModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long skill_id;
+    private Long skillId;
 
     private String name;
     private String description;
 
     @ManyToMany(mappedBy = "skills")
-    private Set<PortfoliosModel> portfolios;
+    private Set<PortfolioModel> portfolios;
 
     @ManyToMany(mappedBy = "skills")
-    private Set<CategoriesModel> categories;
+    private Set<CategoryModel> categories;
 
     //Freelancers that use this skill
     @ManyToMany(mappedBy = "skills")
-    private Set<FreelancersModel> freelancers;
+    private Set<FreelancerModel> freelancers;
 
-    @ManyToMany(mappedBy = "skillsTests")
-    private Set<TestsModel> testsList;
+    @ManyToMany(mappedBy = "skills")
+    private Set<TestModel> testsList;
 
     //Projects that require this skill
     @ManyToMany(mappedBy = "skills")
-    private Set<ProjectsModel> projectsList;
+    private Set<ProjectModel> projectsList;
 
     //Products that require this skill
     @ManyToMany(mappedBy = "skills" )
-    private Set<ProductsModel> productsList;
+    private Set<ProductModel> productsList;
 
     //Teams that have this skill
     @ManyToMany(mappedBy = "skills" )
-    private Set<TeamsModel> teams;
+    private Set<TeamModel> teams;
 
 }

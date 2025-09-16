@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.FreelancersModel;
+import com.freelancemarketplace.backend.model.FreelancerModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FreelancersRepository extends JpaRepository<FreelancersModel, Long> {
+public interface FreelancersRepository extends JpaRepository<FreelancerModel, Long> {
   }

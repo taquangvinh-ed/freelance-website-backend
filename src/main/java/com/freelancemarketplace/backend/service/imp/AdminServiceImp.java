@@ -3,7 +3,7 @@ package com.freelancemarketplace.backend.service.imp;
 import com.freelancemarketplace.backend.dto.AdminDTO;
 import com.freelancemarketplace.backend.exception.AdminException;
 import com.freelancemarketplace.backend.mapper.AdminMapper;
-import com.freelancemarketplace.backend.model.AdminsModel;
+import com.freelancemarketplace.backend.model.AdminModel;
 import com.freelancemarketplace.backend.repository.AdminsRepository;
 import com.freelancemarketplace.backend.service.AdminService;
 import jakarta.transaction.Transactional;
@@ -36,7 +36,7 @@ public class AdminServiceImp implements AdminService {
 
     @Override
     @Transactional
-    public AdminsModel createAdmin(AdminDTO adminDTO) {
+    public AdminModel createAdmin(AdminDTO adminDTO) {
 
         if(adminsRepository.existsByEmail(adminDTO.getEmail())){
             throw new AdminException("Admin with email:  " + adminDTO.getEmail()
@@ -54,9 +54,9 @@ public class AdminServiceImp implements AdminService {
         }
 
         try{
-            AdminsModel adminEntity = adminMapper.toEntity(adminDTO);
-            adminEntity.setCreated_at(Timestamp.from(Instant.now()));
-            AdminsModel savedAdmin = adminsRepository.save(adminEntity);
+            AdminModel adminEntity = adminMapper.toEntity(adminDTO);
+            adminEntity.setCreatedAt(Timestamp.from(Instant.now()));
+            AdminModel savedAdmin = adminsRepository.save(adminEntity);
             logger.info("Successfully created admin with ID:" + savedAdmin.getId());
             return savedAdmin;
         } catch (DataAccessException e) {
@@ -72,9 +72,9 @@ public class AdminServiceImp implements AdminService {
         Boolean isExisted = adminsRepository.existsByUsername(adminDTO.getUsername());
         if(isExisted){
             try {
-                AdminsModel existedAdmin = adminsRepository.findByUsername(adminDTO.getUsername());
+                AdminModel existedAdmin = adminsRepository.findByUsername(adminDTO.getUsername());
                 existedAdmin = adminMapper.toEntity(adminDTO);
-                AdminsModel savedAdmin = adminsRepository.save(existedAdmin);
+                AdminModel savedAdmin = adminsRepository.save(existedAdmin);
                 if(savedAdmin.getId() != null){
                     logger.info("Admin account has been updated successfully");
                     return true;

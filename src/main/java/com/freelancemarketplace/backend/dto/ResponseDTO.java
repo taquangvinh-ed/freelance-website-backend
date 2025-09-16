@@ -6,17 +6,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseDTO {
+public class ResponseDTO<T> {
     private String statusCode;
     private String statusMessage;
-    private String body;
+    private T body;
 
     public ResponseDTO(String statusCode, String statusMessage) {
         this.statusCode = statusCode;
         this.statusMessage = statusMessage;
     }
 
-    public ResponseDTO(String statusCode, String statusMessage, String body) {
+    public ResponseDTO(String statusCode, String statusMessage, T body) {
         this.statusCode = statusCode;
         this.statusMessage = statusMessage;
         this.body = body;

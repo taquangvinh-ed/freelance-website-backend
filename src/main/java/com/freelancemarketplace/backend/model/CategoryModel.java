@@ -11,25 +11,26 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CategoriesModel extends BaseEntity{
+@Table(name = "Categories")
+public class CategoryModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long category_id;
+    private Long categoryId;
 
-    private String category_name;
+    private String name;
 
-    private String category_image;
+    private String image;
 
 
     @ManyToMany
     @JoinTable(
             name = "category_skill",
-            joinColumns = @JoinColumn(name="category_id"),
-            inverseJoinColumns = @JoinColumn(name="skill_id")
+            joinColumns = @JoinColumn(name="categoryId"),
+            inverseJoinColumns = @JoinColumn(name="skillId")
     )
-    private Set<SkillsModel> skills;
+    private Set<SkillModel> skills;
 
     @OneToMany(mappedBy = "category")
-    private Set<ProjectsModel> projects;
+    private Set<ProjectModel> projects;
 
 }

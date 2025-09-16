@@ -19,7 +19,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "Admin")
-public class AdminsModel extends BaseEntity{
+public class AdminModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -59,11 +59,11 @@ public class AdminsModel extends BaseEntity{
     private Set<QandAModel> questionsAndAnswers;
 
     @OneToMany(mappedBy = "admin")
-    private Set<NotificationsModel> notifications;
+    private Set<NotificationModel> notifications;
 
     @ManyToOne
-    @JoinColumn(name = "location_id", referencedColumnName = "location_id")
-    private LocationsModel location;
+    @JoinColumn(name = "locationId")
+    private LocationModel location;
 
 
 }

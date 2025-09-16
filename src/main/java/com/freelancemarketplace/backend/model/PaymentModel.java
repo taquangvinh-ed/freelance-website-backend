@@ -15,48 +15,49 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PaymentsModel extends BaseEntity{
+@Table(name = "Payments")
+public class PaymentModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long payment_id;
+    private Long paymentId;
 
     @Enumerated(EnumType.STRING)
-    private RecuiterTypes recuiter;
+    private RecuiterTypes recruiter;
 
     @Enumerated(EnumType.STRING)
-    private TailentTypes tailent;
+    private TailentTypes talent;
 
     private String amount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentTypes payment_type;
+    private PaymentTypes type;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    private String transaction_id;
+    private String transactionId;
 
-    private Timestamp paid_at;
+    private Timestamp paidAt;
 
     //The payments that belong to a freelancer
     @ManyToOne
-    @JoinColumn(name = "freelancer_id")
-    private FreelancersModel freelancerPayments;
+    @JoinColumn(name = "freelancerId")
+    private FreelancerModel freelancer;
 
     @ManyToOne
-    @JoinColumn(name = "contract_id")
-    private ContractsModel contractPayments;
+    @JoinColumn(name = "contractId")
+    private ContractModel contract;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
-    private ClientsModel clientPayments;
+    @JoinColumn(name = "clientId")
+    private ClientModel client;
 
     @ManyToOne
-    @JoinColumn(name = "company_id")
-    private CompaniesModel companyPayments;
+    @JoinColumn(name = "companyId")
+    private CompanyModel company;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private TeamsModel teamPayments;
+    @JoinColumn(name = "teamId")
+    private TeamModel team;
 
 }

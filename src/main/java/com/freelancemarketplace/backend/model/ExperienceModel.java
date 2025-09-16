@@ -9,25 +9,26 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExperiencesModel extends BaseEntity{
+@Table(name = "Experiences")
+public class ExperienceModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long experience_id;
+    private Long experienceId;
 
     private String title;
     private String organization;
-    private String start_date;
-    private String end_date;
+    private String startDate;
+    private String endDate;
     private String description;
 
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
-    private LocationsModel experience_location;
+    @JoinColumn(name = "locationId")
+    private LocationModel location;
 
     //The experiences that belong to a freelancer
     @ManyToOne
-    @JoinColumn(name = "freelancer_id")
-    private FreelancersModel freelancerExperiences;
+    @JoinColumn(name = "freelancerId")
+    private FreelancerModel freelancer;
 
 }

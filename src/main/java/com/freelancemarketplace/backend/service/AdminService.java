@@ -1,10 +1,10 @@
 package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.AdminDTO;
-import com.freelancemarketplace.backend.model.AdminsModel;
+import com.freelancemarketplace.backend.model.AdminModel;
 
 public interface AdminService {
-    public AdminsModel createAdmin(AdminDTO adminDTO);
+    public AdminModel createAdmin(AdminDTO adminDTO);
 
     public Boolean update(AdminDTO adminDTO);
 

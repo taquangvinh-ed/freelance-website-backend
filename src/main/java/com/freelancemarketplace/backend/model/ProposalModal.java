@@ -11,10 +11,11 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProposalsModal extends BaseEntity{
+@Table(name = "Proposals")
+public class ProposalModal extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long proposal_id;
+    private Long proposalId;
 
     // The name of the proposal
     private String name;
@@ -28,22 +29,22 @@ public class ProposalsModal extends BaseEntity{
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "freelancer_id")
-    private FreelancersModel freelancerProposals;
+    @JoinColumn(name = "freelancerId")
+    private FreelancerModel freelancer;
 
     @ManyToOne
-    @JoinColumn(name = "project_id")
-    private ProjectsModel projectProposals;
+    @JoinColumn(name = "projectId")
+    private ProjectModel project;
 
-    @OneToMany(mappedBy = "proposalMessages" )
-    private Set<MessagesModel> messagesList;
+    @OneToMany(mappedBy = "proposal")
+    private Set<MessageModel> messagesList;
 
     @OneToOne
-    @JoinColumn(name = "contract_id")
-    private ContractsModel contractProposal;
+    @JoinColumn(name = "contractId")
+    private ContractModel contract;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private TeamsModel teamProposals;
+    @JoinColumn(name = "teamId")
+    private TeamModel team;
 
 }

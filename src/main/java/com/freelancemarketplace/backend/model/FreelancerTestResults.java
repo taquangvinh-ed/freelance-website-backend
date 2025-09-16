@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class FreelancerTestResults {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long test_result_id;
+    private Long testResultId;
 
 
     private Double score;
@@ -23,10 +23,10 @@ public class FreelancerTestResults {
 
     //Freelancer who take the test
     @ManyToOne
-    @JoinColumn(name = "freelancer_id")
-    private FreelancersModel freelancer;
+    @JoinColumn(name = "freelancerId")
+    private FreelancerModel freelancer;
 
     @ManyToOne
-    @JoinColumn(name = "test_id")
-    private TestsModel test;
+    @JoinColumn(name = "testId")
+    private TestModel test;
 }

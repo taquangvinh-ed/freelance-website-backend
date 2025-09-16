@@ -13,26 +13,26 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "questions")
-public class QuestionsModel {
+@Table(name = "Questions")
+public class QuestionModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long question_id;
+    private Long questionId;
 
     @Enumerated(EnumType.STRING)
-    private QuestionTags question_tag;
+    private QuestionTags questionTag;
 
     @Enumerated(EnumType.STRING)
-    private QuestionTypes question_type; // e.g., "text", "multiple-choice"
+    private QuestionTypes questionType; // e.g., "text", "multiple-choice"
 
     private String question_text;
 
     @OneToMany(mappedBy = "question")
-    private Set<AnswerOptionsModel> options;
+    private Set<AnswerOptionModel> options;
 
     @ManyToOne
-    @JoinColumn(name = "test_id")
-    private TestsModel test;
+    @JoinColumn(name = "testId")
+    private TestModel test;
 
 
 }

@@ -9,18 +9,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AnswerOptionsModel {
-
+@Table(name = "Budgets")
+public class BudgetModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long answer_id;
+    private Long budgetId;
 
-    private String answer_text;
+    private String type;
 
-    private boolean isCorrect;
+    private Long value;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id")
-    private QuestionsModel question;
+    @OneToOne(mappedBy = "budget")
+    private ProjectModel project;
 
 }

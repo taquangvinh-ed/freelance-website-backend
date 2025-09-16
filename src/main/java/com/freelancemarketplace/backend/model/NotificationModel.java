@@ -11,10 +11,11 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NotificationsModel extends BaseEntity{
+@Table(name = "Notifications")
+public class NotificationModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long notification_id;
+    private Long notificationId;
 
     private String title;
 
@@ -22,10 +23,10 @@ public class NotificationsModel extends BaseEntity{
 
     private Timestamp datetime;
 
-    private String image_url;
+    private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id", nullable = false)
-    private AdminsModel admin;
+    @JoinColumn(name = "adminId", nullable = false)
+    private AdminModel admin;
 
 }

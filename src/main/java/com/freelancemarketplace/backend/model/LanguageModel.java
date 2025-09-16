@@ -11,18 +11,19 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LanguagesModel extends BaseEntity {
+@Table(name = "Languages")
+public class LanguageModel extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long languageId;
 
     private String languageName;
 
-    @ManyToMany(mappedBy = "client_languages")
-    private Set<ClientsModel> clients;
+    @ManyToMany(mappedBy = "languages")
+    private Set<ClientModel> clients;
 
-    @ManyToMany(mappedBy = "freelancer_languages")
-    private Set<FreelancersModel> freelancers;
+    @ManyToMany(mappedBy = "languages")
+    private Set<FreelancerModel> freelancers;
 
 }

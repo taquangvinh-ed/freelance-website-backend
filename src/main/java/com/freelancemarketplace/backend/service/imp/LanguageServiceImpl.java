@@ -3,7 +3,7 @@ package com.freelancemarketplace.backend.service.imp;
 import com.freelancemarketplace.backend.dto.LanguageDTO;
 import com.freelancemarketplace.backend.exception.LanguageException;
 import com.freelancemarketplace.backend.mapper.LanguageMapper;
-import com.freelancemarketplace.backend.model.LanguagesModel;
+import com.freelancemarketplace.backend.model.LanguageModel;
 import com.freelancemarketplace.backend.repository.LanguagesRepository;
 import com.freelancemarketplace.backend.service.LanguageService;
 import jakarta.transaction.Transactional;
@@ -39,13 +39,13 @@ public class LanguageServiceImpl implements LanguageService {
             throw new LanguageException("This language has already existed;");
         }
         try {
-            LanguagesModel newLanguage = new LanguagesModel();
+            LanguageModel newLanguage = new LanguageModel();
             newLanguage = languageMapper.toEntity(languageDTO);
-            newLanguage.setCreated_at(Timestamp.from(Instant.now()));
-            LanguagesModel savedLanguage = languagesRepository.save(newLanguage);
-            if (savedLanguage.getId() != null) {
+            newLanguage.setCreatedAt(Timestamp.from(Instant.now()));
+            LanguageModel savedLanguage = languagesRepository.save(newLanguage);
+            if (savedLanguage.getLanguageId() != null) {
                 logger.info("Created language successfully!!!");
-                return savedLanguage.getId();
+                return savedLanguage.getLanguageId();
             }
         } catch (DataAccessException e) {
             logger.error("Failed to create language with error: " + e);
@@ -70,13 +70,13 @@ public class LanguageServiceImpl implements LanguageService {
     @Override
     @Transactional
     public Boolean updateLanguage(Long languageId, LanguageDTO languageDTO) {
-        Optional<LanguagesModel> language = languagesRepository.findById(languageId);
+        Optional<LanguageModel> language = languagesRepository.findById(languageId);
         if (language.isPresent()) {
-            LanguagesModel existingLanguage = language.get();
+            LanguageModel existingLanguage = language.get();
             existingLanguage.setLanguageName(languageDTO.getLanguageName());
-            existingLanguage.setUpdated_at(Timestamp.from(Instant.now()));
+            existingLanguage.setUpdatedAt(Timestamp.from(Instant.now()));
             try {
-                LanguagesModel updatedLanguage = languagesRepository.save(existingLanguage);
+                LanguageModel updatedLanguage = languagesRepository.save(existingLanguage);
                 return true;
             } catch (DataAccessException e) {
                 System.out.println("Failed to update language: " + e.getMessage());

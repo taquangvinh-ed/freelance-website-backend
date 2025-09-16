@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.dto.AdminDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.model.AdminsModel;
+import com.freelancemarketplace.backend.model.AdminModel;
 import com.freelancemarketplace.backend.service.AdminService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class AdminController {
     @PostMapping("/admin")
     public ResponseEntity<ResponseDTO> createAdmin(@RequestBody @Valid  AdminDTO adminDTO){
         logger.info("Received request to create admin with username: {}", adminDTO.getUsername());
-        AdminsModel createdAdmin = adminService.createAdmin(adminDTO);
+        AdminModel createdAdmin = adminService.createAdmin(adminDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDTO("CREATED", "CREATED ", "Successfully created admin account with admin_id: " + createdAdmin.getId()));

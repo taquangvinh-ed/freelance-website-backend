@@ -9,7 +9,7 @@
     @Setter
     @NoArgsConstructor
     public class AdminDTO {
-        private Long id;
+        private Long adminId;
         private String firstName;
         private String lastName;
         private String username;

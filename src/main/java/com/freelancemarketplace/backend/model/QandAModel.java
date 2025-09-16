@@ -9,17 +9,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "QA")
 public class QandAModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long qanda_id;
+    private Long qandaId;
 
     private String question;
     private String answer;
     private String tag;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private AdminsModel admin;
+    @JoinColumn(name = "adminId")
+    private AdminModel admin;
 
 }

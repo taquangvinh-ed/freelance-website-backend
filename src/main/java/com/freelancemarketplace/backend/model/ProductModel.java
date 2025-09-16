@@ -7,62 +7,62 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductsModel {
+@Table(name = "Products")
+public class ProductModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long product_id;
+    private Long productId;
 
     private String name;
     private String description;
     private Double price;
 
     @Enumerated(EnumType.STRING)
-    private TailentTypes owner_type; // freelancer or team
+    private TailentTypes ownerType; // freelancer or team
 
     @Enumerated(EnumType.STRING)
-    private RecuiterTypes buyer_type; // individual or company
+    private RecuiterTypes buyerType; // individual or company
 
     private String image;
 
     // Link to the product (e.g., URL to download or view the product)
-    private String product_link;
+    private String productLink;
 
     private Long views;
-    private Long time_of_download;
+    private Long timeOfDownload;
 
     @OneToMany(mappedBy = "product")
-    private Set<VideosModel> videos;
+    private Set<VideoModel> videos;
 
     //The freelancer who creates the product
     @ManyToOne
-    @JoinColumn(name="freelancer_id")
-    private FreelancersModel freelancerProduct;
+    @JoinColumn(name="freelancerId")
+    private FreelancerModel freelancer;
 
-    @OneToMany(mappedBy = "productMessages")
-    private Set<MessagesModel> messages;
+    @OneToMany(mappedBy = "product")
+    private Set<MessageModel> messages;
 
-    @ManyToMany(mappedBy = "productsList" )
-    private Set<CompaniesModel> companyList;
+    //The companies that bought the product
+    @ManyToMany(mappedBy = "products")
+    private Set<CompanyModel> companies;
 
     @ManyToMany
     @JoinTable(
             name = "product_skills",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id")
+            joinColumns = @JoinColumn(name = "productId"),
+            inverseJoinColumns = @JoinColumn(name = "skillId")
     )
-    private Set<SkillsModel> skills;
+    private Set<SkillModel> skills;
 
     //The client who buys the product
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private ClientsModel clientProduct;
+    @ManyToMany(mappedBy = "products")
+    private Set<ClientModel> clients;
 
 }
