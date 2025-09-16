@@ -55,7 +55,7 @@ public class AdminController {
 
     }
 
-    @DeleteMapping
+    @DeleteMapping("/admin")
     public ResponseEntity<ResponseDTO>deleteAdmin(@RequestParam Long adminId){
         logger.info("Receive request to delete admin account with id: " + adminId);
         if (adminService.delete(adminId)){
