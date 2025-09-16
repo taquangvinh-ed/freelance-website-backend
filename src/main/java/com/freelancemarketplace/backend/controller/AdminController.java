@@ -137,4 +137,35 @@ public class AdminController {
             throw new LanguageException("Message: " + e);
         }
     }
+
+    @DeleteMapping("/admin/languages/{languageId}")
+    ResponseEntity<ResponseDTO>deleteLanguage(@PathVariable Long languageId){
+        try{
+            languageService.deleteLanguages(languageId);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(
+                            ResponseStatusCode.SUCCESS,
+                            ResponseMessage.SUCCESS
+                    ));
+        }catch (RuntimeException e){
+            throw new LanguageException("Message: " + e);
+        }
+    }
+
+    @GetMapping("/admin/languages/getAll")
+    ResponseEntity<ResponseDTO>getAllLanguages(){
+        try{
+            List<LanguageDTO> languageDTOs = languageService.getAllLanguages();
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(
+                            ResponseStatusCode.SUCCESS,
+                            ResponseMessage.SUCCESS,
+                            languageDTOs
+                    ));
+        } catch (RuntimeException e) {
+            throw new LanguageException("Message: " + e);
+        }
+    }
 }

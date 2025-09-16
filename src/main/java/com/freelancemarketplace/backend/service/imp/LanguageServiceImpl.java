@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LanguageServiceImpl implements LanguageService {
 
@@ -88,5 +90,16 @@ public class LanguageServiceImpl implements LanguageService {
             }
 
         }
+    @Transactional
+    @Override
+    public List<LanguageDTO> getAllLanguages() {
+        try {
+            List<LanguageModel> languages = languagesRepository.findAll();
+            return languageMapper.toDTOs(languages);
+        }catch (RuntimeException e){
+            throw new LanguageException("Message: " + e );
+        }
+
     }
+}
 
