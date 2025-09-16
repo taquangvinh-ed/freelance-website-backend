@@ -3,7 +3,7 @@ package com.freelancemarketplace.backend.service;
 import com.freelancemarketplace.backend.dto.AdminDTO;
 import com.freelancemarketplace.backend.model.AdminModel;
 
-import java.util.Set;
+import java.util.List;
 
 public interface AdminService {
     public AdminModel createAdmin(AdminDTO adminDTO);
@@ -12,8 +12,8 @@ public interface AdminService {
 
     public Boolean delete(Long adminId);
 
-    AdminDTO getProfileAdmin(Long adminId);
+    AdminDTO getAdminProfile(Long adminId);
 
-    Set<AdminDTO>getAllAdmins();
+    List<AdminDTO> getAllAdmins();
 
 }

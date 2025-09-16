@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class AdminController {
@@ -76,11 +78,23 @@ public class AdminController {
         logger.info("Receive request to get admin profile with id: " + adminId);
 
         try {
-            AdminDTO adminDTO = adminService.getProfileAdmin(adminId);
+            AdminDTO adminDTO = adminService.getAdminProfile(adminId);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTO));
         }catch (RuntimeException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("admin/getAll")
+    public ResponseEntity<ResponseDTO> getAllAdminAccount(){
+        try{
+            List<AdminDTO> adminDTOList = adminService.getAllAdmins();
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTOList));
+        } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }

@@ -6,13 +6,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface AdminMapper {
     AdminDTO toDTO(AdminModel admin);
     AdminModel toEntity(AdminDTO adminDTO);
 
-    @Mapping(target = "adminId", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    void updateFromDto(@MappingTarget AdminModel adminModel, AdminDTO adminDTO);
+    List<AdminDTO> toDTOs(List<AdminModel> admins);
 }
