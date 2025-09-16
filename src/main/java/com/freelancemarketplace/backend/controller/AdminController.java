@@ -2,7 +2,10 @@ package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.dto.AdminDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.mapper.AdminMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
+import com.freelancemarketplace.backend.response.ResponseMessage;
+import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.AdminService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -19,55 +22,66 @@ public class AdminController {
     Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     private AdminService adminService;
+    private AdminMapper adminMapper;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService,
+                           AdminMapper adminMapper) {
         this.adminService = adminService;
+        this.adminMapper = adminMapper;
     }
 
 
     @PostMapping("/admin")
-    public ResponseEntity<ResponseDTO> createAdmin(@RequestBody @Valid  AdminDTO adminDTO){
+    public ResponseEntity<ResponseDTO> createAdmin(@RequestBody @Valid AdminDTO adminDTO) {
         logger.info("Received request to create admin with username: {}", adminDTO.getUsername());
         AdminModel createdAdmin = adminService.createAdmin(adminDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ResponseDTO("CREATED", "CREATED ", "Successfully created admin account with admin_id: " + createdAdmin.getId()));
+                .body(new ResponseDTO(ResponseStatusCode.CREATED, ResponseMessage.CREATED, adminMapper.toDTO(createdAdmin)));
     }
 
-    @PutMapping("/admin")
-    public ResponseEntity<ResponseDTO> updateAdmin(@RequestBody @Valid AdminDTO adminDTO){
-        logger.info("Receive request to update admin with username: " + adminDTO.getUsername());
-        if(adminService.update(adminDTO)){
-            logger.info("Admin account updated successfully!" );
+    @PutMapping("/admin/{adminId}")
+    public ResponseEntity<ResponseDTO> updateAdmin(@PathVariable Long adminId,
+                                                   @RequestBody @Valid AdminDTO adminDTO) {
+        logger.info("Receive request to update admin with username: " + adminDTO.getAdminId());
+        try {
+            AdminDTO updatedAdminDTO = adminService.update(adminId, adminDTO);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(new ResponseDTO("OK", "Admin account with username: "+ adminDTO.getUsername()+ " updated successfully!" ));
-        }else{
-            logger.info("Cannot update this admin account");
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO("INTERNAL_SERVER_ERROR", "Cannot update this admin account"));
+                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, updatedAdminDTO));
+        } catch (RuntimeException e) {
 
+            throw new RuntimeException(e);
         }
-
-
-
-
     }
 
-    @DeleteMapping("/admin")
-    public ResponseEntity<ResponseDTO>deleteAdmin(@RequestParam Long adminId){
+    @DeleteMapping("/admin/{adminId}")
+    public ResponseEntity<ResponseDTO> deleteAdmin(@PathVariable Long adminId) {
         logger.info("Receive request to delete admin account with id: " + adminId);
-        if (adminService.delete(adminId)){
+        if (adminService.delete(adminId)) {
             logger.info("Deleted successfully");
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(new ResponseDTO("OK", "Delete admin account with id: " + adminId + " successfully"));
-        }else{
+                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS));
+        } else {
             logger.error("Cannot delete this admin account ");
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO("INTERNAL_SERVER_ERROR", "Cannot delete admin account with id: " + adminId));
+        }
+    }
+
+    @GetMapping("/admin/{adminId}")
+    ResponseEntity<ResponseDTO> getAdminProfile(@PathVariable Long adminId){
+        logger.info("Receive request to get admin profile with id: " + adminId);
+
+        try {
+            AdminDTO adminDTO = adminService.getProfileAdmin(adminId);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTO));
+        }catch (RuntimeException e){
+            throw new RuntimeException(e);
         }
     }
 }

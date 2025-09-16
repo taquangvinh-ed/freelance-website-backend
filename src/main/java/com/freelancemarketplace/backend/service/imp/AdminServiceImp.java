@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -57,7 +58,7 @@ public class AdminServiceImp implements AdminService {
             AdminModel adminEntity = adminMapper.toEntity(adminDTO);
             adminEntity.setCreatedAt(Timestamp.from(Instant.now()));
             AdminModel savedAdmin = adminsRepository.save(adminEntity);
-            logger.info("Successfully created admin with ID:" + savedAdmin.getId());
+            logger.info("Successfully created admin with ID:" + savedAdmin.getAdminId());
             return savedAdmin;
         } catch (DataAccessException e) {
             logger.error("Failed to create admin: " + e.getMessage());
@@ -66,30 +67,50 @@ public class AdminServiceImp implements AdminService {
 
     }
 
-    @Override
     @Transactional
-    public Boolean update(AdminDTO adminDTO) {
-        Boolean isExisted = adminsRepository.existsByUsername(adminDTO.getUsername());
-        if(isExisted){
+    @Override
+    public AdminDTO update(Long adminId, AdminDTO adminDTO) {
             try {
-                AdminModel existedAdmin = adminsRepository.findByUsername(adminDTO.getUsername());
-                existedAdmin = adminMapper.toEntity(adminDTO);
-                AdminModel savedAdmin = adminsRepository.save(existedAdmin);
-                if(savedAdmin.getId() != null){
-                    logger.info("Admin account has been updated successfully");
-                    return true;
-                }else{
-                    logger.error("Cannot update admin acount!!!");
-                    return false;
+                AdminModel existedAdmin = adminsRepository.findById(adminId).orElseThrow(()->new AdminException("Admin account with id: " + adminId + " not found"));
+                System.out.println("Before update");
+                System.out.println(existedAdmin.getUsername());
+                System.out.println(existedAdmin.getLastName());
+                System.out.println(existedAdmin.getEmail());
+
+
+                if(adminDTO.getFirstName() != null){
+                    existedAdmin.setFirstName( adminDTO.getFirstName() );
                 }
+                if(adminDTO.getLastName() != null){
+                    existedAdmin.setLastName( adminDTO.getLastName() );
+                }
+                if(adminDTO.getUsername() != null){
+                    existedAdmin.setUsername( adminDTO.getUsername() );
+                }
+                if(adminDTO.getEmail() != null){
+                    existedAdmin.setEmail( adminDTO.getEmail() );
+                }
+                if(adminDTO.getPhoneNumber() != null){
+                    existedAdmin.setPhoneNumber( adminDTO.getPhoneNumber() );
+                }
+                if(adminDTO.getTitle() != null){
+                    existedAdmin.setTitle( adminDTO.getTitle() );
+                }
+
+                System.out.println("After update");
+                System.out.println(existedAdmin.getUsername());
+                System.out.println(existedAdmin.getLastName());
+                System.out.println(existedAdmin.getEmail());
+
+                AdminModel savedAdmin = adminsRepository.save(existedAdmin);
+                    logger.info("Admin account has been updated successfully");
+                    return adminMapper.toDTO(savedAdmin);
+
             }catch (DataAccessException e){
                 logger.error("Failed to update admin account: " + e.getMessage());
                 throw new RuntimeException("Cannot update admin account");
             }
-        }else{
-            logger.info("This admin account with username not found");
-            return false;
-        }
+
 
     }
 
@@ -113,6 +134,24 @@ public class AdminServiceImp implements AdminService {
             logger.info("Admin account with id: " + adminId + " has not found");
             return false;
         }
+    }
+
+    @Override
+    public AdminDTO getProfileAdmin(Long adminId) {
+        try{
+            AdminModel adminModel = adminsRepository.findById(adminId).orElseThrow(()->new AdminException("Admin account with id: " + adminId + " not found"));
+            return adminMapper.toDTO(adminModel);
+        }catch (DataAccessException e) {
+            logger.error("Database error access admin ID {}: {}", adminId, e.getMessage());
+            throw new AdminException("Cannot access admin account: " + e.getMessage());
+        }catch (RuntimeException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Set<AdminDTO> getAllAdmins() {
+        return Set.of();
     }
 
 }

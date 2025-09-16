@@ -22,7 +22,7 @@ import java.util.Set;
 public class AdminModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long adminId;
 
     @NotBlank(message = "First name must not be null")
     private String firstName;
