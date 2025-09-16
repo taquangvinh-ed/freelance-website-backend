@@ -1,12 +1,15 @@
 package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.dto.AdminDTO;
+import com.freelancemarketplace.backend.dto.LanguageDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.exception.LanguageException;
 import com.freelancemarketplace.backend.mapper.AdminMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.AdminService;
+import com.freelancemarketplace.backend.service.LanguageService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +28,14 @@ public class AdminController {
 
     private AdminService adminService;
     private AdminMapper adminMapper;
+    private LanguageService languageService;
 
     public AdminController(AdminService adminService,
-                           AdminMapper adminMapper) {
+                           AdminMapper adminMapper,
+                           LanguageService languageService) {
         this.adminService = adminService;
         this.adminMapper = adminMapper;
+        this.languageService = languageService;
     }
 
 
@@ -96,6 +102,39 @@ public class AdminController {
                     .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTOList));
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/admin/languages")
+    ResponseEntity<ResponseDTO>createLanguage(@RequestBody @Valid LanguageDTO languageDTO){
+        try{
+            LanguageDTO createdlanguage = languageService.createLanguage(languageDTO);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(
+                            ResponseStatusCode.SUCCESS,
+                            ResponseMessage.SUCCESS,
+                            createdlanguage
+                    ));
+        }catch (RuntimeException e){
+            throw new LanguageException("Message: " + e);
+        }
+    }
+
+    @PutMapping("/admin/languages/{languageId}")
+    ResponseEntity<ResponseDTO>updateLanguage(@PathVariable Long languageId,
+            @RequestBody LanguageDTO languageDTO){
+        try{
+            LanguageDTO updatedLanguage = languageService.updateLanguage(languageId, languageDTO);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(
+                            ResponseStatusCode.SUCCESS,
+                            ResponseMessage.SUCCESS,
+                            updatedLanguage
+                    ));
+        }catch (RuntimeException e){
+            throw new LanguageException("Message: " + e);
         }
     }
 }

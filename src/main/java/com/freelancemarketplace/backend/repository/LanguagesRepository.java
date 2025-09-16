@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LanguagesRepository extends JpaRepository<LanguageModel, Long> {
   Boolean existsByLanguageName(String languageName);
+  Boolean existsByIsoCode(String isoCode);
   }
