@@ -4,6 +4,7 @@ import com.freelancemarketplace.backend.dto.AdminDTO;
 import com.freelancemarketplace.backend.dto.LanguageDTO;
 import com.freelancemarketplace.backend.dto.NotificationDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.exception.AdminException;
 import com.freelancemarketplace.backend.exception.LanguageException;
 import com.freelancemarketplace.backend.exception.NotificationException;
 import com.freelancemarketplace.backend.mapper.AdminMapper;
@@ -190,4 +191,52 @@ public class AdminController {
             throw new NotificationException("Message: "+e);
         }
     }
+
+    @PutMapping("/admin/notifications/{notificationId}")
+    ResponseEntity<ResponseDTO>updateNotification(@PathVariable Long notificationId,
+                                                  @RequestBody NotificationDTO notificationDTO){
+        try{
+            NotificationDTO updatedNotification = notificationService.updateNotification(notificationId, notificationDTO);
+            logger.info("Notification with id: {} updated successfully", updatedNotification.getNotificationId());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        updatedNotification));
+        } catch (RuntimeException e) {
+            throw new AdminException("Message: " + e);
+        }
+    }
+
+    @DeleteMapping("/admin/notifications/{notificationId}")
+    ResponseEntity<ResponseDTO>deleteNotification(@PathVariable Long notificationId){
+        try{
+            notificationService.deleteNotification(notificationId);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(
+                            ResponseStatusCode.SUCCESS,
+                            ResponseMessage.SUCCESS
+                    ));
+        } catch (RuntimeException e) {
+            throw new AdminException("Message: "+ e);
+        }
+    }
+
+    @GetMapping("/admin/notifications/getAll")
+    ResponseEntity<ResponseDTO>getAllNotifications(){
+        try{
+            List<NotificationDTO> notificationDTOs = notificationService.getAllNotification();
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(
+                            ResponseStatusCode.SUCCESS,
+                            ResponseMessage.SUCCESS,
+                            notificationDTOs
+                    ));
+        } catch (RuntimeException e) {
+            throw new NotificationException("Error: ", e);
+        }
+    }
+
 }

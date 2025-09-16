@@ -53,16 +53,58 @@ public class NotificationServiceImp implements NotificationService {
 
     @Override
     public NotificationDTO updateNotification(Long notificationId, NotificationDTO notificationDTO) {
-        return null;
+        NotificationModel notificationModel = notificationsRepository.findById(notificationId).orElseThrow(
+                ()-> new NotificationException("Notification with id:  " + notificationId + " not found")
+        );
+
+        try{
+
+            if(notificationDTO.getTitle() != null)
+                notificationModel.setTitle(notificationDTO.getTitle());
+
+            if(notificationDTO.getDescription() != null)
+                notificationModel.setDescription(notificationDTO.getDescription());
+
+            if(notificationDTO.getImageUrl() != null)
+                notificationModel.setImageUrl(notificationDTO.getImageUrl());
+
+            NotificationModel savedNotification = notificationsRepository.save(notificationModel);
+            logger.info("Notification with id: {} has already updated successfully", savedNotification.getNotificationId());
+            return notificationMapper.toDTO(savedNotification);
+        } catch (DataAccessException e) {
+            throw new NotificationException("Message: " +e);
+        }
+
+
     }
 
     @Override
     public Boolean deleteNotification(Long notificationId) {
-        return null;
+        if(notificationsRepository.existsById(notificationId)){
+            try{
+                notificationsRepository.deleteById(notificationId);
+                logger.info("Notification with id: {} has already deleted", notificationId);
+                return true;
+            } catch (DataAccessException e) {
+                logger.error("Failed to delete notification with id {}", notificationId);
+                throw new NotificationException("Message: " +e);
+            }
+        }else{
+            logger.error("Notificaiton with id: {} not found", notificationId);
+            throw new NotificationException("Message: notificaiton with id: " + notificationId +" not found");
+
+        }
     }
 
     @Override
     public List<NotificationDTO> getAllNotification() {
-        return List.of();
+        try{
+            List<NotificationModel> notifications = notificationsRepository.findAll();
+            List<NotificationDTO> notificationDTOs = notificationMapper.toDTOs(notifications);
+            return notificationDTOs;
+        } catch (RuntimeException e) {
+            throw new NotificationException("Error to get all notifications ", e);
+        }
+
     }
 }
