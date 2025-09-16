@@ -15,9 +15,9 @@ public class LanguagesModel extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long language_id;
+    private Long id;
 
-    private String language_name;
+    private String languageName;
 
     @ManyToMany(mappedBy = "client_languages")
     private Set<ClientsModel> clients;

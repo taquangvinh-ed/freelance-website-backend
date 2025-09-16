@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 public interface LanguageMapper {
     LanguageMapper INSTANCE = Mappers.getMapper(LanguageMapper.class);
 
-    @Mapping(source = "language_name", target = "languageName")
     LanguageDTO toDTO(LanguagesModel language);
+
     LanguagesModel toEntity(LanguageDTO languageDto);
 }

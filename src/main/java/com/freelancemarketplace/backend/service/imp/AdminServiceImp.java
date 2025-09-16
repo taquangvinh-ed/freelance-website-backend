@@ -67,12 +67,52 @@ public class AdminServiceImp implements AdminService {
     }
 
     @Override
+    @Transactional
     public Boolean update(AdminDTO adminDTO) {
-        return null;
+        Boolean isExisted = adminsRepository.existsByUsername(adminDTO.getUsername());
+        if(isExisted){
+            try {
+                AdminsModel existedAdmin = adminsRepository.findByUsername(adminDTO.getUsername());
+                existedAdmin = adminMapper.toEntity(adminDTO);
+                AdminsModel savedAdmin = adminsRepository.save(existedAdmin);
+                if(savedAdmin.getId() != null){
+                    logger.info("Admin account has been updated successfully");
+                    return true;
+                }else{
+                    logger.error("Cannot update admin acount!!!");
+                    return false;
+                }
+            }catch (DataAccessException e){
+                logger.error("Failed to update admin account: " + e.getMessage());
+                throw new RuntimeException("Cannot update admin account");
+            }
+        }else{
+            logger.info("This admin account with username not found");
+            return false;
+        }
+
     }
 
     @Override
+    @Transactional
     public Boolean delete(Long adminId) {
-        return null;
+        if(adminsRepository.existsById(adminId)) {
+            try {
+                adminsRepository.deleteById(adminId);
+                if (!adminsRepository.existsById(adminId)) {
+                    logger.info("Admin account with id: " + adminId + "was deleted successfully");
+                    return true;
+                } else {
+                    logger.error("Cannot delete admin account with id: " + adminId);
+                    return false;
+                }
+            } catch (RuntimeException e) {
+                throw new AdminException("Has error when trying to delete this admin account" + e);
+            }
+        }else{
+            logger.info("Admin account with id: " + adminId + " has not found");
+            return false;
+        }
     }
+
 }
