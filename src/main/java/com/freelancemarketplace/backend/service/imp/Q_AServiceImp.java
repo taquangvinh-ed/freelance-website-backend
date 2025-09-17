@@ -2,7 +2,6 @@ package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.Q_ADTO;
 import com.freelancemarketplace.backend.exception.AdminException;
-import com.freelancemarketplace.backend.exception.Q_AException;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.Q_AMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
@@ -10,10 +9,10 @@ import com.freelancemarketplace.backend.model.Q_AModel;
 import com.freelancemarketplace.backend.repository.AdminsRepository;
 import com.freelancemarketplace.backend.repository.Q_ARepository;
 import com.freelancemarketplace.backend.service.Q_AService;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +36,7 @@ public class Q_AServiceImp implements Q_AService {
     }
 
     @Override
+    @Transactional
     public Q_ADTO createQA(Q_ADTO qADTO) {
             Q_AModel qAModel = qAMapper.toEntity(qADTO);
             AdminModel adminModel = adminsRepository.findById(qADTO.getAdminId()).orElseThrow(
@@ -48,6 +48,7 @@ public class Q_AServiceImp implements Q_AService {
     }
 
     @Override
+    @Transactional
     public Q_ADTO updateQA(Long qandAId, Q_ADTO qADTO) {
         Q_AModel qAModel = qARepository.findById(qandAId).orElseThrow(
                 ()-> new ResourceNotFoundException("Q_A with id: " + qandAId +" not found")
@@ -69,6 +70,7 @@ public class Q_AServiceImp implements Q_AService {
     }
 
     @Override
+    @Transactional
     public void deleteQA(Long qandAId) {
         Q_AModel qa = qARepository.findById(qandAId).orElseThrow(
                 () -> new ResourceNotFoundException("QA with id " + qandAId + " not found")
@@ -78,18 +80,21 @@ public class Q_AServiceImp implements Q_AService {
     }
 
     @Override
+    @Transactional
     public List<Q_ADTO> getAll() {
         List<Q_AModel> Q_As = qARepository.findAll();
         return qAMapper.toDTOs(Q_As);
     }
 
     @Override
+    @Transactional
     public List<Q_ADTO> getAllByTag(String tag) {
         List<Q_AModel> Q_As = qARepository.findAllByTag(tag);
         return qAMapper.toDTOs(Q_As);
     }
 
     @Override
+    @Transactional
     public List<Q_ADTO> getAllByAdminId(Long adminId) {
         AdminModel admin = adminsRepository.findById(adminId).orElseThrow(
                 ()-> new ResourceNotFoundException("Admin with id: " + adminId + " not found"));

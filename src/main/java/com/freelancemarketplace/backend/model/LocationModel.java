@@ -17,12 +17,15 @@ public class LocationModel extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locationId;
 
-    private String postcode;
-    private String country;
-    private String state;
-    private String city;
-    private String details;
+    @ManyToOne
+    @JoinColumn(name = "countryId")
+    private CountryModel country;
 
+    @ManyToOne
+    @JoinColumn(name = "cityId")
+    private CityModel city;
+
+    private String details;
 
     @OneToMany(mappedBy = "location")
     private Set<AdminModel> admins;
