@@ -94,4 +94,16 @@ public class SkillController {
                         ResponseMessage.SUCCESS
                 ));
     }
+
+    @PutMapping("/removeSkillFromFreelancer/freelancer/{freelancerId}/skill/{skillId}")
+    public ResponseEntity<ResponseDTO>removeSkillFromFreelancer(@PathVariable Long skillId,
+                                                              @PathVariable Long freelancerId){
+        skillSerivice.removeSkillFromFreelancer(skillId,freelancerId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                ));
+    }
 }
