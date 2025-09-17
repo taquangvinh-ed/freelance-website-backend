@@ -7,6 +7,7 @@ import com.freelancemarketplace.backend.mapper.SkillMapper;
 import com.freelancemarketplace.backend.model.SkillModel;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.service.SkillSerivice;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class SkillServiceImp implements SkillSerivice {
     }
 
     @Override
+    @Transactional
     public SkillDTO createSkill(SkillDTO skillDTO) {
         if(skillsRepository.existsByNameIgnoreCase(skillDTO.getName()))
             throw new SkillAlreadyExisted("Skill has already exitsed");
@@ -32,6 +34,7 @@ public class SkillServiceImp implements SkillSerivice {
     }
 
     @Override
+    @Transactional
     public SkillDTO updateSkill(Long skillId, SkillDTO skillDTO) {
         SkillModel skillModel = skillsRepository.findById(skillId).orElseThrow(
                 ()-> new ResourceNotFoundException("Skill with id: " + skillId+" not found")
@@ -47,18 +50,24 @@ public class SkillServiceImp implements SkillSerivice {
     }
 
     @Override
+    @Transactional
     public void deleteSkill(Long skillId) {
-
+        if(!skillsRepository.existsById(skillId))
+            throw new ResourceNotFoundException("Skill with id: " + skillId + " not found");
+        skillsRepository.deleteById(skillId);
     }
 
     @Override
     public SkillDTO getSkillById(Long skillId) {
-        return null;
+        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
+                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
+        return skillMapper.toDTO(skill);
     }
 
     @Override
     public List<SkillDTO> getAllSkill() {
-        return List.of();
+        List<SkillModel> skills = skillsRepository.findAll();
+        return skillMapper.toDTOs(skills);
     }
 
     @Override

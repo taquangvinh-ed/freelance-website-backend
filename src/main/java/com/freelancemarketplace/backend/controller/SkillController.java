@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/skills", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class SkillController {
@@ -43,6 +45,41 @@ public class SkillController {
                         ResponseStatusCode.SUCCESS,
                         ResponseMessage.SUCCESS,
                         updatedSkill
+                ));
+    }
+
+    @DeleteMapping("/{skillId}")
+    public ResponseEntity<ResponseDTO>deleteSkill(@PathVariable Long skillId){
+        skillSerivice.deleteSkill(skillId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                                        ));
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<ResponseDTO>getAllSkill(){
+        List<SkillDTO> skillDTOs = skillSerivice.getAllSkill();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        skillDTOs
+                ));
+    }
+
+    @GetMapping("/getById/{skillId}")
+    public ResponseEntity<ResponseDTO>getSkillById(@PathVariable Long skillId){
+        SkillDTO givenSkill = skillSerivice.getSkillById(skillId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        givenSkill
                 ));
     }
 }
