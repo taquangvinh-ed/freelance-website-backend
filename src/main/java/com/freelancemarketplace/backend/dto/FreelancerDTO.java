@@ -11,6 +11,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -39,5 +41,5 @@ public class FreelancerDTO {
     private Integer hoursPerWeek;
     private Boolean isBlocked;
 
-    private Set<SkillModel> skills;
+    private Set<SkillDTO> skills = new HashSet<>();
 }

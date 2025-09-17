@@ -8,6 +8,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,7 +34,6 @@ public class FreelancerModel extends BaseEntity{
     private Boolean isVerified;
     private Double hourlyRate;
 
-//    @Type(JsonBinaryType.class)
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Bio bio;
@@ -55,7 +56,7 @@ public class FreelancerModel extends BaseEntity{
             joinColumns = @JoinColumn(name = "freelancerId"),
             inverseJoinColumns = @JoinColumn(name = "languageId")
     )
-    private Set <LanguageModel> languages;
+    private Set <LanguageModel> languages = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "analyticId")
@@ -80,7 +81,7 @@ public class FreelancerModel extends BaseEntity{
             joinColumns = @JoinColumn(name = "freelancerId"),
             inverseJoinColumns = @JoinColumn(name = "skillId")
     )
-    private Set<SkillModel> skills;
+    private Set<SkillModel> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "freelancer")
     private Set<CertificateModel> certificates;

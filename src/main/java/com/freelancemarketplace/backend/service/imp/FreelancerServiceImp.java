@@ -105,15 +105,19 @@ public class FreelancerServiceImp implements FreelancerService {
 
 
 @Override
+@Transactional
 public List<FreelancerDTO> getAllFreelancer() {
     List<FreelancerModel> freelancers = freelancersRepository.findAll();
+
     return freelancerMapper.toDTOs(freelancers);
 }
 
 @Override
+@Transactional
 public FreelancerDTO getFreelancerById(Long freelancerId){
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
     ()-> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found"));
-            return freelancerMapper.toDTO(freelancer);
-}
+        return freelancerMapper.toDTO(freelancer);
+
+    }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,7 +29,7 @@ public class SkillModel extends BaseEntity{
 
     //Freelancers that use this skill
     @ManyToMany(mappedBy = "skills")
-    private Set<FreelancerModel> freelancers;
+    private Set<FreelancerModel> freelancers = new HashSet<>();
 
     @ManyToMany(mappedBy = "skills")
     private Set<TestModel> testsList;

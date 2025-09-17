@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.mapper;
 import com.freelancemarketplace.backend.dto.SkillDTO;
 import com.freelancemarketplace.backend.model.SkillModel;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
