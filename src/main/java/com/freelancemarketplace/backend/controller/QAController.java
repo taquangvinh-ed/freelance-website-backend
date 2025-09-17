@@ -10,13 +10,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/admin", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api/admin/qa", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class QAController {
 
     private final Q_AService qAService;
@@ -25,7 +22,7 @@ public class QAController {
         this.qAService = qAService;
     }
 
-    @PostMapping("/qa")
+    @PostMapping("/")
     public ResponseEntity<ResponseDTO> createQA(@RequestBody @Valid Q_ADTO qAdto){
         try{
             Q_ADTO created = qAService.createQA(qAdto);
@@ -39,5 +36,18 @@ public class QAController {
         }catch (RuntimeException e){
             throw new Q_AException("Message: "+e);
         }
+    }
+
+    @PutMapping("/{qaId}")
+    ResponseEntity<ResponseDTO>updateQA(@PathVariable Long qaId,
+                                        @RequestBody Q_ADTO qAdto){
+        Q_ADTO updatedQA = qAService.updateQA(qaId, qAdto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.CREATED,
+                        ResponseMessage.CREATED,
+                        updatedQA
+                ));
     }
 }
