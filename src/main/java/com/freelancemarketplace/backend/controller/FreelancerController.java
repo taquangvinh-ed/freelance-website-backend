@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.controller;
 import com.freelancemarketplace.backend.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.dto.Q_ADTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.dto.SkillDTO;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.FreelancerService;
@@ -69,5 +70,17 @@ public class FreelancerController {
                 .status(HttpStatus.NO_CONTENT)
                 .body(new ResponseDTO(ResponseStatusCode.NO_CONTENT,
                         ResponseMessage.NO_CONTENT));
+    }
+
+    @GetMapping("/getById/{freelancerId}")
+    public ResponseEntity<ResponseDTO>getSkillById(@PathVariable Long freelancerId){
+        FreelancerDTO givenFreelancer = freelancerService.getFreelancerById(freelancerId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        givenFreelancer
+                ));
     }
 }

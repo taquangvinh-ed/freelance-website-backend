@@ -82,4 +82,16 @@ public class SkillController {
                         givenSkill
                 ));
     }
+
+    @PutMapping("/assignSkillToFreelancer/freelancer/{freelancerId}/skill/{skillId}")
+    public ResponseEntity<ResponseDTO>assignSkillToFreelancer(@PathVariable Long skillId,
+                                                              @PathVariable Long freelancerId){
+        skillSerivice.assignSkillToFreelancer(skillId,freelancerId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                ));
+    }
 }

@@ -4,7 +4,9 @@ import com.freelancemarketplace.backend.dto.SkillDTO;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.exception.SkillAlreadyExisted;
 import com.freelancemarketplace.backend.mapper.SkillMapper;
+import com.freelancemarketplace.backend.model.FreelancerModel;
 import com.freelancemarketplace.backend.model.SkillModel;
+import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.service.SkillSerivice;
 import jakarta.transaction.Transactional;
@@ -17,10 +19,14 @@ public class SkillServiceImp implements SkillSerivice {
 
     private SkillsRepository skillsRepository;
     private SkillMapper skillMapper;
+    private FreelancersRepository freelancersRepository;
 
-    public SkillServiceImp(SkillsRepository skillsRepository, SkillMapper skillMapper) {
+    public SkillServiceImp(SkillsRepository skillsRepository,
+                           SkillMapper skillMapper,
+                           FreelancersRepository freelancersRepository) {
         this.skillsRepository = skillsRepository;
         this.skillMapper = skillMapper;
+        this.freelancersRepository = freelancersRepository;
     }
 
     @Override
@@ -77,7 +83,16 @@ public class SkillServiceImp implements SkillSerivice {
 
     @Override
     public void assignSkillToFreelancer(Long freelancerId, Long skillId) {
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                ()->new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+        );
 
+        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
+                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
+
+        freelancer.getSkills().add(skill);
+
+        FreelancerModel savedFreelancer = freelancersRepository.save(freelancer);
     }
 
     @Override

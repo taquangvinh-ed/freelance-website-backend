@@ -13,4 +13,6 @@ public interface FreelancerService {
     void deleteFreelancer(Long freelancerId);
 
     List<FreelancerDTO>getAllFreelancer();
+
+    FreelancerDTO getFreelancerById(Long freelancerId);
 }

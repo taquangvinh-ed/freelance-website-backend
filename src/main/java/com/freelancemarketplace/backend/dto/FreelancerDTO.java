@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.dto;
 
 import com.freelancemarketplace.backend.model.Bio;
+import com.freelancemarketplace.backend.model.SkillModel;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -35,4 +38,6 @@ public class FreelancerDTO {
     private Integer connections;
     private Integer hoursPerWeek;
     private Boolean isBlocked;
+
+    private Set<SkillModel> skills;
 }

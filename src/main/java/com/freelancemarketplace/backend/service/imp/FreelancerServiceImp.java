@@ -7,7 +7,6 @@ import com.freelancemarketplace.backend.model.Bio;
 import com.freelancemarketplace.backend.model.FreelancerModel;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.service.FreelancerService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -109,5 +108,12 @@ public class FreelancerServiceImp implements FreelancerService {
 public List<FreelancerDTO> getAllFreelancer() {
     List<FreelancerModel> freelancers = freelancersRepository.findAll();
     return freelancerMapper.toDTOs(freelancers);
+}
+
+@Override
+public FreelancerDTO getFreelancerById(Long freelancerId){
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+    ()-> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found"));
+            return freelancerMapper.toDTO(freelancer);
 }
 }
