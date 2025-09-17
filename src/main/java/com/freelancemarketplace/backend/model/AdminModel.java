@@ -56,7 +56,7 @@ public class AdminModel extends BaseEntity{
 
 
     @OneToMany(mappedBy = "admin")
-    private Set<QandAModel> questionsAndAnswers;
+    private Set<Q_AModel> questionsAndAnswers;
 
     @OneToMany(mappedBy = "admin")
     private Set<NotificationModel> notifications;

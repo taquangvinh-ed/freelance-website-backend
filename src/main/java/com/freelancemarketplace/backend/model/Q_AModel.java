@@ -10,13 +10,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "QA")
-public class QandAModel extends BaseEntity{
+public class Q_AModel extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long qandaId;
+    private Long qaId;
 
     private String question;
+
     private String answer;
+
     private String tag;
 
     @ManyToOne
