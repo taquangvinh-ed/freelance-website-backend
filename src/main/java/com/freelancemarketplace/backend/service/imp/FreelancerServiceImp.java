@@ -8,6 +8,7 @@ import com.freelancemarketplace.backend.model.FreelancerModel;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.service.FreelancerService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +16,8 @@ import java.util.List;
 @Service
 public class FreelancerServiceImp implements FreelancerService {
 
-    private FreelancersRepository freelancersRepository;
-    private FreelancerMapper freelancerMapper;
+    private final FreelancersRepository freelancersRepository;
+    private final FreelancerMapper freelancerMapper;
 
     public FreelancerServiceImp(FreelancersRepository freelancersRepository, FreelancerMapper freelancerMapper) {
         this.freelancersRepository = freelancersRepository;
@@ -34,6 +35,7 @@ public class FreelancerServiceImp implements FreelancerService {
     }
 
     @Override
+    @Transactional
     public FreelancerDTO updateFreelancer(Long freelancerId, FreelancerDTO freelancerDTO) {
 
         FreelancerModel existingFreelancer = freelancersRepository.findById(freelancerId)
@@ -94,12 +96,18 @@ public class FreelancerServiceImp implements FreelancerService {
     }
 
     @Override
+    @Transactional
     public void deleteFreelancer(Long freelancerId) {
-
+        if (!freelancersRepository.existsById(freelancerId)) {
+            throw new ResourceNotFoundException("Freelancer not found with id: " + freelancerId);
+        }
+        freelancersRepository.deleteById(freelancerId);
     }
 
-    @Override
-    public List<FreelancerDTO> getAllFreelancer() {
-        return List.of();
-    }
+
+@Override
+public List<FreelancerDTO> getAllFreelancer() {
+    List<FreelancerModel> freelancers = freelancersRepository.findAll();
+    return freelancerMapper.toDTOs(freelancers);
+}
 }
