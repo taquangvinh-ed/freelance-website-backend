@@ -10,7 +10,7 @@ public interface Q_AService {
 
     Q_ADTO updateQA(Long qandAId, Q_ADTO qADTO);
 
-    Boolean deleteQA(Long qandAId);
+    void deleteQA(Long qandAId);
 
     List<Q_ADTO> getAll();
 

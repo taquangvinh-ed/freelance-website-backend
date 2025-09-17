@@ -69,22 +69,32 @@ public class Q_AServiceImp implements Q_AService {
     }
 
     @Override
-    public Boolean deleteQA(Long qandAId) {
-        return null;
+    public void deleteQA(Long qandAId) {
+        Q_AModel qa = qARepository.findById(qandAId).orElseThrow(
+                () -> new ResourceNotFoundException("QA with id " + qandAId + " not found")
+        );
+        qARepository.deleteById(qandAId);
+
     }
 
     @Override
     public List<Q_ADTO> getAll() {
-        return List.of();
+        List<Q_AModel> Q_As = qARepository.findAll();
+        return qAMapper.toDTOs(Q_As);
     }
 
     @Override
     public List<Q_ADTO> getAllByTag(String tag) {
-        return List.of();
+        List<Q_AModel> Q_As = qARepository.findAllByTag(tag);
+        return qAMapper.toDTOs(Q_As);
     }
 
     @Override
     public List<Q_ADTO> getAllByAdminId(Long adminId) {
-        return List.of();
+        AdminModel admin = adminsRepository.findById(adminId).orElseThrow(
+                ()-> new ResourceNotFoundException("Admin with id: " + adminId + " not found"));
+
+        List<Q_AModel> QAs = qARepository.findAllByAdmin(admin);
+        return qAMapper.toDTOs(QAs);
     }
 }

@@ -29,66 +29,58 @@ public class NotificationController {
     Logger logger = LoggerFactory.getLogger(NotificationController.class);
 
     @PostMapping("/notifications")
-    ResponseEntity<ResponseDTO> createNotification(@RequestBody NotificationDTO notificationDTO){
-        try {
-            NotificationDTO createdNotification = notificationService.createNotification(notificationDTO);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(
-                            ResponseStatusCode.CREATED,
-                            ResponseMessage.CREATED,
-                            createdNotification
-                    ));
-        } catch (RuntimeException e) {
-            throw new NotificationException("Message: "+e);
-        }
+    ResponseEntity<ResponseDTO> createNotification(@RequestBody NotificationDTO notificationDTO) {
+
+        NotificationDTO createdNotification = notificationService.createNotification(notificationDTO);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.CREATED,
+                        ResponseMessage.CREATED,
+                        createdNotification
+                ));
+
     }
 
     @PutMapping("/notifications/{notificationId}")
-    ResponseEntity<ResponseDTO>updateNotification(@PathVariable Long notificationId,
-                                                  @RequestBody NotificationDTO notificationDTO){
-        try{
-            NotificationDTO updatedNotification = notificationService.updateNotification(notificationId, notificationDTO);
-            logger.info("Notification with id: {} updated successfully", updatedNotification.getNotificationId());
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS,
-                            ResponseMessage.SUCCESS,
-                            updatedNotification));
-        } catch (RuntimeException e) {
-            throw new AdminException("Message: " + e);
-        }
+    ResponseEntity<ResponseDTO> updateNotification(@PathVariable Long notificationId,
+                                                   @RequestBody NotificationDTO notificationDTO) {
+
+        NotificationDTO updatedNotification = notificationService.updateNotification(notificationId, notificationDTO);
+        logger.info("Notification with id: {} updated successfully", updatedNotification.getNotificationId());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        updatedNotification));
+
     }
 
     @DeleteMapping("/notifications/{notificationId}")
-    ResponseEntity<ResponseDTO>deleteNotification(@PathVariable Long notificationId){
-        try{
-            notificationService.deleteNotification(notificationId);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(
-                            ResponseStatusCode.SUCCESS,
-                            ResponseMessage.SUCCESS
-                    ));
-        } catch (RuntimeException e) {
-            throw new AdminException("Message: "+ e);
-        }
+    ResponseEntity<ResponseDTO> deleteNotification(@PathVariable Long notificationId) {
+
+        notificationService.deleteNotification(notificationId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.NO_CONTENT,
+                        ResponseMessage.NO_CONTENT
+                ));
+
     }
 
     @GetMapping("/notifications/getAll")
-    ResponseEntity<ResponseDTO>getAllNotifications(){
-        try{
-            List<NotificationDTO> notificationDTOs = notificationService.getAllNotification();
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(
-                            ResponseStatusCode.SUCCESS,
-                            ResponseMessage.SUCCESS,
-                            notificationDTOs
-                    ));
-        } catch (RuntimeException e) {
-            throw new NotificationException("Error: ", e);
-        }
+    ResponseEntity<ResponseDTO> getAllNotifications() {
+
+        List<NotificationDTO> notificationDTOs = notificationService.getAllNotification();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        notificationDTOs
+                ));
+
     }
 
 }

@@ -28,25 +28,23 @@ public class LanguageController {
     Logger logger = LoggerFactory.getLogger(LanguageController.class);
 
     @PostMapping("/languages")
-    ResponseEntity<ResponseDTO> createLanguage(@RequestBody @Valid LanguageDTO languageDTO){
-        try{
-            LanguageDTO createdlanguage = languageService.createLanguage(languageDTO);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(
-                            ResponseStatusCode.CREATED,
-                            ResponseMessage.CREATED,
-                            createdlanguage
-                    ));
-        }catch (RuntimeException e){
-            throw new LanguageException("Message: " + e);
-        }
+    ResponseEntity<ResponseDTO> createLanguage(@RequestBody @Valid LanguageDTO languageDTO) {
+
+        LanguageDTO createdlanguage = languageService.createLanguage(languageDTO);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.CREATED,
+                        ResponseMessage.CREATED,
+                        createdlanguage
+                ));
+
     }
 
     @PutMapping("/languages/{languageId}")
-    ResponseEntity<ResponseDTO>updateLanguage(@PathVariable Long languageId,
-                                              @RequestBody LanguageDTO languageDTO){
-        try{
+    ResponseEntity<ResponseDTO> updateLanguage(@PathVariable Long languageId,
+                                               @RequestBody LanguageDTO languageDTO) {
+        try {
             LanguageDTO updatedLanguage = languageService.updateLanguage(languageId, languageDTO);
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -55,40 +53,35 @@ public class LanguageController {
                             ResponseMessage.SUCCESS,
                             updatedLanguage
                     ));
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new LanguageException("Message: " + e);
         }
     }
 
     @DeleteMapping("/languages/{languageId}")
-    ResponseEntity<ResponseDTO>deleteLanguage(@PathVariable Long languageId){
-        try{
-            languageService.deleteLanguages(languageId);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(
-                            ResponseStatusCode.SUCCESS,
-                            ResponseMessage.SUCCESS
-                    ));
-        }catch (RuntimeException e){
-            throw new LanguageException("Message: " + e);
-        }
+    ResponseEntity<ResponseDTO> deleteLanguage(@PathVariable Long languageId) {
+
+        languageService.deleteLanguages(languageId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.NO_CONTENT,
+                        ResponseMessage.NO_CONTENT
+                ));
+
     }
 
     @GetMapping("/languages/getAll")
-    ResponseEntity<ResponseDTO>getAllLanguages(){
-        try{
-            List<LanguageDTO> languageDTOs = languageService.getAllLanguages();
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(
-                            ResponseStatusCode.SUCCESS,
-                            ResponseMessage.SUCCESS,
-                            languageDTOs
-                    ));
-        } catch (RuntimeException e) {
-            throw new LanguageException("Message: " + e);
-        }
+    ResponseEntity<ResponseDTO> getAllLanguages() {
+        List<LanguageDTO> languageDTOs = languageService.getAllLanguages();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        languageDTOs
+                ));
+
     }
 
 }

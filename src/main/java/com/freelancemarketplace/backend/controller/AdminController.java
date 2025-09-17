@@ -1,16 +1,12 @@
 package com.freelancemarketplace.backend.controller;
 
-import com.freelancemarketplace.backend.dto.*;
-import com.freelancemarketplace.backend.exception.AdminException;
-import com.freelancemarketplace.backend.exception.LanguageException;
-import com.freelancemarketplace.backend.exception.NotificationException;
+import com.freelancemarketplace.backend.dto.AdminDTO;
+import com.freelancemarketplace.backend.dto.ResponseDTO;
 import com.freelancemarketplace.backend.mapper.AdminMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.AdminService;
-import com.freelancemarketplace.backend.service.LanguageService;
-import com.freelancemarketplace.backend.service.NotificationService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,15 +44,12 @@ public class AdminController {
     public ResponseEntity<ResponseDTO> updateAdmin(@PathVariable Long adminId,
                                                    @RequestBody @Valid AdminDTO adminDTO) {
         logger.info("Receive request to update admin with username: " + adminDTO.getAdminId());
-        try {
-            AdminDTO updatedAdminDTO = adminService.update(adminId, adminDTO);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, updatedAdminDTO));
-        } catch (RuntimeException e) {
 
-            throw new RuntimeException(e);
-        }
+        AdminDTO updatedAdminDTO = adminService.update(adminId, adminDTO);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, updatedAdminDTO));
+
     }
 
     @DeleteMapping("/admin/{adminId}")
@@ -65,8 +58,8 @@ public class AdminController {
         if (adminService.delete(adminId)) {
             logger.info("Deleted successfully");
             return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS));
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(new ResponseDTO(ResponseStatusCode.NO_CONTENT, ResponseMessage.NO_CONTENT));
         } else {
             logger.error("Cannot delete this admin account ");
             return ResponseEntity
@@ -76,29 +69,25 @@ public class AdminController {
     }
 
     @GetMapping("/admin/{adminId}")
-    ResponseEntity<ResponseDTO> getAdminProfile(@PathVariable Long adminId){
+    ResponseEntity<ResponseDTO> getAdminProfile(@PathVariable Long adminId) {
         logger.info("Receive request to get admin profile with id: " + adminId);
 
-        try {
-            AdminDTO adminDTO = adminService.getAdminProfile(adminId);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTO));
-        }catch (RuntimeException e){
-            throw new RuntimeException(e);
-        }
+
+        AdminDTO adminDTO = adminService.getAdminProfile(adminId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTO));
+
     }
 
     @GetMapping("admin/getAll")
-    public ResponseEntity<ResponseDTO> getAllAdminAccount(){
-        try{
-            List<AdminDTO> adminDTOList = adminService.getAllAdmins();
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTOList));
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
+    public ResponseEntity<ResponseDTO> getAllAdminAccount() {
+
+        List<AdminDTO> adminDTOList = adminService.getAllAdmins();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTOList));
+
     }
 
 }
