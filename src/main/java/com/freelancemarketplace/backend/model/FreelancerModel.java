@@ -1,6 +1,5 @@
 package com.freelancemarketplace.backend.model;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +32,7 @@ public class FreelancerModel extends BaseEntity{
     private Boolean isVerified;
     private Double hourlyRate;
 
-    @Type(JsonBinaryType.class)
+//    @Type(JsonBinaryType.class)
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Bio bio;
@@ -47,7 +46,6 @@ public class FreelancerModel extends BaseEntity{
 
     @OneToMany(mappedBy = "freelancer")
     private Set<VideoModel> videos;
-
     @OneToOne(mappedBy = "freelancer")
     private PortfolioModel portfolio;
 
@@ -93,11 +91,11 @@ public class FreelancerModel extends BaseEntity{
     @OneToMany(mappedBy = "freelancer")
     private Set<ProposalModal> proposals;
 
-    @ManyToMany(mappedBy= "freelancers")
-    private Set<TestModel> tests;
+//    @ManyToMany(mappedBy= "freelancers")
+//    private Set<TestModel> tests;
 
     @OneToMany(mappedBy = "freelancer")
-    private Set<TestimonialModel> testimonials;
+    private Set<TestimonialModel> testimonteials;
 
     //Team that the freelancer is part of
     @ManyToMany(mappedBy = "members")

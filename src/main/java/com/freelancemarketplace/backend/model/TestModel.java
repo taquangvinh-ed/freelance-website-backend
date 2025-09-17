@@ -30,13 +30,13 @@ public class TestModel extends BaseEntity{
 
     private String certificateUrl;
 
-    @ManyToMany
-    @JoinTable(
-        name = "freelancer_tests",
-        joinColumns = @JoinColumn(name = "testId"),
-        inverseJoinColumns = @JoinColumn(name = "freelancerId")
-    )
-    private Set<FreelancerModel> freelancers;
+//    @ManyToMany
+//    @JoinTable(
+//        name = "freelancer_tests",
+//        joinColumns = @JoinColumn(name = "testId"),
+//        inverseJoinColumns = @JoinColumn(name = "freelancerId")
+//    )
+//    private Set<FreelancerModel> freelancers;
 
     @ManyToMany
     @JoinTable(

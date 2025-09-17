@@ -11,7 +11,7 @@ import java.util.List;
 public interface FreelancerMapper {
     FreelancerDTO toDTO(FreelancerModel freelancerModel);
 
-    @Mapping(target = "freelancerId", ignore = true)
+
     FreelancerModel toEntity(FreelancerDTO freelancerDTO);
 
     List<FreelancerDTO>toDTOs(List<FreelancerModel> freelancerModelList);

@@ -28,7 +28,6 @@ public class ClientModel extends BaseEntity{
     private String phoneNumber;
     private String profilePicture;
 
-    @Type(JsonBinaryType.class)
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Bio bio;

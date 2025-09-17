@@ -49,10 +49,10 @@ public class AdminModel extends BaseEntity{
     @Size(max = 100, message = "Title must not exceed 100 characters")
     private String title;
 
-    @Type(JsonBinaryType.class)
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private Bio bio;
+//    @Type(JsonBinaryType.class)
+//    @JdbcTypeCode(SqlTypes.JSON)
+//    @Column(columnDefinition = "jsonb")
+//    private Bio bio;
 
 
     @OneToMany(mappedBy = "admin")

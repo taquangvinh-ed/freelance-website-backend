@@ -70,12 +70,18 @@ public class LocationServiceImp implements LocationService {
 
     @Override
     public void deleteLocation(Long locationId) {
+        LocationModel locationModel = locationsRepository.findById(locationId).orElseThrow(
+                ()->new ResourceNotFoundException("Location with id:  " + locationId+ "not found")
+        );
 
+        locationsRepository.deleteById(locationId);
     }
 
     @Override
     public List<LocationDTO> getAll() {
-        return List.of();
+        List<LocationModel> locations = locationsRepository.findAll();
+
+        return locationMapper.toDTOs(locations);
     }
 
     CountryModel checkCountry(LocationDTO locationDTO){

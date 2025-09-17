@@ -1,0 +1,16 @@
+package com.freelancemarketplace.backend.service;
+
+import com.freelancemarketplace.backend.dto.FreelancerDTO;
+
+import java.util.List;
+
+public interface FreelancerService {
+
+    FreelancerDTO createFreelancer(FreelancerDTO freelancerDTO);
+
+    FreelancerDTO updateFreelancer(Long freelancerId, FreelancerDTO freelancerDTO);
+
+    void deleteFreelancer(Long freelancerId);
+
+    List<FreelancerDTO>getAllFreelancer();
+}

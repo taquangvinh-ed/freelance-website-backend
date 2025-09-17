@@ -33,7 +33,6 @@ public class CompanyModel extends BaseEntity {
     private String wallet;
     private String phoneNumber;
 
-    @Type(JsonBinaryType.class)
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Bio bio;

@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/locations", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class LocationController {
@@ -42,6 +44,28 @@ public class LocationController {
                         ResponseStatusCode.SUCCESS,
                         ResponseMessage.SUCCESS,
                         updatedLocationDTO
+                ));
+    }
+
+    @GetMapping("/getAll")
+    ResponseEntity<ResponseDTO>getAll(){
+       List<LocationDTO> locationDTOList =  locationService.getAll();
+       return ResponseEntity
+               .status(HttpStatus.OK)
+               .body(new ResponseDTO(
+                       ResponseStatusCode.SUCCESS,
+                       ResponseMessage.SUCCESS,
+                       locationDTOList));
+    }
+
+    @DeleteMapping("/{locationId}")
+    ResponseEntity<ResponseDTO>deleteLocation(@PathVariable Long locationId){
+        locationService.deleteLocation(locationId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.NO_CONTENT,
+                        ResponseMessage.NO_CONTENT
                 ));
     }
 }
