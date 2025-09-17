@@ -23,4 +23,17 @@ public class GlobalExceptionHanler {
     );
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(SkillAlreadyExisted.class)
+    ResponseEntity<ErrorResponseDTO>handleCustomerAlreadyExistException(SkillAlreadyExisted skillAlreadyExisted,
+                                                                        WebRequest webRequest){
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST,
+                skillAlreadyExisted.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+    }
+
 }

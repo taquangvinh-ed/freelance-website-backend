@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SkillsRepository extends JpaRepository<SkillModel, Long> {
+  Boolean existsByNameIgnoreCase(String skillName);
   }
