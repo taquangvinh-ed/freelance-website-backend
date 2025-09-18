@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,52 +38,52 @@ public class ProjectModel extends BaseEntity{
     private Boolean isInternship;
 
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private List<VideoModel> videos;
 
-    @OneToOne(mappedBy = "project")
+    @OneToOne(mappedBy = "project" )
     private PortfolioModel portfolio;
 
-    @ManyToOne
-    @JoinColumn(name="categoryId", nullable=false)
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name="categoryId")
     private CategoryModel category;
 
-    @ManyToOne
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name= "budgetId")
     private BudgetModel budget;
 
-    @ManyToOne
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name ="freelancerId")
     private FreelancerModel Freelancer;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private Set<TestimonialModel> testimonials;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private Set<ProposalModal> proposals;
 
-    @OneToOne(mappedBy = "contractProject")
+    @OneToOne(mappedBy = "contractProject", fetch = FetchType.LAZY)
     private ContractModel contract;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private Set<MessageModel> messages;
 
     //The company that posts the project
-    @ManyToOne
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name = "companyId")
     private CompanyModel company;
 
     //The client that posts the project
-    @ManyToOne
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name = "clientId")
     private ClientModel client;
 
-    @ManyToMany
+    @ManyToMany( fetch = FetchType.LAZY)
     @JoinTable(
             name = "project_skills",
             joinColumns = @JoinColumn(name = "projectId"),
             inverseJoinColumns = @JoinColumn(name = "skillId")
     )
-    private Set<SkillModel> skills;
+    private Set<SkillModel> skills = new HashSet<>();
 
 }
