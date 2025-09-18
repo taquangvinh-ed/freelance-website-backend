@@ -89,4 +89,39 @@ public class ProposalController {
                 ));
     }
 
+    @PutMapping("/{proposalId}/accept")
+    public ResponseEntity<ResponseDTO>acceptProposal(@PathVariable Long proposalId){
+        proposalService.acceptProposal(proposalId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                ));
+    }
+
+    @PutMapping("/{proposalId}/reject")
+    public ResponseEntity<ResponseDTO>rejectProposal(@PathVariable Long proposalId){
+        proposalService.rejectProposal(proposalId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                ));
+    }
+
+    @PutMapping("/{proposalId}/withdraw")
+    public ResponseEntity<ResponseDTO>withdrawProposal(@PathVariable Long proposalId){
+        proposalService.withdrawProposal(proposalId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                ));
+    }
+
+
+
 }
