@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "api/contracts", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class ContractController {
@@ -49,5 +51,31 @@ public class ContractController {
 
     }
 
+    @DeleteMapping("/{contractId}")
+    ResponseEntity<ResponseDTO>deleteContract(@PathVariable Long contractId){
+        contractService.deleteContract(contractId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.NO_CONTENT,
+                        ResponseMessage.NO_CONTENT
+                ));
+
+    }
+
+    @GetMapping("/freelancer/{freelancerId}")
+    ResponseEntity<ResponseDTO>findAllContractByFreelancer(@PathVariable Long freelancerId){
+
+        List<ContractDTO> contracts = contractService.findAllContractByFreelancerId(freelancerId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        contracts
+                ));
+
+    }
 
 }
