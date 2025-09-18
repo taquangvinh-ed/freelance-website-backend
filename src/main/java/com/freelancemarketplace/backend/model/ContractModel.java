@@ -32,8 +32,9 @@ public class ContractModel extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ContractStatus status;
 
-    @OneToOne(mappedBy = "contract")
-    private ProposalModal proposal;
+    @OneToOne
+    @JoinColumn(name = "proposalId")
+    private ProposalModel proposal;
 
     //The payments that belong to a contract
     @OneToMany(mappedBy = "contract")

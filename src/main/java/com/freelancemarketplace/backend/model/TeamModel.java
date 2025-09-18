@@ -46,7 +46,7 @@ public class TeamModel extends BaseEntity{
     private Set<TestimonialModel> testimonials;
 
     @OneToMany(mappedBy = "team")
-    private Set<ProposalModal> proposals;
+    private Set<ProposalModel> proposals;
 
     @OneToMany(mappedBy = "team")
     private Set<PaymentModel> payments;

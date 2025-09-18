@@ -1,10 +1,12 @@
 package com.freelancemarketplace.backend.model;
 
+import com.freelancemarketplace.backend.enums.ProposalStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
@@ -12,7 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "Proposals")
-public class ProposalModal extends BaseEntity{
+public class ProposalModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long proposalId;
@@ -24,26 +26,28 @@ public class ProposalModal extends BaseEntity{
 
     private String[] files;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ProposalStatus status;
 
-    private Double price;
+    private BigDecimal amount;
 
-    @ManyToOne
+    private Integer deliveryDays;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "freelancerId")
     private FreelancerModel freelancer;
 
-    @ManyToOne
-    @JoinColumn(name = "projectId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "projectId", nullable = false)
     private ProjectModel project;
 
     @OneToMany(mappedBy = "proposal")
-    private Set<MessageModel> messagesList;
+    private Set<MessageModel> messages;
 
-    @OneToOne
-    @JoinColumn(name = "contractId")
+    @OneToOne(mappedBy = "proposal")
     private ContractModel contract;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private TeamModel team;
 

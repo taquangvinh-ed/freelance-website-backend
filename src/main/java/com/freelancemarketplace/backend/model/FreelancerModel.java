@@ -5,11 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -90,7 +88,7 @@ public class FreelancerModel extends BaseEntity{
     private Set<EducationModel> educations;
 
     @OneToMany(mappedBy = "freelancer")
-    private Set<ProposalModal> proposals;
+    private Set<ProposalModel> proposals;
 
 //    @ManyToMany(mappedBy= "freelancers")
 //    private Set<TestModel> tests;

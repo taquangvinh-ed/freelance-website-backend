@@ -59,7 +59,7 @@ public class ProjectModel extends BaseEntity{
     private Set<TestimonialModel> testimonials;
 
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
-    private Set<ProposalModal> proposals;
+    private Set<ProposalModel> proposals;
 
     @OneToOne(mappedBy = "contractProject", fetch = FetchType.LAZY)
     private ContractModel contract;

@@ -44,7 +44,7 @@ public class MessageModel {
 
     @ManyToOne
     @JoinColumn(name ="proposalId" )
-    private ProposalModal proposal;
+    private ProposalModel proposal;
 
     @ManyToOne
     @JoinColumn(name = "projectId")
