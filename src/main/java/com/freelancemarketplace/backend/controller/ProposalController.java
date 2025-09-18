@@ -8,18 +8,15 @@ import com.freelancemarketplace.backend.service.ProposalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/proposals", produces = {MediaType.APPLICATION_JSON_VALUE})
-public class ProposalRepository {
+public class ProposalController {
 
     private final ProposalService proposalService;
 
-    public ProposalRepository(ProposalService proposalService) {
+    public ProposalController(ProposalService proposalService) {
         this.proposalService = proposalService;
     }
 
@@ -32,6 +29,20 @@ public class ProposalRepository {
                         ResponseStatusCode.CREATED,
                         ResponseMessage.CREATED,
                         newProposal
+                ));
+    }
+
+    @PutMapping("/{proposalId}")
+    public ResponseEntity<ResponseDTO>updatedProposal(@PathVariable Long proposalId,
+                                                      @RequestBody ProposalDTO proposalDTO){
+        ProposalDTO updatedProposal = proposalService.updateProposal(proposalId, proposalDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        updatedProposal
                 ));
     }
 }

@@ -59,7 +59,16 @@ public class ProposalServiceImp implements ProposalService {
 
     @Override
     public ProposalDTO updateProposal(Long proposalId, ProposalDTO proposalDTO) {
-        return null;
+
+        ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
+                ()->new ResourceNotFoundException("Proposal with id: " + proposalId + " not found")
+        );
+
+        ProposalModel updatedProposal = proposalMapper.partialUpdate(proposalDTO,proposal);
+
+        ProposalModel savedProposal = proposalsRepository.save(updatedProposal);
+
+        return proposalMapper.toDto(savedProposal);
     }
 
     @Override
