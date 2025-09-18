@@ -23,8 +23,10 @@ public class ClientModel extends BaseEntity{
 
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     private String passwordHash;
+    @Column(unique = true)
     private String phoneNumber;
     private String profilePicture;
 
