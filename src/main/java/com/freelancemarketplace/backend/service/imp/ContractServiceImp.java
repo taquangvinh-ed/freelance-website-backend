@@ -98,16 +98,33 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public ContractDTO updateContract(Long contractId, ContractDTO contractDTO) {
-        return null;
+
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " +contractId+ " not found")
+        );
+        ContractModel updatedContract = contractMapper.partialUpdate(contractDTO, contract);
+
+        ContractModel savedContract = contractsRepository.save(updatedContract);
+
+        return contractMapper.toDto(savedContract);
     }
 
     @Override
     public void deleteContract(Long contractId) {
-
+        if(!contractsRepository.existsById(contractId))
+            throw new ResourceNotFoundException("Contract with id: " +contractId+ " not found");
+        contractsRepository.deleteById(contractId);
     }
 
     @Override
     public List<ContractDTO> findAllContractByFreelancerId(Long freelancerId) {
-        return List.of();
+
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                ()-> new ResourceNotFoundException("Freelancer with id: " +freelancerId+ " not found")
+        );
+
+        List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
+
+        return contractMapper.toDTOs(contracts);
     }
 }

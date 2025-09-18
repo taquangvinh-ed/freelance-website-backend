@@ -6,6 +6,8 @@ import com.freelancemarketplace.backend.model.ContractModel;
 import com.freelancemarketplace.backend.model.MileStoneModel;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ContractMapper {
     ContractModel toEntity(ContractDTO contractDTO);
@@ -29,4 +31,6 @@ public interface ContractMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     ContractModel partialUpdate(ContractDTO contractDTO, @MappingTarget ContractModel contractModel);
+
+    List<ContractDTO> toDTOs(List<ContractModel> contracts);
 }
