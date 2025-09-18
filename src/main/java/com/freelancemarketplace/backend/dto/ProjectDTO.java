@@ -1,12 +1,13 @@
 package com.freelancemarketplace.backend.dto;
 
 import com.freelancemarketplace.backend.enums.ProjectStatus;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,4 +29,6 @@ public class ProjectDTO {
 
     // If the project is an internship
     private Boolean isInternship;
+
+    private Set<SkillDTO> skills = new HashSet<>();
 }

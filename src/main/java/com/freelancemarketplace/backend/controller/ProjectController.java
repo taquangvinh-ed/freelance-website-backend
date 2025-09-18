@@ -73,4 +73,45 @@ public class ProjectController {
                         projects
                 ));
     }
+
+    @GetMapping("/findProject/{projectId}")
+    public ResponseEntity<ResponseDTO>findProjectById(@PathVariable Long projectId){
+        ProjectDTO project = projectService.findProjectById(projectId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        project
+                ));
+    }
+
+
+    @PutMapping("/assignSkillToProject/Project/{projectId}/Skill/{skillId}")
+    public ResponseEntity<ResponseDTO>assignSkillToProject(@PathVariable Long projectId,
+                                                           @PathVariable Long skillId){
+        projectService.assignSkillToProject(projectId,skillId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                ResponseStatusCode.SUCCESS,
+                ResponseMessage.SUCCESS
+        ));
+
+    }
+
+    @PutMapping("/removeSkillFromProject/Project/{projectId}/Skill/{skillId}")
+    public ResponseEntity<ResponseDTO>removeSkillFromProject(@PathVariable Long projectId,
+                                                           @PathVariable Long skillId){
+        projectService.removeSkillFromProject(projectId,skillId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                ));
+
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.ProjectDTO;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -14,7 +15,13 @@ public interface ProjectService {
 
     List<ProjectDTO> getAllProject();
 
+    ProjectDTO findProjectById(Long projectId);
+
     List<ProjectDTO> getProjectBySkill(Long skillId);
 
+    void assignSkillToProject (Long projectId, Long skillId);
 
+
+    @Transactional
+    void removeSkillFromProject(Long projectId, Long skillId);
 }
