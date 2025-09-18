@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -32,32 +33,35 @@ public class ContractModel extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ContractStatus status;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proposalId")
     private ProposalModel proposal;
 
     //The payments that belong to a contract
     @OneToMany(mappedBy = "contract")
-    private Set<PaymentModel> payments;
+    private Set<PaymentModel> payments = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "freelancerId")
     private FreelancerModel freelancer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private TeamModel team;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "companyId")
     private CompanyModel company;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clientId")
     private ClientModel client;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectId")
     private ProjectModel contractProject;
+
+    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MileStoneModel> mileStones = new HashSet<>();
 
 }
