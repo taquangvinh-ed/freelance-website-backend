@@ -11,6 +11,8 @@ import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ProposalService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProposalServiceImp implements ProposalService {
 
@@ -72,7 +74,31 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
-    public ProposalDTO deleteProposal(Long proposalId) {
-        return null;
+    public void deleteProposal(Long proposalId) {
+        ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
+                ()->new ResourceNotFoundException("Proposal with id: " + proposalId + " not found")
+        );
+
+        proposalsRepository.deleteById(proposalId);
+    }
+
+    @Override
+    public List<ProposalDTO> getAllProposalByFreelancerId(Long freelancerId){
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                ()->new ResourceNotFoundException("Freelancer id: " + freelancerId + "not found")
+        );
+
+        List<ProposalModel> proposals = proposalsRepository.getAllByFreelancer(freelancer);
+        return proposalMapper.toDTOs(proposals);
+    }
+
+    @Override
+    public List<ProposalDTO> getAllProposalByTeamId(Long teamId){
+        TeamModel team = teamsRepository.findById(teamId).orElseThrow(
+                ()->new ResourceNotFoundException("team id: " + teamId + "not found")
+        );
+
+        List<ProposalModel> proposals = proposalsRepository.getAllByTeam(team);
+        return proposalMapper.toDTOs(proposals);
     }
 }

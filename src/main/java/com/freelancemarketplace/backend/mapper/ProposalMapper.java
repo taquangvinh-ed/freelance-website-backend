@@ -4,6 +4,8 @@ import com.freelancemarketplace.backend.dto.ProposalDTO;
 import com.freelancemarketplace.backend.model.ProposalModel;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProposalMapper {
     ProposalModel toEntity(ProposalDTO proposalDTO);
@@ -15,4 +17,6 @@ public interface ProposalMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     ProposalModel partialUpdate(ProposalDTO proposalDTO, @MappingTarget ProposalModel proposalModel);
+
+    List<ProposalDTO> toDTOs(List<ProposalModel> proposals);
 }

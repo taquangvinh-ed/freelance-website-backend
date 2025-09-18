@@ -48,7 +48,7 @@ public class FreelancerModel extends BaseEntity{
     @OneToOne(mappedBy = "freelancer")
     private PortfolioModel portfolio;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "freelancer_languages",
             joinColumns = @JoinColumn(name = "freelancerId"),
@@ -56,11 +56,11 @@ public class FreelancerModel extends BaseEntity{
     )
     private Set <LanguageModel> languages = new HashSet<>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "analyticId")
     private AnalyticModel analytic;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="locationId")
     private LocationModel location;
 
@@ -73,7 +73,7 @@ public class FreelancerModel extends BaseEntity{
     @OneToMany(mappedBy = "Freelancer")
     private Set<ProjectModel> projects;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "freelancer_skills",
             joinColumns = @JoinColumn(name = "freelancerId"),

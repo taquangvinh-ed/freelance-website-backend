@@ -33,7 +33,7 @@ public class TeamModel extends BaseEntity{
     @OneToMany(mappedBy = "team")
     private List<VideoModel> videos;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "team_freelancers",
         joinColumns = @JoinColumn(name = "teamId"),
@@ -57,7 +57,7 @@ public class TeamModel extends BaseEntity{
     @OneToMany(mappedBy = "team")
     private Set<MessageModel> messages;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "team_skills",
         joinColumns = @JoinColumn(name = "teamId"),

@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/proposals", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class ProposalController {
@@ -45,4 +47,46 @@ public class ProposalController {
                         updatedProposal
                 ));
     }
+
+
+    @DeleteMapping("/{proposalId}")
+    public ResponseEntity<ResponseDTO>deleteProposal(@PathVariable Long proposalId){
+        proposalService.deleteProposal(proposalId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.NO_CONTENT,
+                        ResponseMessage.NO_CONTENT
+                ));
+    }
+
+
+    @GetMapping("/freelancer/{freelancerId}")
+    public ResponseEntity<ResponseDTO>getAllProposalByFreelancerId(@PathVariable Long freelancerId){
+
+        List<ProposalDTO> proposals = proposalService.getAllProposalByFreelancerId(freelancerId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        proposals
+                ));
+    }
+
+    @GetMapping("/team/{teaId}")
+    public ResponseEntity<ResponseDTO>updatedProposal(@PathVariable Long teamId){
+
+        List<ProposalDTO> proposals = proposalService.getAllProposalByTeamId(teamId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        proposals
+                ));
+    }
+
 }
