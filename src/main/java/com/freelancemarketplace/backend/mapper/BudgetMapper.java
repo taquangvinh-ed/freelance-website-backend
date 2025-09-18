@@ -1,25 +1,16 @@
 package com.freelancemarketplace.backend.mapper;
 
 import com.freelancemarketplace.backend.dto.BudgetDTO;
-import com.freelancemarketplace.backend.dto.ProjectDTO;
 import com.freelancemarketplace.backend.model.BudgetModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
 import org.mapstruct.*;
 
-import java.util.List;
-
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface ProjectMapper {
-    ProjectModel toEntity(ProjectDTO projectDTO);
+public interface BudgetMapper {
+    BudgetModel toEntity(BudgetDTO budgetDTO);
 
     @Mapping(target="projectId", source = "project.projectId")
     BudgetDTO toDto(BudgetModel budgetModel);
 
-
-    ProjectDTO toDto(ProjectModel projectModel);
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ProjectModel partialUpdate(ProjectDTO projectDTO, @MappingTarget ProjectModel projectModel);
-
-    List<ProjectDTO> toDTOs(List<ProjectModel> projectModels);
+    BudgetModel partialUpdate(BudgetDTO budgetDTO, @MappingTarget BudgetModel budgetModel);
 }

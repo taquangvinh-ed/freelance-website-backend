@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.service.imp;
 import com.freelancemarketplace.backend.dto.ProjectDTO;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ProjectMapper;
+import com.freelancemarketplace.backend.model.BudgetModel;
 import com.freelancemarketplace.backend.model.ProjectModel;
 import com.freelancemarketplace.backend.model.SkillModel;
 import com.freelancemarketplace.backend.repository.ProjectsRepository;
@@ -30,6 +31,11 @@ public class ProjectServiceImp implements ProjectService {
     @Transactional
     public ProjectDTO createProject(ProjectDTO projectDTO) {
         ProjectModel newProject = projectMapper.toEntity(projectDTO);
+
+        BudgetModel budgetInsideNewProject = newProject.getBudget();
+
+        if(budgetInsideNewProject != null)
+            budgetInsideNewProject.setProject(newProject);
 
         ProjectModel savedProject = projectsRepository.save(newProject);
 

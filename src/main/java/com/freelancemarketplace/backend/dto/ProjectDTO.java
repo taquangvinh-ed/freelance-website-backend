@@ -31,4 +31,6 @@ public class ProjectDTO {
     private Boolean isInternship;
 
     private Set<SkillDTO> skills = new HashSet<>();
+
+    private BudgetDTO budget;
 }

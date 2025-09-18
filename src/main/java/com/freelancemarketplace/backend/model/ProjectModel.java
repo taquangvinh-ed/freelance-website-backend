@@ -48,8 +48,7 @@ public class ProjectModel extends BaseEntity{
     @JoinColumn(name="categoryId")
     private CategoryModel category;
 
-    @ManyToOne( fetch = FetchType.LAZY)
-    @JoinColumn(name= "budgetId")
+    @OneToOne( mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private BudgetModel budget;
 
     @ManyToOne( fetch = FetchType.LAZY)
