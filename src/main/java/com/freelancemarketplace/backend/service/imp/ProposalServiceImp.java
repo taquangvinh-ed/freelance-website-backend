@@ -1,6 +1,8 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.ProposalDTO;
+import com.freelancemarketplace.backend.enums.ProposalStatus;
+import com.freelancemarketplace.backend.exception.ProposalException;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ProposalMapper;
 import com.freelancemarketplace.backend.model.FreelancerModel;
@@ -51,6 +53,9 @@ public class ProposalServiceImp implements ProposalService {
             ProjectModel project = projectsRepository.findById(proposalDTO.getProjectId()).orElseThrow(
                     ()->new ResourceNotFoundException("Project id: " + proposalDTO.getProjectId() + "inside proposal creating request create not found")
             );
+
+            if(proposalDTO.getAmount().compareTo(project.getBudget().getMaxValue()) > 0)
+                throw new ProposalException("The proposal price exceeds the maximum budget.");
             newProposal.setProject(project);
 
             ProposalModel savedProposal = proposalsRepository.save(newProposal);
@@ -101,4 +106,42 @@ public class ProposalServiceImp implements ProposalService {
         List<ProposalModel> proposals = proposalsRepository.getAllByTeam(team);
         return proposalMapper.toDTOs(proposals);
     }
+
+    @Override
+    public void acceptProposal(Long proposalId){
+        ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
+                ()->new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
+        );
+        if (proposal.getStatus().equals(ProposalStatus.PENDING))
+            proposal.setStatus(ProposalStatus.ACCEPTED);
+        else
+            throw new ProposalException("Cannot proposal cannot be accepted from status " + proposal.getStatus());
+    }
+
+    @Override
+    public void rejectProposal(Long proposalId){
+        ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
+                ()->new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
+        );
+        if (proposal.getStatus().equals(ProposalStatus.PENDING))
+            proposal.setStatus(ProposalStatus.REJECTED);
+        else
+            throw new ProposalException("Cannot proposal cannot be rejected from status " + proposal.getStatus());
+    }
+
+    @Override
+    public void withdrawProposal(Long proposalId){
+        ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
+                ()->new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
+        );
+        if (proposal.getStatus().equals(ProposalStatus.PENDING))
+            proposal.setStatus(ProposalStatus.WITHDRAWN);
+        else
+            throw new ProposalException(" Proposal cannot be withdraw from status " + proposal.getStatus());
+    }
+
+
+
+
+
 }

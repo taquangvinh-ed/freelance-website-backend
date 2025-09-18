@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.exception;
 
 import com.freelancemarketplace.backend.dto.ErrorResponseDTO;
+import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,6 +35,21 @@ public class GlobalExceptionHanler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProposalException.class)
+    ResponseEntity<ErrorResponseDTO>handleProposalException(ProposalException proposalException,
+                                                            WebRequest request){
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
+                request.getDescription(false),
+                HttpStatus.BAD_REQUEST,
+                proposalException.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponseDTO);
     }
 
 }

@@ -15,4 +15,10 @@ public interface ProposalService {
     List<ProposalDTO> getAllProposalByFreelancerId(Long freelancerId);
 
     List<ProposalDTO> getAllProposalByTeamId(Long teamId);
+
+    void acceptProposal(Long proposalId);
+
+    void rejectProposal(Long proposalId);
+
+    void withdrawProposal(Long proposalId);
 }
