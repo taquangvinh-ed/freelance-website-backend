@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -59,7 +60,7 @@ public class ProductModel {
             joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "skillId")
     )
-    private Set<SkillModel> skills;
+    private Set<SkillModel> skills = new HashSet<>();
 
     //The client who buys the product
     @ManyToMany(mappedBy = "products")
