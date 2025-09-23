@@ -12,11 +12,11 @@ import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.service.ProductService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -62,18 +62,29 @@ public class ProductServiceImp implements ProductService {
 
 
     @Override
+    @Transactional
     public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
-        return null;
+        ProductModel product = productsRepository.findById(productId).orElseThrow(
+                ()-> new ResourceNotFoundException("Product with id: " + productId + " not found")
+        );
+
+        ProductModel updatedProduct = productMapper.partialUpdate(productDTO, product);
+        ProductModel savedProduct = productsRepository.save(updatedProduct);
+        return productMapper.toDto(savedProduct);
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long productId) {
-
+        if(!productsRepository.existsById(productId))
+            throw new ResourceNotFoundException("Product with id: " +productId+" not found");
+        productsRepository.deleteById(productId);
     }
 
     @Override
-    public Page<ProductDTO> getAllProduct() {
-        return null;
+    public Page<ProductDTO> getAllProduct(Pageable pageable) {
+        Page<ProductModel> productModelPage = productsRepository.findAll(pageable);
+        return productMapper.toDTOpage(productModelPage, pageable);
     }
 
     @Override

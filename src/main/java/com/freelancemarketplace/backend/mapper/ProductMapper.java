@@ -20,15 +20,10 @@ public interface ProductMapper {
 
 
 
-    default Set<Long>mapSkillsToSkillIds(Set<SkillModel> skills){
-        if(skills == null)
-            return null;
-        return skills.stream().map(SkillModel::getSkillId).collect(Collectors.toSet());
-
-    }
     SkillDTO toDTO(SkillModel skillModel);
 
     @Mapping(target = "freelancerId", source = "freelancer.freelancerId")
+    @Mapping(target = "skillIds", source = "skills", qualifiedByName = "mapSkillsToSkillIds")
     ProductDTO toDto(ProductModel productModel);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -36,12 +31,18 @@ public interface ProductMapper {
 
     List<ProductDTO> toDTOs(List<ProductModel> productModels);
 
-    default Page<ProductDTO> toDTOpage(Page<ProductModel> modelPage){
+    default Page<ProductDTO> toDTOpage(Page<ProductModel> modelPage, Pageable pageable){
         List<ProductDTO> dtos = toDTOs(modelPage.getContent());
-        return new PageImpl<>(dtos, modelPage.getPageable(), modelPage.getTotalElements());
+        return new PageImpl<>(dtos, pageable, modelPage.getTotalElements());
     }
 
 
+    @Named("mapSkillsToSkillIds")
+    default Set<Long>mapSkillsToSkillIds(Set<SkillModel> skillModels){
+        if(skillModels == null)
+            return null;
+        return skillModels.stream().map(SkillModel::getSkillId).collect(Collectors.toSet());
 
+    }
 
 }

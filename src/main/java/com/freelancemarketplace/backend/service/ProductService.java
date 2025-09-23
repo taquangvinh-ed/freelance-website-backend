@@ -2,6 +2,7 @@ package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.ProductDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
 
@@ -11,7 +12,7 @@ public interface ProductService {
 
     void deleteProduct(Long productId);
 
-    Page<ProductDTO> getAllProduct();
+    Page<ProductDTO> getAllProduct(Pageable pageable);
 
     ProductDTO getProductById(Long productId);
 
