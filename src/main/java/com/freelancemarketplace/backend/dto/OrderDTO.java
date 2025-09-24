@@ -30,5 +30,6 @@ public class OrderDTO {
 
     private String status;
 
-    private Long timeOfDownload;
+    private String redirectUrl;
+
 }

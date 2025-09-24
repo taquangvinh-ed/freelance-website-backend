@@ -38,6 +38,7 @@ dependencies {
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.11.0")
+	implementation("com.stripe:stripe-java:29.5.0")
 }
 
 tasks.withType<Test> {

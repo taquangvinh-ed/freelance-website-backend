@@ -23,3 +23,7 @@ logging:
     org.mapstruct: DEBUG
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
+
+stripe:
+  api:
+    key: ${STRIPE_SECRET_KEY}

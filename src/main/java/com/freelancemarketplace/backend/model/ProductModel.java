@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class ProductModel {
 
     private String name;
     private String description;
-    private Double price;
+    private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     private TailentTypes ownerType; // freelancer or team
@@ -37,6 +38,7 @@ public class ProductModel {
     private String productLink;
 
     private Long views;
+
     private Long timeOfDownload;
 
     @OneToMany(mappedBy = "product")

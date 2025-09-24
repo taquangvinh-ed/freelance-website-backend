@@ -8,10 +8,7 @@ import com.freelancemarketplace.backend.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/orders", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -31,4 +28,18 @@ public class OrderController {
                 .body(new ResponseDTO(ResponseStatusCode.SUCCESS,
                         ResponseMessage.SUCCESS, newOrder));
     }
+
+    @PutMapping("/success")
+    ResponseEntity<ResponseDTO>paymentSuccess(@RequestParam String sessionId){
+        orderService.handlePaymentSuccess(sessionId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        "Pay successfully"
+                ));
+    }
+
+
 }

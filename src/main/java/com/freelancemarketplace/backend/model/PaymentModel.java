@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -21,13 +22,14 @@ public class PaymentModel extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    @Enumerated(EnumType.STRING)
-    private RecuiterTypes recruiter;
+//    @Enumerated(EnumType.STRING)
+//    private RecuiterTypes recruiter;
 
-    @Enumerated(EnumType.STRING)
-    private TailentTypes talent;
+//    @Enumerated(EnumType.STRING)
+//    private TailentTypes talent;
 
-    private String amount;
+
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     private PaymentTypes type;
@@ -59,5 +61,9 @@ public class PaymentModel extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "teamId")
     private TeamModel team;
+
+    @OneToOne
+    @JoinColumn(name = "orderId")
+    private OrderModel order;
 
 }

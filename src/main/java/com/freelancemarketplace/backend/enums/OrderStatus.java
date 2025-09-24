@@ -6,5 +6,6 @@ public enum OrderStatus {
     IN_PROGRESS,  // The work is underway
     UNDER_REVIEW, // The client is reviewing the completed work
     COMPLETED,    // The work is finished and payment has been released
-    CANCELLED
+    CANCELLED,
+    PAID
 }

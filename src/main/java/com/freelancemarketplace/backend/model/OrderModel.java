@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "orders")
 public class OrderModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +30,7 @@ public class OrderModel extends BaseEntity{
     private ProductModel product;
 
     @Column(nullable = false)
-    private Double price;
+    private BigDecimal price;
 
     @Column(nullable = false)
     private Timestamp purchaseDate;
@@ -37,5 +39,6 @@ public class OrderModel extends BaseEntity{
     @Column(nullable = false)
     private OrderStatus status;
 
-    private Long timeOfDownload;
+    @OneToOne(mappedBy = "order")
+    private PaymentModel payment;
 }
