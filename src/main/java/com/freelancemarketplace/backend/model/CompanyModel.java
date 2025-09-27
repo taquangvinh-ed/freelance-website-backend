@@ -55,9 +55,6 @@ public class CompanyModel extends BaseEntity {
     private Set<ContractModel> contracts;
 
     @OneToMany(mappedBy = "company")
-    private Set<MessageModel> messages;
-
-    @OneToMany(mappedBy = "company")
     private Set<ReportModel> reports;
 
     @ManyToMany

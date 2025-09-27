@@ -65,9 +65,6 @@ public class FreelancerModel extends BaseEntity{
     private LocationModel location;
 
     @OneToMany(mappedBy = "freelancer")
-    private  Set<MessageModel> messages;
-
-    @OneToMany(mappedBy = "freelancer")
     private Set<ContractModel> contracts;
 
     @OneToMany(mappedBy = "Freelancer")

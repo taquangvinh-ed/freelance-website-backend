@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Entity
 @Getter
 @Setter
@@ -19,7 +21,7 @@ public class TestimonialModel extends BaseEntity {
     private String comment;
 
     // The date that the testimonial was given
-    private String date;
+    private Timestamp date;
 
 
     private Boolean testiminialBack;

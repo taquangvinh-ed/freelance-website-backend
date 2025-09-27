@@ -39,6 +39,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.11.0")
 	implementation("com.stripe:stripe-java:29.5.0")
+	implementation("org.springframework.boot:spring-boot-starter-websocket:4.0.0-M3")
 }
 
 tasks.withType<Test> {

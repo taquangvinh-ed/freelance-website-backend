@@ -40,4 +40,6 @@ public class ClientDTO {
 
     //Products bought by the client
 //    private Set<ProductModel> products;
+
+    private String stripeCustomerId;
 }

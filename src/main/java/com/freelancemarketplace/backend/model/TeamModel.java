@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,8 +55,6 @@ public class TeamModel extends BaseEntity{
     @OneToMany(mappedBy = "team")
     private Set<ContractModel> contracts;
 
-    @OneToMany(mappedBy = "team")
-    private Set<MessageModel> messages;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -64,5 +63,8 @@ public class TeamModel extends BaseEntity{
         inverseJoinColumns = @JoinColumn(name = "skillId")
     )
     private Set<SkillModel> skills;
+
+    @OneToMany(mappedBy = "team")
+    private Set<ConversationModel> conversation = new HashSet<>();
 
 }

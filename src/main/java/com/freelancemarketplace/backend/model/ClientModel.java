@@ -64,8 +64,6 @@ public class ClientModel extends BaseEntity{
     @OneToMany(mappedBy = "client")
     private Set<ContractModel> contracts;
 
-    @OneToMany(mappedBy = "client")
-    private Set<MessageModel> messages;
 
     @OneToMany(mappedBy = "client")
     private Set<ProjectModel> projects;
@@ -82,6 +80,8 @@ public class ClientModel extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = "productId")
     )
     private Set<ProductModel> products;
+
+    private String stripeCustomerId;
 
 
 }

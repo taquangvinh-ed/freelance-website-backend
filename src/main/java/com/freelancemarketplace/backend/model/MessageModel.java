@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @Table(name = "Messages")
-public class MessageModel {
+public class MessageModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
@@ -26,21 +26,6 @@ public class MessageModel {
     @Enumerated(EnumType.STRING)
     private MessageStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "freelancerId")
-    private FreelancerModel freelancer;
-
-    @ManyToOne
-    @JoinColumn(name = "teamId")
-    private TeamModel team;
-
-    @ManyToOne
-    @JoinColumn(name = "clientId")
-    private ClientModel client;
-
-    @ManyToOne
-    @JoinColumn(name = "companyId")
-    private CompanyModel company;
 
     @ManyToOne
     @JoinColumn(name ="proposalId" )
