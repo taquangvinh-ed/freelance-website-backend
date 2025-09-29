@@ -6,7 +6,7 @@ plugins {
 
 group = "com.freelancemarketplace"
 version = "0.0.1-SNAPSHOT"
-description = "Back end for freelancer platform"
+description = "Back end for freelance marketplace"
 
 java {
 	toolchain {
@@ -23,6 +23,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+
 }
 
 dependencies {
@@ -39,7 +40,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.11.0")
 	implementation("com.stripe:stripe-java:29.5.0")
-	implementation("org.springframework.boot:spring-boot-starter-websocket:4.0.0-M3")
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
+	implementation("commons-io:commons-io:2.20.0")
+	implementation("com.cloudinary:cloudinary-http5:2.0.0")
 }
 
 tasks.withType<Test> {
