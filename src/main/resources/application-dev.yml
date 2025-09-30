@@ -27,3 +27,8 @@ logging:
 stripe:
   api:
     key: ${STRIPE_SECRET_KEY}
+
+server:
+  servlet:
+    session:
+      timeout=${SESSION_TIMEOUT:10m}:

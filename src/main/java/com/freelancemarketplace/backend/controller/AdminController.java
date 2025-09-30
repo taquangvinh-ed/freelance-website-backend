@@ -33,7 +33,6 @@ public class AdminController {
 
     @PostMapping("/admin")
     public ResponseEntity<ResponseDTO> createAdmin(@RequestBody @Valid AdminDTO adminDTO) {
-        logger.info("Received request to create admin with username: {}", adminDTO.getUsername());
         AdminModel createdAdmin = adminService.createAdmin(adminDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -43,7 +42,7 @@ public class AdminController {
     @PutMapping("/admin/{adminId}")
     public ResponseEntity<ResponseDTO> updateAdmin(@PathVariable Long adminId,
                                                    @RequestBody @Valid AdminDTO adminDTO) {
-        logger.info("Receive request to update admin with username: " + adminDTO.getAdminId());
+        logger.info("Receive request to update admin with username: " + adminDTO.getUsername());
 
         AdminDTO updatedAdminDTO = adminService.update(adminId, adminDTO);
         return ResponseEntity

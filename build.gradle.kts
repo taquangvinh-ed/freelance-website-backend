@@ -43,6 +43,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("commons-io:commons-io:2.20.0")
 	implementation("com.cloudinary:cloudinary-http5:2.0.0")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	testImplementation("org.springframework.security:spring-security-test")
+
+
 }
 
 tasks.withType<Test> {

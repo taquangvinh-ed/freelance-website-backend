@@ -40,7 +40,7 @@ public class AdminModel extends BaseEntity{
     private String email;
 
     private String passwordHash;
-
+    private String role = "ADMIN";
     @Column(unique = true)
     private String phoneNumber;
 

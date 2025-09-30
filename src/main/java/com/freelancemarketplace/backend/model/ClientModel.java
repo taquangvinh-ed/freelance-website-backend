@@ -25,7 +25,10 @@ public class ClientModel extends BaseEntity{
     private String lastName;
     @Column(unique = true)
     private String email;
+
+    private String username;
     private String passwordHash;
+    private String role = "EMPLOYER";
     @Column(unique = true)
     private String phoneNumber;
     private String profilePicture;

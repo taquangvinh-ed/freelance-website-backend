@@ -28,7 +28,9 @@ public class CompanyModel extends BaseEntity {
     private Boolean isBlocked;
     private String logoUrl;
     private String email;
+    private String username;
     private String passwordHash;
+    private String role = "EMPLOYER";
     private String pictureUrl;
     private String wallet;
     private String phoneNumber;

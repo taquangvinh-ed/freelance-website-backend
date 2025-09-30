@@ -10,6 +10,7 @@ import com.freelancemarketplace.backend.service.FreelancerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class FreelancerController {
     }
 
 
-    @PostMapping("/")
+    @PostMapping("/newFreelancer")
     ResponseEntity<ResponseDTO>createFreelancer(@RequestBody FreelancerDTO freelancerDTO){
         FreelancerDTO newFreelancerDTO = freelancerService.createFreelancer(freelancerDTO);
         return ResponseEntity
@@ -36,6 +37,7 @@ public class FreelancerController {
                         newFreelancerDTO
                 ));
     }
+
 
     @PutMapping("/{freelancerId}")
     ResponseEntity<ResponseDTO> updateFreelancer(@PathVariable Long freelancerId,

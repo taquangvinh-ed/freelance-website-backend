@@ -3,11 +3,15 @@ package com.freelancemarketplace.backend.service.imp;
 import com.freelancemarketplace.backend.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.FreelancerMapper;
+import com.freelancemarketplace.backend.mapper.UserMapper;
 import com.freelancemarketplace.backend.model.Bio;
 import com.freelancemarketplace.backend.model.FreelancerModel;
+import com.freelancemarketplace.backend.model.UserModel;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
+import com.freelancemarketplace.backend.repository.UserRepository;
 import com.freelancemarketplace.backend.service.FreelancerService;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,17 +21,33 @@ public class FreelancerServiceImp implements FreelancerService {
 
     private final FreelancersRepository freelancersRepository;
     private final FreelancerMapper freelancerMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
-    public FreelancerServiceImp(FreelancersRepository freelancersRepository, FreelancerMapper freelancerMapper) {
+
+    public FreelancerServiceImp(FreelancersRepository freelancersRepository, FreelancerMapper freelancerMapper, PasswordEncoder passwordEncoder, UserMapper userMapper,
+                                UserRepository userRepository) {
         this.freelancersRepository = freelancersRepository;
         this.freelancerMapper = freelancerMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
+    @Transactional
     public FreelancerDTO createFreelancer(FreelancerDTO freelancerDTO) {
 
-        FreelancerModel newFreelancer = freelancerMapper.toEntity(freelancerDTO);
+        UserModel newUser = userMapper.toEntity(freelancerDTO.getUser());
 
+        newUser.setPasswordHash(passwordEncoder.encode(freelancerDTO.getUser().getPassword()));
+
+        UserModel savedUser = userRepository.save(newUser);
+
+        FreelancerModel newFreelancer = freelancerMapper.toEntity(freelancerDTO);
+        newFreelancer.setUser(newUser);
+        newFreelancer.setFreelancerId(savedUser.getUserId());
         FreelancerModel savedFreelancer = freelancersRepository.save(newFreelancer);
 
         return freelancerMapper.toDTO(savedFreelancer);
@@ -49,9 +69,8 @@ public class FreelancerServiceImp implements FreelancerService {
         if (freelancerDTO.getTitle() != null) {
             existingFreelancer.setTitle(freelancerDTO.getTitle());
         }
-        if (freelancerDTO.getEmail() != null) {
-            existingFreelancer.setEmail(freelancerDTO.getEmail());
-        }
+
+
         if (freelancerDTO.getHourlyRate() != null) {
             existingFreelancer.setHourlyRate(freelancerDTO.getHourlyRate());
         }

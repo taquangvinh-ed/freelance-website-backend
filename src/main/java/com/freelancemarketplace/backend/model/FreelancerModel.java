@@ -15,21 +15,19 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "Freelancers")
-public class FreelancerModel extends BaseEntity{
+public class FreelancerModel extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long freelancerId;
+
+    @OneToOne
+    @JoinColumn(name = "userId", unique = true)
+    private UserModel user;
 
     private String firstName;
     private String lastName;
     private String title;
-
-
     private String profilePicture;
-    private String email;
     private String phoneNumber;
-    private String passwordHash;
-    private Boolean isVerified;
     private Double hourlyRate;
 
     @JdbcTypeCode(SqlTypes.JSON)
@@ -39,8 +37,6 @@ public class FreelancerModel extends BaseEntity{
     private Double wallet;
     private Integer connections;
     private Integer hoursPerWeek;
-    private Boolean isBlocked;
-
 
 
     @OneToMany(mappedBy = "freelancer")
@@ -87,11 +83,8 @@ public class FreelancerModel extends BaseEntity{
     @OneToMany(mappedBy = "freelancer")
     private Set<ProposalModel> proposals;
 
-//    @ManyToMany(mappedBy= "freelancers")
-//    private Set<TestModel> tests;
-
     @OneToMany(mappedBy = "freelancer")
-    private Set<TestimonialModel> testimonteials;
+    private Set<TestimonialModel> testimonials;
 
     //Team that the freelancer is part of
     @ManyToMany(mappedBy = "members")

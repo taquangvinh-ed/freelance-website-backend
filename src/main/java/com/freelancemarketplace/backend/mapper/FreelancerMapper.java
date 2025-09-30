@@ -17,6 +17,7 @@ public interface FreelancerMapper {
 //    @Mapping(target = "skills", source = "skills", qualifiedByName = "mapSkills")
     FreelancerDTO toDTO(FreelancerModel freelancerModel);
 
+
     FreelancerModel toEntity(FreelancerDTO freelancerDTO);
 
     List<FreelancerDTO>toDTOs(List<FreelancerModel> freelancerModelList);

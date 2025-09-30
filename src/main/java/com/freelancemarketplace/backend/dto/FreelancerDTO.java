@@ -28,10 +28,8 @@ public class FreelancerDTO {
 
 
     private String profilePicture;
-    private String email;
     private String phoneNumber;
     private String passwordHash;
-    private Boolean isVerified;
     private Double hourlyRate;
 
     private Bio bio;
@@ -39,7 +37,8 @@ public class FreelancerDTO {
     private Double wallet;
     private Integer connections;
     private Integer hoursPerWeek;
-    private Boolean isBlocked;
+
+    private UserDTO user;
 
     private Set<SkillDTO> skills = new HashSet<>();
 }

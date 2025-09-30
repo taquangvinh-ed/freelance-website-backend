@@ -1,0 +1,22 @@
+package com.freelancemarketplace.backend.auth;
+
+import com.freelancemarketplace.backend.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+public class CustomUserDetailService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    public CustomUserDetailService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username).or(
+                ()->userRepository.findByUsername(username)
+        ).orElseThrow(()->new UsernameNotFoundException("Username not found with " + username));
+    }
+}
