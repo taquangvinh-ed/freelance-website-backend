@@ -39,15 +39,7 @@ public class FreelancerServiceImp implements FreelancerService {
     @Transactional
     public FreelancerDTO createFreelancer(FreelancerDTO freelancerDTO) {
 
-        UserModel newUser = userMapper.toEntity(freelancerDTO.getUser());
-
-        newUser.setPasswordHash(passwordEncoder.encode(freelancerDTO.getUser().getPassword()));
-
-        UserModel savedUser = userRepository.save(newUser);
-
         FreelancerModel newFreelancer = freelancerMapper.toEntity(freelancerDTO);
-        newFreelancer.setUser(newUser);
-        newFreelancer.setFreelancerId(savedUser.getUserId());
         FreelancerModel savedFreelancer = freelancersRepository.save(newFreelancer);
 
         return freelancerMapper.toDTO(savedFreelancer);

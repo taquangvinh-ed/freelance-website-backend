@@ -24,6 +24,17 @@ public class UserController {
         this.userService = userService;
     }
 
+
+    @PostMapping("/")
+    ResponseEntity<ResponseDTO>createUser(@RequestBody UserDTO userDTO){
+        UserDTO newUser = userService.createUser(userDTO);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseDTO(ResponseStatusCode.CREATED,
+                        ResponseMessage.CREATED,
+                        newUser));
+    }
+
     @PutMapping("/{userId}/username")
     ResponseEntity<ResponseDTO>chooseUsername(@PathVariable Long userId, @RequestBody Map<String, String> request){
         String username = request.get("username");
@@ -43,12 +54,14 @@ public class UserController {
     @PutMapping("/{userId}/role")
     ResponseEntity<ResponseDTO>chooseRole(@PathVariable Long userId, @RequestBody Map<String, String> request){
         String role = request.get("role");
+        String firstName = request.get("firstName");
+        String lastName = request.get("lastName");
         if(role == null || role.isEmpty()){
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO(ResponseStatusCode.BAD_REQUEST, "Role is required", null));
         }
-        UserDTO user = userService.chooseRole(userId, role);
+        UserDTO user = userService.chooseRole(userId, role, firstName, lastName);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDTO(ResponseStatusCode.SUCCESS,

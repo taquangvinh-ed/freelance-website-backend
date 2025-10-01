@@ -18,7 +18,6 @@ import java.util.Set;
 @Table(name = "Clients")
 public class ClientModel extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientId;
 
     private String firstName;
