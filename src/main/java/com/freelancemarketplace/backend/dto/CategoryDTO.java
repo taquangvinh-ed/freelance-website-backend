@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -22,5 +23,5 @@ public class CategoryDTO {
 
     private String image;
 
-    private Set<Long> skillIds;
+    private Set<SkillDTO> skills = new HashSet<>();
 }

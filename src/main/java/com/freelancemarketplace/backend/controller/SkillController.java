@@ -106,4 +106,14 @@ public class SkillController {
                         ResponseMessage.SUCCESS
                 ));
     }
+
+    @GetMapping("/getAllSkill/Category/{categoryId}")
+    ResponseEntity<ResponseDTO>getAllSkillByCategory(@PathVariable Long categoryId){
+        List<SkillDTO> skills = skillSerivice.getAllSkillByCategory(categoryId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        skills));
+    }
 }

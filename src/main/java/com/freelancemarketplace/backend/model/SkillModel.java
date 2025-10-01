@@ -25,7 +25,7 @@ public class SkillModel extends BaseEntity{
     private Set<PortfolioModel> portfolios;
 
     @ManyToMany(mappedBy = "skills")
-    private Set<CategoryModel> categories;
+    private Set<CategoryModel> categories = new HashSet<>();
 
     //Freelancers that use this skill
     @ManyToMany(mappedBy = "skills")

@@ -16,7 +16,7 @@ public interface SkillSerivice {
 
     List<SkillDTO> getAllSkill();
 
-    List<SkillDTO> getAllSkillByName(String skillName);
+    List<SkillDTO> getAllSkillByCategory(Long CategoryId);
 
     public void assignSkillToFreelancer(Long freelancerId, Long skillId);
 

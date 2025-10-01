@@ -15,14 +15,12 @@ public interface CategoryMapper {
 
     CategoryModel toEntity(CategoryDTO categoryDTO);
 
+    SkillDTO toSkillDTO(SkillModel skillModel);
 
-    @Mapping(target = "skillIds", source = "skills", qualifiedByName = "mapSkillsToSkillIds")
     CategoryDTO toDto(CategoryModel categoryModel);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     CategoryModel partialUpdate(CategoryDTO categoryDTO, @MappingTarget CategoryModel categoryModel);
-
-    SkillDTO toDTO(SkillModel skillModel);
 
     @Named("mapSkillsToSkillIds")
     default Set<Long>mapSkillsToSkillIds(Set<SkillModel> skills){

@@ -17,4 +17,6 @@ public class SkillDTO {
     private String name;
 
     private String description;
+
+    private Long categoryId;
 }

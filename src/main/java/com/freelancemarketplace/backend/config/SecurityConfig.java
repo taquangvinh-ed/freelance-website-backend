@@ -28,7 +28,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests((request)->request
                         .requestMatchers("/api/freelancers/newFreelancer",
                                 "/api/users/*/username",
-                                "/api/users/*/role").permitAll()
+                                "/api/users/*/role",
+                                "/api/categories/**",
+                                "/api/skills/getAllSkill/Category/{categoryId}",
+                                "/api/skills/",
+                                "/api/categories/getAll").permitAll()
                         .anyRequest().authenticated());
 //                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
 //                .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::newSession)
