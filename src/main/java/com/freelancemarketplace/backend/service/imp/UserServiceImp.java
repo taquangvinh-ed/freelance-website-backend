@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.UserDTO;
+import com.freelancemarketplace.backend.enums.UserRoles;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.exception.UserException;
 import com.freelancemarketplace.backend.mapper.UserMapper;
@@ -40,7 +41,7 @@ public class UserServiceImp implements UserService {
                 ()-> new ResourceNotFoundException("User with id: " + userId + " not found")
         );
 
-        user.setUsername(role);
+        user.setRole(UserRoles.valueOf(role));
         UserModel savedUser = userRepository.save(user);
         return userMapper.toDto(user);    }
 }

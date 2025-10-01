@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.enums;
 
-public enum UserTypes {
+public enum UserRoles {
     ADMIN,
-    EMPLOYER,
+    CLIENT,
     FREELANCER
 }

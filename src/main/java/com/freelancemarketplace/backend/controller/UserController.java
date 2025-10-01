@@ -40,8 +40,14 @@ public class UserController {
                         user));
     }
 
-    @PostMapping("/role/{userId}")
-    ResponseEntity<ResponseDTO>chooseRole(@PathVariable Long userId, @RequestParam String role){
+    @PutMapping("/{userId}/role")
+    ResponseEntity<ResponseDTO>chooseRole(@PathVariable Long userId, @RequestBody Map<String, String> request){
+        String role = request.get("role");
+        if(role == null || role.isEmpty()){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(ResponseStatusCode.BAD_REQUEST, "Role is required", null));
+        }
         UserDTO user = userService.chooseRole(userId, role);
         return ResponseEntity
                 .status(HttpStatus.OK)

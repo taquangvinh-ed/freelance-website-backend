@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.model;
 
 import com.freelancemarketplace.backend.auth.AppUser;
-import com.freelancemarketplace.backend.enums.UserTypes;
+import com.freelancemarketplace.backend.enums.UserRoles;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,10 +32,10 @@ public class UserModel implements AppUser {
     private String email;
 
     private String passwordHash;
-    private String role; // e.g., "FREELANCER", "CLIENT", "ADMIN", "COMPANY"
 
     @Enumerated(EnumType.STRING)
-    private UserTypes userType;
+    private UserRoles role; // e.g., "FREELANCER", "CLIENT", "ADMIN"
+
     private Boolean isVerified;
     private Boolean isBlocked;
 

@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.enums.UserTypes;
+import com.freelancemarketplace.backend.enums.UserRoles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,10 +15,9 @@ public class UserDTO {
 
     private String email;
 
-    private String role; // e.g., "FREELANCER", "CLIENT", "ADMIN", "COMPANY"
+    private String role; // e.g., "FREELANCER", "CLIENT", "ADMIN"
 
     private String password;
-    private UserTypes userType;
     private Boolean isVerified;
     private Boolean isBlocked;
 }
