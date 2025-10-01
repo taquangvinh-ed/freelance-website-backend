@@ -26,7 +26,7 @@ public class SecurityConfig {
         httpSecurity
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((request)->request
-                        .requestMatchers(HttpMethod.POST,"/api/freelancers/newFreelancer").permitAll()
+                        .requestMatchers("/api/freelancers/newFreelancer", "/api/users/*/username").permitAll()
                         .anyRequest().authenticated());
 //                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
 //                .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::newSession)

@@ -9,15 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
+import java.util.Map;
 
 @Controller
-@RequestMapping(path = "/api/user", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api/users", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class UserController {
 
     private  final UserService userService;
@@ -26,8 +24,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/username/{userId}")
-    ResponseEntity<ResponseDTO>chooseUsername(@PathVariable Long userId, @RequestParam String username){
+    @PutMapping("/{userId}/username")
+    ResponseEntity<ResponseDTO>chooseUsername(@PathVariable Long userId, @RequestBody Map<String, String> request){
+        String username = request.get("username");
+        if (username == null || username.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(ResponseStatusCode.BAD_REQUEST, "Username is required", null));
+        }
         UserDTO user = userService.chooseUsername(userId, username);
         return ResponseEntity
                 .status(HttpStatus.OK)
