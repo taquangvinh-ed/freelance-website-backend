@@ -49,7 +49,8 @@ public class SecurityConfig {
                                 "/api/categories/getAll",
                                 "/api/login").permitAll()
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
-                                "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*"
+                                "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
+                                "/api/freelancers/{freelancerId}"
                                 ).hasRole("FREELANCER")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
