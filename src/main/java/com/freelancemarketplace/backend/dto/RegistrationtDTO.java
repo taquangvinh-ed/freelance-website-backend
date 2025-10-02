@@ -23,4 +23,6 @@ public class RegistrationtDTO {
 
     private String password;
 
+    private String token;
+
 }
