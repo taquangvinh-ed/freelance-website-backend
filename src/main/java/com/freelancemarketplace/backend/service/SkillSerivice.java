@@ -18,9 +18,7 @@ public interface SkillSerivice {
 
     List<SkillDTO> getAllSkillByCategory(Long CategoryId);
 
-    public void assignSkillToFreelancer(Long freelancerId, Long skillId);
 
-    public void removeSkillFromFreelancer(Long freelancerId, Long skillId);
 
 
 

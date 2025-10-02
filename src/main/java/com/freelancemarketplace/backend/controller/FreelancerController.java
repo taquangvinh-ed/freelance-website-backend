@@ -7,6 +7,7 @@ import com.freelancemarketplace.backend.dto.SkillDTO;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.FreelancerService;
+import com.freelancemarketplace.backend.service.SkillSerivice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,18 +26,6 @@ public class FreelancerController {
         this.freelancerService = freelancerService;
     }
 
-
-    @PostMapping("/newFreelancer")
-    ResponseEntity<ResponseDTO>createFreelancer(@RequestBody FreelancerDTO freelancerDTO){
-        FreelancerDTO newFreelancerDTO = freelancerService.createFreelancer(freelancerDTO);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new ResponseDTO(
-                        ResponseStatusCode.CREATED,
-                        ResponseMessage.CREATED,
-                        newFreelancerDTO
-                ));
-    }
 
 
     @PutMapping("/{freelancerId}")
@@ -83,6 +72,32 @@ public class FreelancerController {
                         ResponseStatusCode.SUCCESS,
                         ResponseMessage.SUCCESS,
                         givenFreelancer
+                ));
+    }
+
+    @PutMapping("/assignSkillToFreelancer/freelancer/{freelancerId}/skill/{skillId}")
+    public ResponseEntity<ResponseDTO>assignSkillToFreelancer(@PathVariable Long skillId,
+                                                              @PathVariable Long freelancerId){
+        FreelancerDTO updatedFreelancer = freelancerService.assignSkillToFreelancer(freelancerId,skillId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        updatedFreelancer
+                ));
+    }
+
+    @PutMapping("/removeSkillFromFreelancer/freelancer/{freelancerId}/skill/{skillId}")
+    public ResponseEntity<ResponseDTO>removeSkillFromFreelancer(@PathVariable Long skillId,
+                                                                @PathVariable Long freelancerId){
+        FreelancerDTO updatedFreelancer = freelancerService.removeSkillFromFreelancer(skillId,freelancerId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        updatedFreelancer
                 ));
     }
 }

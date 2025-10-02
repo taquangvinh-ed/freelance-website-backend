@@ -96,32 +96,7 @@ public class SkillServiceImp implements SkillSerivice {
         return skillMapper.toDTOs(allskillsByCategory);
     }
 
-    @Override
-    public void assignSkillToFreelancer(Long freelancerId, Long skillId) {
-        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
-                ()->new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
-        );
 
-        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
-                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
 
-        freelancer.getSkills().add(skill);
 
-        freelancersRepository.save(freelancer);
-    }
-
-    @Override
-    public void removeSkillFromFreelancer(Long freelancerId, Long skillId) {
-        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
-                ()->new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
-        );
-
-        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
-                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
-
-        freelancer.getSkills().remove(skill);
-
-        freelancersRepository.save(freelancer);
-
-    }
 }

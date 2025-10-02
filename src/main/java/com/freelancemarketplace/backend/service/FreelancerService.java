@@ -15,4 +15,8 @@ public interface FreelancerService {
     List<FreelancerDTO>getAllFreelancer();
 
     FreelancerDTO getFreelancerById(Long freelancerId);
+
+    FreelancerDTO assignSkillToFreelancer(Long freelancerId, Long skillId);
+
+    FreelancerDTO removeSkillFromFreelancer(Long freelancerId, Long skillId);
 }

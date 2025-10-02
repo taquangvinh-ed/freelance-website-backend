@@ -3,15 +3,13 @@ package com.freelancemarketplace.backend.service.imp;
 import com.freelancemarketplace.backend.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.FreelancerMapper;
-import com.freelancemarketplace.backend.mapper.UserMapper;
 import com.freelancemarketplace.backend.model.Bio;
 import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.UserModel;
+import com.freelancemarketplace.backend.model.SkillModel;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
-import com.freelancemarketplace.backend.repository.UserRepository;
+import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.service.FreelancerService;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,18 +19,13 @@ public class FreelancerServiceImp implements FreelancerService {
 
     private final FreelancersRepository freelancersRepository;
     private final FreelancerMapper freelancerMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
-    private final UserRepository userRepository;
+    private final SkillsRepository skillsRepository;
 
 
-    public FreelancerServiceImp(FreelancersRepository freelancersRepository, FreelancerMapper freelancerMapper, PasswordEncoder passwordEncoder, UserMapper userMapper,
-                                UserRepository userRepository) {
+    public FreelancerServiceImp(FreelancersRepository freelancersRepository, FreelancerMapper freelancerMapper, SkillsRepository skillsRepository) {
         this.freelancersRepository = freelancersRepository;
         this.freelancerMapper = freelancerMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
+        this.skillsRepository = skillsRepository;
     }
 
     @Override
@@ -129,6 +122,39 @@ public FreelancerDTO getFreelancerById(Long freelancerId){
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
     ()-> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found"));
         return freelancerMapper.toDTO(freelancer);
+
+    }
+
+
+    @Override
+    public FreelancerDTO assignSkillToFreelancer(Long freelancerId, Long skillId) {
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                ()->new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+        );
+
+        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
+                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
+
+        freelancer.getSkills().add(skill);
+
+        FreelancerModel savedFreelancer = freelancersRepository.save(freelancer);
+        return freelancerMapper.toDTO(savedFreelancer);
+    }
+
+    @Override
+    public FreelancerDTO removeSkillFromFreelancer(Long freelancerId, Long skillId) {
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                ()->new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+        );
+
+        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
+                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
+
+        freelancer.getSkills().remove(skill);
+
+        FreelancerModel savedFreelancer = freelancersRepository.save(freelancer);
+
+        return freelancerMapper.toDTO(savedFreelancer);
 
     }
 }

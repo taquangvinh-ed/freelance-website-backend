@@ -33,7 +33,8 @@ public class SecurityConfig {
                                 "/api/categories/**",
                                 "/api/skills/getAllSkill/Category/{categoryId}",
                                 "/api/skills/",
-                                "/api/categories/getAll").permitAll()
+                                "/api/categories/getAll",
+                                "/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*").permitAll()
                         .anyRequest().authenticated());
 //                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
 //                .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::newSession)
