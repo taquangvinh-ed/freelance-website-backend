@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -17,7 +19,16 @@ public class JwtTokenProvider {
     public String genarateToken(AppUser appUser){
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", appUser.getAuthorities().stream()
+                .map(auth -> auth.getAuthority().replace("ROLE_", ""))
+                .findFirst()
+                .orElse(""));
+
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(appUser.getEmail())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
@@ -34,6 +45,20 @@ public class JwtTokenProvider {
                 .getBody();
 
         return claims.getSubject();
+    }
+
+    public String getUserRoleFromJwt(String token){
+        try{
+            return Jwts.parser()
+                    .setSigningKey(JWT_SECRET)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("role", String.class);
+        }catch (RuntimeException e){
+            log.error("Failed to parse role from JWT {}", e.getMessage());
+            throw new RuntimeException("Invalid JWT token", e);
+        }
     }
 
     public Boolean validateToken(String authToken){

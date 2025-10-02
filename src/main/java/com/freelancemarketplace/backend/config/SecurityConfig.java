@@ -22,7 +22,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    private  final CustomUsernamePasswordAuthenticationProvider customUsernamePasswordAuthenticationProvider;
+    private final CustomUsernamePasswordAuthenticationProvider customUsernamePasswordAuthenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(CustomUsernamePasswordAuthenticationProvider customUsernamePasswordAuthenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -36,22 +36,23 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authenticationProvider(customUsernamePasswordAuthenticationProvider)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests((request)->request
+                .authorizeHttpRequests((request) -> request
                         .requestMatchers(
                                 "/api/users/",
                                 "/api/categories/**",
                                 "/api/skills/getAllSkill/Category/{categoryId}",
                                 "/api/skills/",
                                 "/api/categories/getAll",
-                                "/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
-                                "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/login").permitAll()
+                        .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
+                                "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*"
+                                ).hasRole("FREELANCER")
                         .anyRequest().authenticated())
-                        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -63,7 +64,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public CompromisedPasswordChecker compromisedPasswordChecker(){
+    public CompromisedPasswordChecker compromisedPasswordChecker() {
         return new HaveIBeenPwnedRestApiPasswordChecker();
     }
 
