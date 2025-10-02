@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.mapper;
 
+import com.freelancemarketplace.backend.dto.RegistrationtDTO;
 import com.freelancemarketplace.backend.dto.UserDTO;
 import com.freelancemarketplace.backend.model.UserModel;
 import org.mapstruct.*;
@@ -9,6 +10,10 @@ public interface UserMapper {
 
     @Mapping(target = "passwordHash", ignore = true)
     UserModel toEntity(UserDTO userDTO);
+
+    UserModel registraionDtoToUserEntity(RegistrationtDTO registrationtDTO);
+
+    RegistrationtDTO userEntityToRegistrationDTO(UserModel userModel);
 
     UserDTO toDto(UserModel userModel);
 

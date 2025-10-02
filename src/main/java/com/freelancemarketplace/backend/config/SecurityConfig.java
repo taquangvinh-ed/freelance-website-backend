@@ -46,10 +46,8 @@ public class SecurityConfig {
                 .authenticationProvider(customUsernamePasswordAuthenticationProvider)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((request)->request
-                        .requestMatchers("/api/freelancers/newFreelancer",
+                        .requestMatchers(
                                 "/api/users/",
-                                "/api/users/*/username",
-                                "/api/users/*/role",
                                 "/api/categories/**",
                                 "/api/skills/getAllSkill/Category/{categoryId}",
                                 "/api/skills/",
