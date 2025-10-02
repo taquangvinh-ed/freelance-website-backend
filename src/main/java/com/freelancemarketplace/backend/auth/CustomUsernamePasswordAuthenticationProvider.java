@@ -6,7 +6,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CustomUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
     private final CustomUserDetailService customUserDetailsService;
@@ -35,7 +37,7 @@ public class CustomUsernamePasswordAuthenticationProvider implements Authenticat
             throw new LockedException("User account is locked");
 
         if(passwordEncoder.matches(password, userDetails.getPassword())){
-            return new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
+            return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } else {
             throw new BadCredentialsException("Invalid password");
         }

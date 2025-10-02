@@ -91,7 +91,7 @@ public class FreelancerController {
     @PutMapping("/removeSkillFromFreelancer/freelancer/{freelancerId}/skill/{skillId}")
     public ResponseEntity<ResponseDTO>removeSkillFromFreelancer(@PathVariable Long skillId,
                                                                 @PathVariable Long freelancerId){
-        FreelancerDTO updatedFreelancer = freelancerService.removeSkillFromFreelancer(skillId,freelancerId);
+        FreelancerDTO updatedFreelancer = freelancerService.removeSkillFromFreelancer(freelancerId, skillId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDTO(
