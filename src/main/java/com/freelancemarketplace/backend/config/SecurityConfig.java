@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 @Configuration
@@ -43,9 +44,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers(
                                 "/api/users/",
-                                "/api/categories/**",
+                                "/api/categories/getAll",
                                 "/api/skills/getAllSkill/Category/{categoryId}",
-                                "/api/skills/",
+                                "/api/skills/getAll",
                                 "/api/categories/getAll",
                                 "/api/login").permitAll()
                         .requestMatchers("/api/upload/image").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
@@ -53,6 +54,7 @@ public class SecurityConfig {
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}"
                                 ).hasRole("FREELANCER")
+                        .requestMatchers("/api/projects/").hasRole("CLIENT")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

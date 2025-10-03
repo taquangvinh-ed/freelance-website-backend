@@ -33,4 +33,6 @@ public class ProjectDTO {
     private Set<SkillDTO> skills = new HashSet<>();
 
     private BudgetDTO budget;
+
+    private CategoryDTO category;
 }

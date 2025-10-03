@@ -23,7 +23,7 @@ public class ProjectController {
     }
 
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<ResponseDTO>createProject(@RequestBody ProjectDTO projectDTO){
         ProjectDTO newProject = projectService.createProject(projectDTO);
         return ResponseEntity

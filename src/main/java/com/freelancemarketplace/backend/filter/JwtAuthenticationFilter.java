@@ -34,10 +34,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final List<String> PUBLIC_ENDPOINTS = Arrays.asList(
             "/api/login",
-            "/api/users/",
-            "/api/categories",
+            "/api/categories/getAll",
             "/api/skills/getAllSkill/Category/{categoryId}",
-            "/api/skills",
+            "/api/skills/getAll",
             "/api/categories/getAll"
     );
 
@@ -45,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try{
-            if (request.getRequestURI().equals("/api/login")) {
+            if (PUBLIC_ENDPOINTS.contains(request.getRequestURI())) {
                 filterChain.doFilter(request, response); // Skip JWT validation for login
                 return;
             }

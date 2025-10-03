@@ -85,4 +85,5 @@ public class ProjectModel extends BaseEntity{
     )
     private Set<SkillModel> skills = new HashSet<>();
 
+
 }
