@@ -45,6 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try{
+            if (request.getRequestURI().equals("/api/login")) {
+                filterChain.doFilter(request, response); // Skip JWT validation for login
+                return;
+            }
+
             String jwt = getJwtFromRequest(request);
 
             if(StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)){
