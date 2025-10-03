@@ -48,6 +48,7 @@ public class SecurityConfig {
                                 "/api/skills/",
                                 "/api/categories/getAll",
                                 "/api/login").permitAll()
+                        .requestMatchers("/api/upload/image").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}"

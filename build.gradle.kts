@@ -42,7 +42,7 @@ dependencies {
 	implementation("com.stripe:stripe-java:29.5.0")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("commons-io:commons-io:2.20.0")
-	implementation("com.cloudinary:cloudinary-http5:2.0.0")
+	implementation("com.cloudinary:cloudinary-http44:1.39.0")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	testImplementation("org.springframework.security:spring-security-test")
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
