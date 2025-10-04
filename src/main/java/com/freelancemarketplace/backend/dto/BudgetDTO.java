@@ -21,6 +21,8 @@ public class BudgetDTO {
 
     private BigDecimal maxValue;
 
+    private BigDecimal fixedValue;
+
     private String currencyUnit;
 
     private Long projectId;

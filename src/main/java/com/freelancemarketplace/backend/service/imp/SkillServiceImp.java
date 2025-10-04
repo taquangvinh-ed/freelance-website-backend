@@ -12,11 +12,13 @@ import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.service.SkillSerivice;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class SkillServiceImp implements SkillSerivice {
 
     private SkillsRepository skillsRepository;
@@ -24,16 +26,6 @@ public class SkillServiceImp implements SkillSerivice {
     private FreelancersRepository freelancersRepository;
     private CategoriesRepository categoriesRepository;
 
-
-    public SkillServiceImp(SkillsRepository skillsRepository,
-                           SkillMapper skillMapper,
-                           FreelancersRepository freelancersRepository,
-                           CategoriesRepository categoriesRepository) {
-        this.skillsRepository = skillsRepository;
-        this.skillMapper = skillMapper;
-        this.freelancersRepository = freelancersRepository;
-        this.categoriesRepository = categoriesRepository;
-    }
 
     @Override
     @Transactional

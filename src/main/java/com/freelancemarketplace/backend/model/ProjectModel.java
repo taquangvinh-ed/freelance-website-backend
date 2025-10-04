@@ -28,7 +28,6 @@ public class ProjectModel extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
 
-    private Double budgetAmount;
     private Integer durationDays;
     private Integer connections;
     private Timestamp startDate;

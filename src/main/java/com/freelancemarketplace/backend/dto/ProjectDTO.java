@@ -21,7 +21,6 @@ public class ProjectDTO {
 
     private ProjectStatus status;
 
-    private Double budgetAmount;
     private Integer durationDays;
     private Integer connections;
     private Timestamp startDate;

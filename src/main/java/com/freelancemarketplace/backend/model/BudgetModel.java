@@ -25,6 +25,8 @@ public class BudgetModel extends BaseEntity{
 
     private BigDecimal maxValue;
 
+    private BigDecimal fixedValue;
+
     private String currencyUnit;
 
     @OneToOne(fetch = FetchType.LAZY)
