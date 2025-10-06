@@ -32,4 +32,6 @@ public interface ProjectMapper {
     ProjectModel partialUpdate(ProjectDTO projectDTO, @MappingTarget ProjectModel projectModel);
 
     List<ProjectDTO> toDTOs(List<ProjectModel> projectModels);
+
+
 }

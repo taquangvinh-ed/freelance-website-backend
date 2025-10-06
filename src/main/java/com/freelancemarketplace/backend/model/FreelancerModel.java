@@ -63,7 +63,7 @@ public class FreelancerModel extends BaseEntity {
     @OneToMany(mappedBy = "freelancer")
     private Set<ContractModel> contracts;
 
-    @OneToMany(mappedBy = "Freelancer")
+    @OneToMany(mappedBy = "winningFreelancer")
     private Set<ProjectModel> projects;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -104,5 +104,11 @@ public class FreelancerModel extends BaseEntity {
 
     @OneToMany(mappedBy = "freelancer")
     private Set<FreelancerTestResults> testResults;
+
+    @Column(name = "profile_embedding", columnDefinition = "bytea")
+    private byte[] profileEmbedding;
+
+    @Column(name = "skill_vector", columnDefinition = "bytea")
+    private byte[] skillVector;
 
 }

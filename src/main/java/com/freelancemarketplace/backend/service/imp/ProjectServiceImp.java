@@ -7,6 +7,7 @@ import com.freelancemarketplace.backend.mapper.ProjectMapper;
 import com.freelancemarketplace.backend.model.BudgetModel;
 import com.freelancemarketplace.backend.model.ProjectModel;
 import com.freelancemarketplace.backend.model.SkillModel;
+import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.repository.BudgetsRepository;
 import com.freelancemarketplace.backend.repository.CategoriesRepository;
 import com.freelancemarketplace.backend.repository.ProjectsRepository;
@@ -27,27 +28,34 @@ public class ProjectServiceImp implements ProjectService {
     private final SkillsRepository skillsRepository;
     private final CategoriesRepository categoriesRepository;
     private final BudgetsRepository budgetsRepository;
-
+    private final EmbeddingService embeddingService;
 
 
     @Override
     @Transactional
     public ProjectDTO createProject(ProjectDTO projectDTO) {
 
-        if(projectDTO.getBudget() == null){
+        if (projectDTO.getBudget() == null) {
             throw new IllegalArgumentException("Budget is required for the project.");
         }
 
-        if(projectDTO.getCategory() == null)
+        if (projectDTO.getCategory() == null)
             throw new IllegalArgumentException("Category is required for the project.");
 
-        if(projectDTO.getSkills() == null)
+        if (projectDTO.getSkills() == null)
             throw new IllegalArgumentException("Skills is required for the project");
 
         ProjectModel newProject = projectMapper.toEntity(projectDTO);
         BudgetModel budgetInsideNewProject = newProject.getBudget();
         budgetInsideNewProject.setProject(newProject);
         newProject.setStatus(ProjectStatus.IN_PROGRESS);
+
+        if (projectDTO.getTitle() != null)
+            newProject.setTitleEmbedding(embeddingService.generateEmbedding(projectDTO.getTitle()));
+
+        if (projectDTO.getDescription() != null)
+            newProject.setDescriptionEmbedding(embeddingService.generateEmbedding(projectDTO.getDescription()));
+
         ProjectModel savedProject = projectsRepository.save(newProject);
         return projectMapper.toDto(savedProject);
     }
@@ -57,7 +65,7 @@ public class ProjectServiceImp implements ProjectService {
     public ProjectDTO updateProject(Long projectId, ProjectDTO projectDTO) {
 
         ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
-                ()-> new ResourceNotFoundException("Project with id: " + projectId + " not found.")
+                () -> new ResourceNotFoundException("Project with id: " + projectId + " not found.")
         );
 
         ProjectModel updatedProject = projectMapper.partialUpdate(projectDTO, project);
@@ -71,7 +79,7 @@ public class ProjectServiceImp implements ProjectService {
     @Transactional
     public void deleteProject(Long projectId) {
         Boolean isExisted = projectsRepository.existsById(projectId);
-        if(!isExisted){
+        if (!isExisted) {
             throw new ResourceNotFoundException("Project with id: " + projectId + " not found.");
         }
         projectsRepository.deleteById(projectId);
@@ -86,7 +94,7 @@ public class ProjectServiceImp implements ProjectService {
     @Override
     public ProjectDTO findProjectById(Long projectId) {
         ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
-                () ->  new ResourceNotFoundException("Project with id: " + projectId + " not found."));
+                () -> new ResourceNotFoundException("Project with id: " + projectId + " not found."));
         return projectMapper.toDto(project);
     }
 
@@ -100,7 +108,7 @@ public class ProjectServiceImp implements ProjectService {
     @Transactional
     public void assignSkillToProject(Long projectId, Long skillId) {
         ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
-                () ->  new ResourceNotFoundException("Project with id: " + projectId + " not found."));
+                () -> new ResourceNotFoundException("Project with id: " + projectId + " not found."));
         SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
                 () -> new ResourceNotFoundException("Skill with id: " + skillId + " not found.")
         );
@@ -111,9 +119,9 @@ public class ProjectServiceImp implements ProjectService {
 
     @Transactional
     @Override
-    public void removeSkillFromProject(Long projectId, Long skillId){
+    public void removeSkillFromProject(Long projectId, Long skillId) {
         ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
-                () ->  new ResourceNotFoundException("Project with id: " + projectId + " not found."));
+                () -> new ResourceNotFoundException("Project with id: " + projectId + " not found."));
         SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
                 () -> new ResourceNotFoundException("Skill with id: " + skillId + " not found.")
         );

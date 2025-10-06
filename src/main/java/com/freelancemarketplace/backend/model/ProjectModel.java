@@ -52,7 +52,7 @@ public class ProjectModel extends BaseEntity{
 
     @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name ="freelancerId")
-    private FreelancerModel Freelancer;
+    private FreelancerModel winningFreelancer;
 
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private Set<TestimonialModel> testimonials;
@@ -84,5 +84,9 @@ public class ProjectModel extends BaseEntity{
     )
     private Set<SkillModel> skills = new HashSet<>();
 
+    @Column(name = "title_embedding", columnDefinition = "bytea")
+    private byte[] titleEmbedding;
 
+    @Column(name = "description_embedding", columnDefinition = "bytea")
+    private byte[] descriptionEmbedding;
 }

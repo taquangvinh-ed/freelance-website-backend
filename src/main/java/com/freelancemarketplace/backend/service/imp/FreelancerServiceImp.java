@@ -6,27 +6,26 @@ import com.freelancemarketplace.backend.mapper.FreelancerMapper;
 import com.freelancemarketplace.backend.model.Bio;
 import com.freelancemarketplace.backend.model.FreelancerModel;
 import com.freelancemarketplace.backend.model.SkillModel;
+import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.service.FreelancerService;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class FreelancerServiceImp implements FreelancerService {
 
     private final FreelancersRepository freelancersRepository;
     private final FreelancerMapper freelancerMapper;
     private final SkillsRepository skillsRepository;
+    private final EmbeddingService embeddingService;
 
 
-    public FreelancerServiceImp(FreelancersRepository freelancersRepository, FreelancerMapper freelancerMapper, SkillsRepository skillsRepository) {
-        this.freelancersRepository = freelancersRepository;
-        this.freelancerMapper = freelancerMapper;
-        this.skillsRepository = skillsRepository;
-    }
 
     @Override
     @Transactional
@@ -136,6 +135,7 @@ public FreelancerDTO getFreelancerById(Long freelancerId){
                 ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
 
         freelancer.getSkills().add(skill);
+        freelancer.setSkillVector(embeddingService.generateSkillVector(freelancer));
 
         FreelancerModel savedFreelancer = freelancersRepository.save(freelancer);
         return freelancerMapper.toDTO(savedFreelancer);
@@ -151,6 +151,7 @@ public FreelancerDTO getFreelancerById(Long freelancerId){
                 ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
 
         freelancer.getSkills().remove(skill);
+        freelancer.setSkillVector(embeddingService.generateSkillVector(freelancer));
 
         FreelancerModel savedFreelancer = freelancersRepository.save(freelancer);
 
