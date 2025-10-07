@@ -134,4 +134,11 @@ public class ProjectController {
                 keyword, categoryId, skillNames, minRateDouble, maxRateDouble, isHourly, status, pageable);
     }
 
+//    @GetMapping("/autocomplete-search")
+//    public List<ProjectDTO> autocompleteSearch(
+//            @RequestParam(required = false) String keyword,
+//            @RequestParam(defaultValue = "10") int limit) {
+//        return projectIndexingService.autocompleteSearch(keyword, limit);
+//    }
+
 }

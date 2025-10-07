@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -160,6 +161,25 @@ public class ProjectServiceImp implements ProjectService {
         } catch (Exception e) {
             log.error("Error executing JPA Specification search: {}", e.getMessage(), e);
             throw new RuntimeException("Error executing JPA Specification search", e);
+        }
+    }
+
+    public List<ProjectDTO> autocompleteSearch(String keyword, int limit) {
+        try {
+            // Tạo Specification cho tìm kiếm autocomplete
+            Specification<ProjectModel> spec = ProjectSpecification.autocompleteSearch(keyword, limit);
+
+            // Thực thi truy vấn với giới hạn số lượng kết quả
+            PageRequest pageRequest = PageRequest.of(0, limit);
+            List<ProjectModel> projectModels = projectsRepository.findAll(spec, pageRequest).getContent();
+
+            // Chuyển đổi sang DTO
+            return projectModels.stream()
+                    .map(projectMapper::toDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error executing autocomplete search: {}", e.getMessage(), e);
+            throw new RuntimeException("Error executing autocomplete search", e);
         }
     }
 }

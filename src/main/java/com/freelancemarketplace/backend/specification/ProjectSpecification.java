@@ -83,4 +83,26 @@ public class ProjectSpecification {
         };
     }
 
+    public static Specification<ProjectModel> autocompleteSearch(String keyword, int limit) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Tìm kiếm theo keyword trong title và description
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String likePattern = "%" + keyword.trim().toLowerCase() + "%";
+                Predicate titlePredicate = criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("title")), likePattern);
+                Predicate descriptionPredicate = criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("description")), likePattern);
+                predicates.add(criteriaBuilder.or(titlePredicate, descriptionPredicate));
+            }
+
+            // Sắp xếp theo title để đảm bảo kết quả nhất quán
+            query.orderBy(criteriaBuilder.asc(root.get("title")));
+
+            // Kết hợp các điều kiện
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
 }
