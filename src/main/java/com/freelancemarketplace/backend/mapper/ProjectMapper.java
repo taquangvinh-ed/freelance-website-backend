@@ -1,14 +1,11 @@
 package com.freelancemarketplace.backend.mapper;
 
-import com.freelancemarketplace.backend.dto.BudgetDTO;
-import com.freelancemarketplace.backend.dto.CategoryDTO;
-import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.dto.SkillDTO;
-import com.freelancemarketplace.backend.model.BudgetModel;
-import com.freelancemarketplace.backend.model.CategoryModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
-import com.freelancemarketplace.backend.model.SkillModel;
+import com.freelancemarketplace.backend.dto.*;
+import com.freelancemarketplace.backend.model.*;
 import org.mapstruct.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -32,6 +29,11 @@ public interface ProjectMapper {
     ProjectModel partialUpdate(ProjectDTO projectDTO, @MappingTarget ProjectModel projectModel);
 
     List<ProjectDTO> toDTOs(List<ProjectModel> projectModels);
+
+    default Page<ProjectDTO> toDTOPage(List<ProjectDTO> dtos, Pageable pageable, long totalElements) {
+        // Tạo PageImpl từ List<ProjectDTO> đã có, Pageable và tổng số phần tử
+        return new PageImpl<>(dtos, pageable, totalElements);
+    }
 
 
 }

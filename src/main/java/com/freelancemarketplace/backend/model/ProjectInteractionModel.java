@@ -36,4 +36,7 @@ public class ProjectInteractionModel {
 
     @Column(nullable = false)
     private boolean isPositive;
+
+    @Column
+    private int interactionScore;
 }

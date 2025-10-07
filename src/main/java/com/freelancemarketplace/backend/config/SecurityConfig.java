@@ -48,7 +48,8 @@ public class SecurityConfig {
                                 "/api/skills/getAllSkill/Category/{categoryId}",
                                 "/api/skills/getAll",
                                 "/api/categories/getAll",
-                                "/api/login", "/api/projects/getAllProjects").permitAll()
+                                "/api/login", "/api/projects/getAllProjects",
+                                "/api/projects/recommend/train-cf").permitAll()
                         .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",

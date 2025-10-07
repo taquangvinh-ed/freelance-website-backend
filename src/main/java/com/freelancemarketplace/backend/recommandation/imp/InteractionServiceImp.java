@@ -35,9 +35,17 @@ public class InteractionServiceImp implements InteractionService {
                 ()->new ResourceNotFoundException("Project with id: " + projectId +" not found")
         );
 
+        int score = switch (interactionType){
+            case WON -> 5;
+            case BIDDED -> 3;
+            case SAVED, VIEWED -> 1;
+            default -> 0;
+        };
+
         newInteraction.setFreelancer(freelancer);
         newInteraction.setProject(project);
         newInteraction.setInteractionType(interactionType);
+        newInteraction.setInteractionScore(score);
         newInteraction.setTimestamp(Timestamp.from(Instant.now()));
         newInteraction.setPositive(interactionType == InteractionType.WON);
         projectInteractionModelRepository.save(newInteraction);

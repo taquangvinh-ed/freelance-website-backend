@@ -38,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/skills/getAllSkill/Category/{categoryId}",
             "/api/skills/getAll",
             "/api/categories/getAll",
-            "/api/projects/getAllProjects"
+            "/api/projects/getAllProjects",
+            "/api/projects/recommend/train-cf"
     );
 
     @Override

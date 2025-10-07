@@ -1,10 +1,10 @@
 package com.freelancemarketplace.backend.recommandation;
 
 import com.freelancemarketplace.backend.dto.ProjectDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface RecommendationService {
 
-    List<ProjectDTO> recommendProjects(Long freelancerId);
+    Page<ProjectDTO> recommendProjects(Long freelancerId, Pageable pageable);
 }
