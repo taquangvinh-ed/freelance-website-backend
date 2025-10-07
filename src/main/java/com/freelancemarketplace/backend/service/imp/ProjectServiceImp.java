@@ -13,14 +13,22 @@ import com.freelancemarketplace.backend.repository.CategoriesRepository;
 import com.freelancemarketplace.backend.repository.ProjectsRepository;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.service.ProjectService;
+import com.freelancemarketplace.backend.specification.ProjectSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ProjectServiceImp implements ProjectService {
 
     private final ProjectsRepository projectsRepository;
@@ -128,5 +136,30 @@ public class ProjectServiceImp implements ProjectService {
 
         project.getSkills().remove(skill);
         projectsRepository.save(project);
+    }
+
+
+    @Override
+    public Page<ProjectDTO> advancedSearchProjects(String keyword, Long categoryId, List<String> skillNames,
+                                                   Double minRate, Double maxRate, Boolean isHourly, String status, Pageable pageable) {
+        try {
+            // Tạo Specification cho truy vấn
+            Specification<ProjectModel> spec = ProjectSpecification.advancedSearch(
+                    keyword, categoryId, skillNames, minRate, maxRate, isHourly, status);
+
+            // Thực thi truy vấn với Specification và phân trang
+            Page<ProjectModel> projectModels = projectsRepository.findAll(spec, pageable);
+
+            // Chuyển đổi sang DTO
+            List<ProjectDTO> dtoList = projectModels.getContent().stream()
+                    .map(projectMapper::toDto)
+                    .collect(Collectors.toList());
+
+            // Tạo đối tượng Page
+            return new PageImpl<>(dtoList, pageable, projectModels.getTotalElements());
+        } catch (Exception e) {
+            log.error("Error executing JPA Specification search: {}", e.getMessage(), e);
+            throw new RuntimeException("Error executing JPA Specification search", e);
+        }
     }
 }

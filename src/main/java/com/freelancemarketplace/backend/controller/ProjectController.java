@@ -5,11 +5,14 @@ import com.freelancemarketplace.backend.dto.ResponseDTO;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.ProjectService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -113,5 +116,22 @@ public class ProjectController {
 
     }
 
+    @GetMapping("/advanced-search")
+    public Page<ProjectDTO> advancedSearch(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) List<String> skillNames,
+            @RequestParam(required = false) BigDecimal minRate,
+            @RequestParam(required = false) BigDecimal maxRate,
+            @RequestParam(required = false) Boolean isHourly,
+            @RequestParam(required = false) String status,
+            Pageable pageable) {
+        // Chuyển BigDecimal sang Double để khớp với phương thức
+        Double minRateDouble = minRate != null ? minRate.doubleValue() : null;
+        Double maxRateDouble = maxRate != null ? maxRate.doubleValue() : null;
+
+        return projectService.advancedSearchProjects(
+                keyword, categoryId, skillNames, minRateDouble, maxRateDouble, isHourly, status, pageable);
+    }
 
 }
