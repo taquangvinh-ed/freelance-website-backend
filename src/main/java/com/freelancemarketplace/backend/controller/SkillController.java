@@ -6,6 +6,7 @@ import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.SkillSerivice;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -95,5 +96,11 @@ public class SkillController {
                 .body(new ResponseDTO(ResponseStatusCode.SUCCESS,
                         ResponseMessage.SUCCESS,
                         skills));
+    }
+
+    @GetMapping("/search")
+    ResponseEntity<List<SkillDTO>> searchSkill(@RequestParam(required = false) String keyword, Pageable pageable){
+        List<SkillDTO> skills = skillSerivice.autoCompleteSearchSkill(keyword, pageable);
+        return ResponseEntity.ok(skills);
     }
 }

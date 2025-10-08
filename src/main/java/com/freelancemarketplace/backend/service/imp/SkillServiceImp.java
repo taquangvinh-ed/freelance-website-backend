@@ -5,14 +5,16 @@ import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.exception.SkillAlreadyExisted;
 import com.freelancemarketplace.backend.mapper.SkillMapper;
 import com.freelancemarketplace.backend.model.CategoryModel;
-import com.freelancemarketplace.backend.model.FreelancerModel;
 import com.freelancemarketplace.backend.model.SkillModel;
 import com.freelancemarketplace.backend.repository.CategoriesRepository;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.service.SkillSerivice;
+import com.freelancemarketplace.backend.specification.SkillSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -88,7 +90,9 @@ public class SkillServiceImp implements SkillSerivice {
         return skillMapper.toDTOs(allskillsByCategory);
     }
 
-
-
-
+    @Override
+    public List<SkillDTO> autoCompleteSearchSkill(String keyword, Pageable pageable){
+        Specification<SkillModel> spec = SkillSpecification.searchByName(keyword);
+        return skillMapper.toDTOs(skillsRepository.findAll(spec, pageable).getContent());
+    }
 }

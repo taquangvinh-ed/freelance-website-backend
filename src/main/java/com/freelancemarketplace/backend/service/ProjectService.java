@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProjectService {
@@ -27,6 +28,9 @@ public interface ProjectService {
     @Transactional
     void removeSkillFromProject(Long projectId, Long skillId);
 
-    Page<ProjectDTO> advancedSearchProjects(String keyword, Long categoryId, List<String> skillNames,
-                                            Double minRate, Double maxRate, Boolean isHourly, String status, Pageable pageable);
+
+    Page<ProjectDTO> filter(List<String> skillNames,
+                            BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, Pageable pageable);
+
+    Page<ProjectDTO> autocompleteSearch(String keyword, int limit, Pageable pageable);
 }

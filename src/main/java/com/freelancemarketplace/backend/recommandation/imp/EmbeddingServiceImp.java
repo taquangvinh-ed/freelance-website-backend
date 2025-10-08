@@ -23,8 +23,8 @@ public class EmbeddingServiceImp implements EmbeddingService {
 
     private final String embeddingServiceUrl;
 
-    public EmbeddingServiceImp(RestTemplate restTemplate, @Value("${embedding.service.url}")
-    String embeddingServiceUrl) {
+    public EmbeddingServiceImp(RestTemplate restTemplate,
+                               @Value("${embedding.service.url}") String embeddingServiceUrl) {
         this.restTemplate = restTemplate;
         this.embeddingServiceUrl = embeddingServiceUrl;
     }

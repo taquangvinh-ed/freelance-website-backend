@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.controller;
 
+import com.freelancemarketplace.backend.auth.AppUser;
 import com.freelancemarketplace.backend.dto.ProjectDTO;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.model.ProjectInteractionModel;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,15 +37,16 @@ public class RecommendationProjectController {
     public RecommendationProjectController(RecommendationService recommendationService,
                                            ProjectInteractionModelRepository projectInteractionModelRepository,
                                            RestTemplate restTemplate,
-                                           @Value("${embedding.service.url}")String embeddingServiceUrl) {
+                                           @Value("${embedding.service.url}") String embeddingServiceUrl) {
         this.recommendationService = recommendationService;
         this.projectInteractionModelRepository = projectInteractionModelRepository;
         this.restTemplate = restTemplate;
         this.embeddingServiceUrl = embeddingServiceUrl;
     }
 
-    @GetMapping("/freelancer/{freelancerId}")
-    ResponseEntity<?> recommendProjectList(@PathVariable Long freelancerId, Pageable pageable) {
+    @GetMapping("/freelancer")
+    ResponseEntity<?> recommendProjectList(@AuthenticationPrincipal AppUser principal, Pageable pageable) {
+        Long freelancerId = principal.getId();
         log.info("Requesting recommendations for freelancerId: {}", freelancerId);
         try {
             Page<ProjectDTO> projects = recommendationService.recommendProjects(freelancerId, pageable);

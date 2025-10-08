@@ -25,6 +25,7 @@ public class JwtTokenProvider {
                 .map(auth -> auth.getAuthority().replace("ROLE_", ""))
                 .findFirst()
                 .orElse(""));
+        claims.put("userId", appUser.getId());
 
 
         return Jwts.builder()
@@ -59,6 +60,17 @@ public class JwtTokenProvider {
             log.error("Failed to parse role from JWT {}", e.getMessage());
             throw new RuntimeException("Invalid JWT token", e);
         }
+    }
+
+    public Long getUserIdFromJwt(String token){
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        // Lấy giá trị từ key "userId" và ép kiểu sang Long (hoặc kiểu dữ liệu gốc của ID)
+        return claims.get("userId", Long.class);
     }
 
     public Boolean validateToken(String authToken){

@@ -19,11 +19,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -139,14 +139,13 @@ public class ProjectServiceImp implements ProjectService {
         projectsRepository.save(project);
     }
 
-
     @Override
-    public Page<ProjectDTO> advancedSearchProjects(String keyword, Long categoryId, List<String> skillNames,
-                                                   Double minRate, Double maxRate, Boolean isHourly, String status, Pageable pageable) {
+    public Page<ProjectDTO> filter(List<String> skillNames,
+                                   BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, Pageable pageable) {
         try {
             // Tạo Specification cho truy vấn
-            Specification<ProjectModel> spec = ProjectSpecification.advancedSearch(
-                    keyword, categoryId, skillNames, minRate, maxRate, isHourly, status);
+            Specification<ProjectModel> spec = ProjectSpecification.filter(
+                     skillNames, minRate, maxRate, isHourly);
 
             // Thực thi truy vấn với Specification và phân trang
             Page<ProjectModel> projectModels = projectsRepository.findAll(spec, pageable);
@@ -164,19 +163,21 @@ public class ProjectServiceImp implements ProjectService {
         }
     }
 
-    public List<ProjectDTO> autocompleteSearch(String keyword, int limit) {
+    @Override
+    public Page<ProjectDTO> autocompleteSearch(String keyword, int limit, Pageable pageable) {
         try {
             // Tạo Specification cho tìm kiếm autocomplete
             Specification<ProjectModel> spec = ProjectSpecification.autocompleteSearch(keyword, limit);
 
             // Thực thi truy vấn với giới hạn số lượng kết quả
-            PageRequest pageRequest = PageRequest.of(0, limit);
-            List<ProjectModel> projectModels = projectsRepository.findAll(spec, pageRequest).getContent();
+            Page<ProjectModel> projectPage = projectsRepository.findAll(spec, pageable);
 
             // Chuyển đổi sang DTO
-            return projectModels.stream()
+            List<ProjectDTO> projects = projectPage.getContent().stream()
                     .map(projectMapper::toDto)
                     .collect(Collectors.toList());
+
+            return new PageImpl<>(projects, pageable, projectPage.getTotalElements());
         } catch (Exception e) {
             log.error("Error executing autocomplete search: {}", e.getMessage(), e);
             throw new RuntimeException("Error executing autocomplete search", e);

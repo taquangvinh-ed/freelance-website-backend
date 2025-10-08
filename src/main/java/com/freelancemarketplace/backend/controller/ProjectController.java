@@ -116,29 +116,25 @@ public class ProjectController {
 
     }
 
-    @GetMapping("/advanced-search")
+    @GetMapping("/filter")
     public Page<ProjectDTO> advancedSearch(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) List<String> skillNames,
             @RequestParam(required = false) BigDecimal minRate,
             @RequestParam(required = false) BigDecimal maxRate,
             @RequestParam(required = false) Boolean isHourly,
-            @RequestParam(required = false) String status,
             Pageable pageable) {
-        // Chuyển BigDecimal sang Double để khớp với phương thức
-        Double minRateDouble = minRate != null ? minRate.doubleValue() : null;
-        Double maxRateDouble = maxRate != null ? maxRate.doubleValue() : null;
 
-        return projectService.advancedSearchProjects(
-                keyword, categoryId, skillNames, minRateDouble, maxRateDouble, isHourly, status, pageable);
+
+        return projectService.filter(
+                skillNames, minRate, maxRate, isHourly, pageable);
     }
 
-//    @GetMapping("/autocomplete-search")
-//    public List<ProjectDTO> autocompleteSearch(
-//            @RequestParam(required = false) String keyword,
-//            @RequestParam(defaultValue = "10") int limit) {
-//        return projectIndexingService.autocompleteSearch(keyword, limit);
-//    }
+    @GetMapping("/autocomplete-search")
+    public Page<ProjectDTO> autocompleteSearch(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "10") int limit, Pageable pageable) {
+
+        return projectService.autocompleteSearch(keyword, limit, pageable);
+    }
 
 }

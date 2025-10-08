@@ -50,7 +50,9 @@ public class SecurityConfig {
                                 "/api/categories/getAll",
                                 "/api/login", "/api/projects/getAllProjects",
                                 "/api/projects/recommend/train-cf",
-                                "/api/projects/advanced-search").permitAll()
+                                "/api/projects/filter",
+                                "/api/skills/search",
+                        "/api/projects/autocomplete-search").permitAll()
                         .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
