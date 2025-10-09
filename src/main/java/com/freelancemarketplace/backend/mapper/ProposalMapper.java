@@ -12,8 +12,8 @@ import java.util.List;
 public interface ProposalMapper {
     ProposalModel toEntity(ProposalDTO proposalDTO);
 
-    MileStoneDTO toMilStoneDTO(MileStoneModel model);
-    MileStoneModel toMiStoneEntity(MileStoneDTO mileStoneDTO);
+    MileStoneDTO toMileStoneDTO(MileStoneModel model);
+    MileStoneModel toMileStoneEntity(MileStoneDTO mileStoneDTO);
 
     @Mapping(target = "projectId", source = "project.projectId")
     @Mapping(target = "teamId", source = "team.teamId")

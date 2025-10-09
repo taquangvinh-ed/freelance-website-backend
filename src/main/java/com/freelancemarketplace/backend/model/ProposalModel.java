@@ -64,7 +64,7 @@ public class ProposalModel extends BaseEntity{
     @JoinColumn(name = "teamId")
     private TeamModel team;
 
-    @OneToMany(mappedBy = "proposal")
+    @OneToMany(mappedBy = "proposal", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MileStoneModel> mileStones;
 
     public void validateMilestones() {

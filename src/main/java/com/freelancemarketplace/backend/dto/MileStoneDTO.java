@@ -26,6 +26,8 @@ public class MileStoneDTO {
 
     private String description;
 
+    private String freelancerId;
+
     private Boolean isActived;
 
     private String status;
