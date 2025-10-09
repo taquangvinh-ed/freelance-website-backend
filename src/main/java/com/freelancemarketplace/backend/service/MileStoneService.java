@@ -14,4 +14,18 @@ public interface MileStoneService {
     void deleteMileStone(Long mileStoneId);
 
     List<MileStoneDTO> getAllMileStoneByContract(Long contractId);
+
+    MileStoneDTO setMilestoneAccepted(Long mileStoneId);
+
+    MileStoneDTO setMilestoneApproved(Long mileStoneId);
+
+    MileStoneDTO setMilestoneCompleted(Long mileStoneId);
+
+    MileStoneDTO setMilestoneReleased(Long mileStoneId);
+
+    MileStoneDTO setMilestoneDisputed(Long mileStoneId);
+
+    List<MileStoneDTO> acceptMilestones(Long proposalId, List<Long> milestoneIds);
+
+    void copyAcceptedMilestonesToContract(Long proposalId, Long contractId);
 }

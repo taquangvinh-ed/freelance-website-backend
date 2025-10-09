@@ -20,7 +20,9 @@ public class MileStoneDTO {
 
     private BigDecimal amount;
 
-    private Timestamp dueDate;
+    private String currencyUnit;
+
+    private Integer dueDate;
 
     private String description;
 
@@ -29,4 +31,6 @@ public class MileStoneDTO {
     private String status;
 
     private Long contractId;
+
+    private Long proposalId;
 }

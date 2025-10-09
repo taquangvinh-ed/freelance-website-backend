@@ -23,7 +23,9 @@ public class MileStoneModel extends BaseEntity{
 
     private BigDecimal amount;
 
-    private Timestamp dueDate;
+    private String currencyUnit;
+
+    private Integer dueDate;
 
     private String description;
 
@@ -35,5 +37,9 @@ public class MileStoneModel extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="contractId")
     private ContractModel contract;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "proposalId")
+    private ProposalModel proposal;
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ProposalService {
 
-    ProposalDTO createProposal(ProposalDTO proposalDTO);
+    ProposalDTO createProposal(Long freelancerId, ProposalDTO proposalDTO);
 
     ProposalDTO updateProposal(Long proposalId, ProposalDTO proposalDTO);
 

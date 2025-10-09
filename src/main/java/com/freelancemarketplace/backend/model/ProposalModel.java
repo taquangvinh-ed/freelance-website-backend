@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.model;
 
+import com.freelancemarketplace.backend.enums.BudgetTypes;
 import com.freelancemarketplace.backend.enums.ProposalStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class ProposalModel extends BaseEntity{
 
     private String description;
 
-    private String[] files;
+    private String currencyUnit;
 
     @Enumerated(EnumType.STRING)
     private ProposalStatus status;
@@ -32,6 +33,18 @@ public class ProposalModel extends BaseEntity{
     private BigDecimal amount;
 
     private Integer deliveryDays;
+
+
+    @Enumerated(EnumType.STRING)
+    private BudgetTypes budgetType; // CẦN THÊM ENUM NÀY
+
+    // Mức phí theo giờ được đề xuất (chỉ dùng nếu budgetType là HOURLY)
+    private BigDecimal hourlyRate; // CẦN BỔ SUNG
+
+    // Số giờ ước tính (chỉ dùng nếu budgetType là HOURLY)
+    private Integer estimatedHours;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "freelancerId")
@@ -50,5 +63,19 @@ public class ProposalModel extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private TeamModel team;
+
+    @OneToMany(mappedBy = "proposal")
+    private Set<MileStoneModel> mileStones;
+
+    public void validateMilestones() {
+        if (mileStones != null && !mileStones.isEmpty()) {
+            BigDecimal totalMilestoneAmount = mileStones.stream()
+                    .map(MileStoneModel::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            if (totalMilestoneAmount.compareTo(amount) != 0) {
+                throw new IllegalStateException("Total milestone amount must equal proposal amount");
+            }
+        }
+    }
 
 }

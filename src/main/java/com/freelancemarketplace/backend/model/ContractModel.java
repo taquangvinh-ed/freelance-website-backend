@@ -61,7 +61,7 @@ public class ContractModel extends BaseEntity{
     @JoinColumn(name = "projectId")
     private ProjectModel contractProject;
 
-    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "contract")
     private Set<MileStoneModel> mileStones = new HashSet<>();
 
 }

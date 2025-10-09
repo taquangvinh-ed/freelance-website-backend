@@ -52,13 +52,14 @@ public class SecurityConfig {
                                 "/api/projects/recommend/train-cf",
                                 "/api/projects/filter",
                                 "/api/skills/search",
-                        "/api/projects/autocomplete-search").permitAll()
-                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
+                                "/api/projects/autocomplete-search").permitAll()
+                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}", "/api/proposals/"
+                                ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",
                                 "/api/projects/findProject/{projectId}"
-                                ).hasRole("FREELANCER")
+                        ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/").hasRole("CLIENT")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

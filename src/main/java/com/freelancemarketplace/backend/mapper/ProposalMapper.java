@@ -1,6 +1,8 @@
 package com.freelancemarketplace.backend.mapper;
 
+import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
+import com.freelancemarketplace.backend.model.MileStoneModel;
 import com.freelancemarketplace.backend.model.ProposalModel;
 import org.mapstruct.*;
 
@@ -10,7 +12,9 @@ import java.util.List;
 public interface ProposalMapper {
     ProposalModel toEntity(ProposalDTO proposalDTO);
 
-    @Mapping(target = "freelancerId", source = "freelancer.freelancerId")
+    MileStoneDTO toMilStoneDTO(MileStoneModel model);
+    MileStoneModel toMiStoneEntity(MileStoneDTO mileStoneDTO);
+
     @Mapping(target = "projectId", source = "project.projectId")
     @Mapping(target = "teamId", source = "team.teamId")
     ProposalDTO toDto(ProposalModel proposalModel);

@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.controller;
 
+import com.freelancemarketplace.backend.auth.AppUser;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
 import com.freelancemarketplace.backend.response.ResponseMessage;
@@ -8,6 +9,7 @@ import com.freelancemarketplace.backend.service.ProposalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +24,12 @@ public class ProposalController {
         this.proposalService = proposalService;
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO>createProposal(@RequestBody ProposalDTO proposalDTO){
-        ProposalDTO newProposal = proposalService.createProposal(proposalDTO);
+    @PostMapping("/")
+    public ResponseEntity<ResponseDTO>createProposal(@AuthenticationPrincipal AppUser appUser, @RequestBody ProposalDTO proposalDTO){
+
+    Long userId = appUser.getId();
+
+        ProposalDTO newProposal = proposalService.createProposal(userId, proposalDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDTO(

@@ -33,16 +33,15 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
-    public ProposalDTO createProposal(ProposalDTO proposalDTO) {
+    public ProposalDTO createProposal(Long freelancerId, ProposalDTO proposalDTO) {
 
         ProposalModel newProposal = proposalMapper.toEntity(proposalDTO);
 
-        if(proposalDTO.getFreelancerId() != null){
-            FreelancerModel freelancer = freelancersRepository.findById(proposalDTO.getFreelancerId()).orElseThrow(
-                    ()->new ResourceNotFoundException("Freelancer id: " + proposalDTO.getFreelancerId() + "inside proposal creating request create not found")
+            FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                    ()->new ResourceNotFoundException("Freelancer id: " + freelancerId + "inside proposal creating request create not found")
             );
             newProposal.setFreelancer(freelancer);
-        }
+
 
         if(proposalDTO.getTeamId() != null){
             TeamModel team = teamsRepository.findById(proposalDTO.getTeamId()).orElseThrow(
