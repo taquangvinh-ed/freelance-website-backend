@@ -53,7 +53,7 @@ public class SecurityConfig {
                                 "/api/projects/filter",
                                 "/api/skills/search",
                                 "/api/projects/autocomplete-search").permitAll()
-                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}", "/api/proposals/"
+                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}", "/api/proposals/", "/api/chat/getContactInfo/{userId}"
                                 ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",

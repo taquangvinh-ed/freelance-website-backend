@@ -54,8 +54,6 @@ public class ProposalModel extends BaseEntity{
     @JoinColumn(name = "projectId", nullable = false)
     private ProjectModel project;
 
-    @OneToMany(mappedBy = "proposal")
-    private Set<MessageModel> messages;
 
     @OneToOne(mappedBy = "proposal")
     private ContractModel contract;

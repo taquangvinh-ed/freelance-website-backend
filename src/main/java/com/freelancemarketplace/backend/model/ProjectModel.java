@@ -63,8 +63,6 @@ public class ProjectModel extends BaseEntity{
     @OneToOne(mappedBy = "contractProject", fetch = FetchType.LAZY)
     private ContractModel contract;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
-    private Set<MessageModel> messages;
 
     //The company that posts the project
     @ManyToOne( fetch = FetchType.LAZY)

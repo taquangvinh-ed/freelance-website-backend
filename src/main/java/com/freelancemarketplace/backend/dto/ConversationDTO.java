@@ -4,18 +4,33 @@ import com.freelancemarketplace.backend.enums.ConversationType;
 import com.freelancemarketplace.backend.model.ConversationParticipantModel;
 import com.freelancemarketplace.backend.model.TeamModel;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class ConversationDTO {
 
-    private Long conversationId;
+    private Long partnerId;
 
-    private String type; //ONE_TO_ONE, GROUP
+    private String partnerFullName;
 
-    private List<ConversationParticipantDTO> participants = new ArrayList<>();
+    private String partnerAvatar;
 
-    private Long teamId;
+    private String partnerRole;
+
+    private String lastMessage;
+
+    private Timestamp lastMessageTime;
+
+    private int unreadCount;
+
+    private Long roomId;
 
 }

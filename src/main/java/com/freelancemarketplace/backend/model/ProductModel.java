@@ -49,8 +49,6 @@ public class ProductModel {
     @JoinColumn(name="freelancerId")
     private FreelancerModel freelancer;
 
-    @OneToMany(mappedBy = "product")
-    private Set<MessageModel> messages;
 
     //The companies that bought the product
     @ManyToMany(mappedBy = "products")

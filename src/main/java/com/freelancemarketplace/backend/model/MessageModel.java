@@ -18,8 +18,12 @@ public class MessageModel extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
 
-    private String senderType;
-    private String receiverType;
+    private  Long senderId;
+    private Long receiverId;
+    private Long roomId;
+    private Long teamId;
+    private String type;
+    private String fileName;
     private String content;
     private Timestamp sentAt;
 
@@ -27,17 +31,10 @@ public class MessageModel extends BaseEntity{
     private MessageStatus status;
 
 
-    @ManyToOne
-    @JoinColumn(name ="proposalId" )
-    private ProposalModel proposal;
 
-    @ManyToOne
-    @JoinColumn(name = "projectId")
-    private ProjectModel project;
 
-    @ManyToOne
-    @JoinColumn(name = "productId")
-    private ProductModel product;
+
+
 
 
 }
