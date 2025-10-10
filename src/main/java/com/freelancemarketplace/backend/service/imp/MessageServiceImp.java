@@ -19,17 +19,12 @@ public class MessageServiceImp implements MessageService {
 
 
     @Override
-    public List<MessageDTO> getPrivateMessages(Long roomId) {
+    public List<MessageDTO> getPrivateMessages(String roomId) {
         List<MessageModel> messageModels = messagesRepository.findByRoomId(roomId);
 
         return messageMapper.toDTOs(messageModels);
 
     }
 
-    @Override
-    public List<MessageDTO> getTeamMessages(Long teamId) {
-        List<MessageModel> messageModels = messagesRepository.findByTeamId(teamId);
 
-        return messageMapper.toDTOs(messageModels);
-    }
 }

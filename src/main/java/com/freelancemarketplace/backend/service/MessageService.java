@@ -6,8 +6,7 @@ import java.util.List;
 
 public interface MessageService {
 
-    List<MessageDTO> getPrivateMessages(Long roomId);
+    List<MessageDTO> getPrivateMessages(String roomId);
 
-    List<MessageDTO> getTeamMessages(Long teamId);
 
 }

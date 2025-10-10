@@ -20,16 +20,11 @@ public class MessageController {
 
 
     @GetMapping("/private/{roomId}")
-    ResponseEntity<List<MessageDTO>> getPrivateMessages(@PathVariable Long roomId){
+    ResponseEntity<List<MessageDTO>> getPrivateMessages(@PathVariable String roomId){
         List<MessageDTO> messages = messageService.getPrivateMessages(roomId);
         return ResponseEntity.ok(messages);
     }
 
-    @GetMapping("/private/{teamId}")
-    ResponseEntity<List<MessageDTO>> getTeamMessages(@PathVariable Long teamId){
-        List<MessageDTO> messages = messageService.getTeamMessages(teamId);
-        return ResponseEntity.ok(messages);
-    }
 
 
 }

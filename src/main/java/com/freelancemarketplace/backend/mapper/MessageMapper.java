@@ -9,7 +9,6 @@ import java.util.List;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface MessageMapper {
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "senderId", ignore = true)
     MessageModel toEntity(MessageDTO messageDTO);
 
     MessageDTO toDto(MessageModel messageModel);

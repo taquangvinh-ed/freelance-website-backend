@@ -37,16 +37,14 @@ public class ChatServiceImp implements ChatService {
 
 
     @Override
-    public MessageDTO saveMessageToDatabase(Long serderId, MessageDTO messageDTO) {
+    public MessageDTO saveMessageToDatabase(String roomId, MessageDTO messageDTO) {
 
-        if (messageDTO.getRoomId() == null && messageDTO.getTeamId() == null)
-            throw new IllegalArgumentException("Message has not destination");
 
         if (messageDTO.getContent() == null)
             throw new IllegalArgumentException("Message has no content");
 
         MessageModel newMessage = messageMapper.toEntity(messageDTO);
-        newMessage.setSenderId(serderId);
+        newMessage.setRoomId(roomId);
         newMessage.setCreatedAt(Timestamp.from(Instant.now()));
         MessageModel savedMessage = messagesRepository.save(newMessage);
         log.info("message is saved successfully");
@@ -92,7 +90,8 @@ public class ChatServiceImp implements ChatService {
     }
 
 
-    List<ConversationDTO> getRecentConversation(Long userId) {
+    @Override
+    public List<ConversationDTO> getRecentConversations(Long userId) {
 
         List<MessageModel> allRelevantMessages = messagesRepository.findBySenderIdOrReceiverId(userId, userId);
 
@@ -139,5 +138,18 @@ public class ChatServiceImp implements ChatService {
         return conversationList;
 
     }
+
+    @Override
+    public String createRoomId(Long userId1, Long userId2) {
+        List<Long> ids = Arrays.asList(userId1, userId2);
+
+        String sortedRoomId = ids.stream()
+                .sorted()
+                .map(String::valueOf)
+                .collect(Collectors.joining("_"));
+
+        return sortedRoomId;
+    }
+
 
 }

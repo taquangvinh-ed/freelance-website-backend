@@ -20,8 +20,7 @@ public class MessageModel extends BaseEntity{
 
     private  Long senderId;
     private Long receiverId;
-    private Long roomId;
-    private Long teamId;
+    private String roomId;
     private String type;
     private String fileName;
     private String content;
