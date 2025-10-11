@@ -23,6 +23,7 @@ public interface ProjectMapper {
     CategoryModel toEntity(CategoryDTO categoryDTO);
     CategoryDTO toCategoryDTO(CategoryModel categoryModel);
 
+    @Mapping(target = "clientId", source = "client.clientId")
     ProjectDTO toDto(ProjectModel projectModel);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

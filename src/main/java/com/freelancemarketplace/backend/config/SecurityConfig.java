@@ -57,13 +57,13 @@ public class SecurityConfig {
                                 "/onboarding/**" ).permitAll()
                         .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}",
                                 "/api/proposals/", "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
-                                 "/app/**", "/topic/chat/**"
+                                "/api/projects/findProject/{projectId}",
+                                 "/app/**", "/topic/chat/**", "/api/proposals/project/**"
                                 ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
-                                "/api/freelancers/{freelancerId}",
-                                "/api/projects/findProject/{projectId}",
-                                "/api/proposals/project/**"
+                                "/api/freelancers/{freelancerId}"
+
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/").hasRole("CLIENT")
                         .anyRequest().authenticated())

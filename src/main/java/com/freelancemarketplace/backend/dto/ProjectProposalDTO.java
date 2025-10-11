@@ -4,10 +4,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 public class ProjectProposalDTO {
+
+   private Long id;
 
    private String imageUrl;
 
@@ -20,5 +24,10 @@ public class ProjectProposalDTO {
    private double avarageRating;
 
    private String proposalDescription;
+
+   private BigDecimal amount;
+
+   private Integer deliveryDays;
+
 
 }

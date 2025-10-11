@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ProjectService {
 
-    ProjectDTO createProject(ProjectDTO projectDTO);
+    ProjectDTO createProject(Long clientId, ProjectDTO projectDTO);
 
     ProjectDTO updateProject(Long projectId, ProjectDTO projectDTO);
 

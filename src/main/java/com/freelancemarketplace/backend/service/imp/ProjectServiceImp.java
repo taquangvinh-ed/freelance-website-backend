@@ -5,13 +5,11 @@ import com.freelancemarketplace.backend.enums.ProjectStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ProjectMapper;
 import com.freelancemarketplace.backend.model.BudgetModel;
+import com.freelancemarketplace.backend.model.ClientModel;
 import com.freelancemarketplace.backend.model.ProjectModel;
 import com.freelancemarketplace.backend.model.SkillModel;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
-import com.freelancemarketplace.backend.repository.BudgetsRepository;
-import com.freelancemarketplace.backend.repository.CategoriesRepository;
-import com.freelancemarketplace.backend.repository.ProjectsRepository;
-import com.freelancemarketplace.backend.repository.SkillsRepository;
+import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ProjectService;
 import com.freelancemarketplace.backend.specification.ProjectSpecification;
 import jakarta.transaction.Transactional;
@@ -38,11 +36,17 @@ public class ProjectServiceImp implements ProjectService {
     private final CategoriesRepository categoriesRepository;
     private final BudgetsRepository budgetsRepository;
     private final EmbeddingService embeddingService;
+    private final ClientsRepository clientsRepository;
 
 
     @Override
     @Transactional
-    public ProjectDTO createProject(ProjectDTO projectDTO) {
+    public ProjectDTO createProject(Long clientId, ProjectDTO projectDTO) {
+
+        ClientModel client = clientsRepository.findById(clientId).orElseThrow(
+                ()->new ResourceNotFoundException("Client with id: " + clientId + " not found")
+        );
+
 
         if (projectDTO.getBudget() == null) {
             throw new IllegalArgumentException("Budget is required for the project.");
@@ -64,6 +68,8 @@ public class ProjectServiceImp implements ProjectService {
 
         if (projectDTO.getDescription() != null)
             newProject.setDescriptionEmbedding(embeddingService.generateEmbedding(projectDTO.getDescription()));
+
+        newProject.setClient(client);
 
         ProjectModel savedProject = projectsRepository.save(newProject);
         return projectMapper.toDto(savedProject);

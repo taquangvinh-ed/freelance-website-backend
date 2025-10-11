@@ -120,11 +120,14 @@ public class ProposalServiceImp implements ProposalService {
        List<ProjectProposalDTO> projectProposals =  proposals.stream().map((proposal) -> {
             FreelancerModel freelancer = proposal.getFreelancer();
             ProjectProposalDTO projectProposal = new ProjectProposalDTO();
+            projectProposal.setId(proposal.getProposalId());
             projectProposal.setImageUrl(freelancer.getAvatar());
             projectProposal.setFirstName(freelancer.getFirstName());
             projectProposal.setLastName(freelancer.getLastName());
-//            projectProposal.setUsername(freelancer.getUser().getUsername());
+//            projectProposal.setUsername(freelancer.getUser().getUsername())pr;
             projectProposal.setProposalDescription(proposal.getDescription());
+            projectProposal.setAmount(proposal.getAmount());
+            projectProposal.setDeliveryDays(projectProposal.getDeliveryDays());
             return projectProposal;
         }).collect(Collectors.toList());
 

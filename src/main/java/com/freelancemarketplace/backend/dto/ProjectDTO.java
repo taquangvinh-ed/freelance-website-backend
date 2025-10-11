@@ -34,4 +34,6 @@ public class ProjectDTO {
     private BudgetDTO budget;
 
     private CategoryDTO category;
+
+    private Long clientId;
 }

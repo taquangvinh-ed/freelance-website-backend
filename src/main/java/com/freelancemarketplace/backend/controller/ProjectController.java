@@ -29,8 +29,11 @@ public class ProjectController {
 
 
     @PostMapping("/")
-    public ResponseEntity<ResponseDTO>createProject(@RequestBody ProjectDTO projectDTO){
-        ProjectDTO newProject = projectService.createProject(projectDTO);
+    public ResponseEntity<ResponseDTO>createProject(@AuthenticationPrincipal AppUser appUser, @RequestBody ProjectDTO projectDTO){
+
+        Long userId = appUser.getId();
+
+        ProjectDTO newProject = projectService.createProject(userId, projectDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDTO(
