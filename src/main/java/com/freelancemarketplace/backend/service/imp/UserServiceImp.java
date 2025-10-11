@@ -55,6 +55,7 @@ public class UserServiceImp implements UserService {
             newFreelancer.setFreelancerId(savedUser.getUserId());
             newFreelancer.setFirstName(registrationtDTO.getFirstName());
             newFreelancer.setLastName(registrationtDTO.getLastName());
+            newFreelancer.setUser(savedUser);
             freelancersRepository.save(newFreelancer);
             registrationtResponseDTO.setRole(UserRoles.FREELANCER.toString());
         }
@@ -64,6 +65,7 @@ public class UserServiceImp implements UserService {
             newClient.setClientId(savedUser.getUserId());
             newClient.setFirstName(registrationtDTO.getFirstName());
             newClient.setLastName(registrationtDTO.getLastName());
+            newClient.setUser(savedUser);
             clientsRepository.save(newClient);
             registrationtResponseDTO.setRole(UserRoles.CLIENT.toString());
         }

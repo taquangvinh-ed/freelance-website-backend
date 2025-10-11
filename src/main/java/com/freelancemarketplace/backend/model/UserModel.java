@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.engine.internal.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -42,6 +43,9 @@ public class UserModel implements AppUser {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private FreelancerModel freelancer;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ClientModel client;
 
 
     @Override

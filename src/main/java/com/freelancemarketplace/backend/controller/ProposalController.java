@@ -1,11 +1,14 @@
 package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.ProposalService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -127,6 +130,11 @@ public class ProposalController {
                 ));
     }
 
+    @GetMapping("/project/{projectId}")
+    ResponseEntity<Page<ProjectProposalDTO>> getAllProposalByProject(@PathVariable Long projectId, Pageable pageable){
+        Page<ProjectProposalDTO> proposalPage = proposalService.getAllProposalByProject(projectId, pageable);
+        return ResponseEntity.ok(proposalPage);
+    }
 
 
 }

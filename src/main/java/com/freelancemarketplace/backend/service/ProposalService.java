@@ -1,6 +1,9 @@
 package com.freelancemarketplace.backend.service;
 
+import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,6 +18,8 @@ public interface ProposalService {
     List<ProposalDTO> getAllProposalByFreelancerId(Long freelancerId);
 
     List<ProposalDTO> getAllProposalByTeamId(Long teamId);
+
+    Page<ProjectProposalDTO> getAllProposalByProject(Long projectId, Pageable pageable);
 
     void acceptProposal(Long proposalId);
 

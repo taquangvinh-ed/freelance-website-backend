@@ -62,7 +62,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",
-                                "/api/projects/findProject/{projectId}"
+                                "/api/projects/findProject/{projectId}",
+                                "/api/proposals/project/**"
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/").hasRole("CLIENT")
                         .anyRequest().authenticated())

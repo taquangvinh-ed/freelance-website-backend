@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
 import com.freelancemarketplace.backend.enums.ProposalStatus;
 import com.freelancemarketplace.backend.exception.ProposalException;
@@ -11,11 +12,18 @@ import com.freelancemarketplace.backend.model.ProposalModel;
 import com.freelancemarketplace.backend.model.TeamModel;
 import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ProposalService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProposalServiceImp implements ProposalService {
 
     private final ProposalsRepository proposalsRepository;
@@ -23,14 +31,8 @@ public class ProposalServiceImp implements ProposalService {
     private final FreelancersRepository freelancersRepository;
     private final TeamsRepository teamsRepository;
     private final ProjectsRepository projectsRepository;
+    private final UserRepository userRepository;
 
-    public ProposalServiceImp(ProposalsRepository proposalsRepository, ProposalMapper proposalMapper, FreelancersRepository freelancersRepository, TeamsRepository teamsRepository, ProjectsRepository projectsRepository) {
-        this.proposalsRepository = proposalsRepository;
-        this.proposalMapper = proposalMapper;
-        this.freelancersRepository = freelancersRepository;
-        this.teamsRepository = teamsRepository;
-        this.projectsRepository = projectsRepository;
-    }
 
     @Override
     public ProposalDTO createProposal(Long freelancerId, ProposalDTO proposalDTO) {
@@ -92,7 +94,7 @@ public class ProposalServiceImp implements ProposalService {
                 ()->new ResourceNotFoundException("Freelancer id: " + freelancerId + "not found")
         );
 
-        List<ProposalModel> proposals = proposalsRepository.getAllByFreelancer(freelancer);
+        List<ProposalModel> proposals = proposalsRepository.findAllByFreelancer(freelancer);
         return proposalMapper.toDTOs(proposals);
     }
 
@@ -104,6 +106,29 @@ public class ProposalServiceImp implements ProposalService {
 
         List<ProposalModel> proposals = proposalsRepository.getAllByTeam(team);
         return proposalMapper.toDTOs(proposals);
+    }
+
+
+    @Override
+    public Page<ProjectProposalDTO> getAllProposalByProject(Long projectId, Pageable pageable){
+        ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
+                ()-> new ResourceNotFoundException("Project with id: " + projectId + " not found")
+        );
+
+        List<ProposalModel> proposals = proposalsRepository.findAllByProject(project);
+
+       List<ProjectProposalDTO> projectProposals =  proposals.stream().map((proposal) -> {
+            FreelancerModel freelancer = proposal.getFreelancer();
+            ProjectProposalDTO projectProposal = new ProjectProposalDTO();
+            projectProposal.setImageUrl(freelancer.getAvatar());
+            projectProposal.setFirstName(freelancer.getFirstName());
+            projectProposal.setLastName(freelancer.getLastName());
+//            projectProposal.setUsername(freelancer.getUser().getUsername());
+            projectProposal.setProposalDescription(proposal.getDescription());
+            return projectProposal;
+        }).collect(Collectors.toList());
+
+        return new PageImpl<>(projectProposals, pageable, projectProposals.size());
     }
 
     @Override

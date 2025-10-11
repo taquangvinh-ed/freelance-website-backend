@@ -83,6 +83,10 @@ public class ClientModel extends BaseEntity{
     )
     private Set<ProductModel> products;
 
+    @OneToOne
+    @JoinColumn(name = "userId")
+    private UserModel user;
+
     private String stripeCustomerId;
 
 

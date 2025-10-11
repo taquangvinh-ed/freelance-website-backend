@@ -26,6 +26,7 @@ public class FreelancerModel extends BaseEntity {
     private String firstName;
     private String lastName;
     private String title;
+    private String avatar;
     private String profilePicture;
     private String phoneNumber;
     private Double hourlyRate;
