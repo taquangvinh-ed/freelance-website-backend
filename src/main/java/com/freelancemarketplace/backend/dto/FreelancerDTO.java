@@ -41,4 +41,7 @@ public class FreelancerDTO {
     private UserDTO user;
 
     private Set<SkillDTO> skills = new HashSet<>();
+
+    private String stripeCustomerId;
+
 }

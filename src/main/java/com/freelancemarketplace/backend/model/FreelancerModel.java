@@ -111,4 +111,7 @@ public class FreelancerModel extends BaseEntity {
     @Column(name = "skill_vector", columnDefinition = "bytea")
     private byte[] skillVector;
 
+    private String stripeCustomerId;
+
+
 }
