@@ -129,4 +129,10 @@ public class StripeController {
     }
 
 
+
+    @GetMapping("/onboarding/refresh")
+    public String testOnboarding(@RequestParam(required = false) String stripe_code) {
+        return "Onboarding Success! Code: " + stripe_code;
+    }
+
 }

@@ -53,7 +53,8 @@ public class SecurityConfig {
                                 "/api/projects/filter",
                                 "/api/skills/search", "/ws/**",
                                 "/api/stripe/**",
-                                "/api/projects/autocomplete-search").permitAll()
+                                "/api/projects/autocomplete-search",
+                                "/onboarding/**" ).permitAll()
                         .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}",
                                 "/api/proposals/", "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
                                  "/app/**", "/topic/chat/**"
