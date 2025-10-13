@@ -55,4 +55,10 @@ public class ChatController {
         return ResponseEntity.ok(conversations);
     }
 
+    @GetMapping("/api/messages/history/senderId/{senderId}/receiverId/{receiverId}")
+    ResponseEntity<List<MessageDTO>> fetchMessagesHistory(@PathVariable Long senderId, @PathVariable Long receiverId){
+        List<MessageDTO> messages = chatService.fetchMessageHistory(senderId, receiverId);
+        return ResponseEntity.ok(messages);
+    }
+
 }

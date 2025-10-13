@@ -16,4 +16,6 @@ public interface ChatService {
     List<ConversationDTO> getRecentConversations(Long userId);
 
     String createRoomId(Long userId1, Long userId2);
+
+    List<MessageDTO> fetchMessageHistory(Long senderId, Long receiverId);
 }

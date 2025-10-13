@@ -121,6 +121,7 @@ public class ProposalServiceImp implements ProposalService {
             FreelancerModel freelancer = proposal.getFreelancer();
             ProjectProposalDTO projectProposal = new ProjectProposalDTO();
             projectProposal.setId(proposal.getProposalId());
+            projectProposal.setFreelancerId(freelancer.getFreelancerId());
             projectProposal.setImageUrl(freelancer.getAvatar());
             projectProposal.setFirstName(freelancer.getFirstName());
             projectProposal.setLastName(freelancer.getLastName());

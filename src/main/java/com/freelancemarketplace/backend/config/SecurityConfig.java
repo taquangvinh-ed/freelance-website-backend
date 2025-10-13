@@ -58,7 +58,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}",
                                 "/api/proposals/", "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
                                 "/api/projects/findProject/{projectId}",
-                                 "/app/**", "/topic/chat/**", "/api/proposals/project/**"
+                                 "/app/**", "/topic/chat/**", "/api/proposals/project/**",
+                                "/api/messages/history/senderId/*/receiverId/*"
                                 ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",

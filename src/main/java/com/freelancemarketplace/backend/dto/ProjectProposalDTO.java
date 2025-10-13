@@ -15,6 +15,8 @@ public class ProjectProposalDTO {
 
    private String imageUrl;
 
+   private Long freelancerId;
+
    private String firstName;
 
    private String lastName;

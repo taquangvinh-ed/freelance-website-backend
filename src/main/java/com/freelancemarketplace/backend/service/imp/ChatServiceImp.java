@@ -45,6 +45,7 @@ public class ChatServiceImp implements ChatService {
 
         MessageModel newMessage = messageMapper.toEntity(messageDTO);
         newMessage.setRoomId(roomId);
+        newMessage.setSentAt(Timestamp.from(Instant.now()));
         newMessage.setCreatedAt(Timestamp.from(Instant.now()));
         MessageModel savedMessage = messagesRepository.save(newMessage);
         log.info("message is saved successfully");
@@ -118,15 +119,19 @@ public class ChatServiceImp implements ChatService {
 //                            conversation.setUnreadCount((int) unreadCount);
 
 
+                            String roomId = createRoomId(userId, partnerId);
+
                             ConversationDTO conversation = new ConversationDTO();
 
                             ContactInfoDTO contactInfo = getContactInfo(partnerId);
 
+                            conversation.setPartnerId(contactInfo.getUserId());
                             conversation.setPartnerFullName(contactInfo.getLastName() + " " + contactInfo.getFirstName());
                             conversation.setPartnerAvatar(contactInfo.getAvatar());
                             conversation.setPartnerRole(contactInfo.getRole());
                             conversation.setLastMessage(lastMessage.getContent());
                             conversation.setLastMessageTime(lastMessage.getSentAt());
+                            conversation.setRoomId(roomId);
 
                             return conversation;
                         }
@@ -151,5 +156,11 @@ public class ChatServiceImp implements ChatService {
         return sortedRoomId;
     }
 
+
+    @Override
+    public List<MessageDTO> fetchMessageHistory(Long senderId, Long receiverId){
+        List<MessageModel> allRelevantMessages = messagesRepository.findBySenderIdAndReceiverId(senderId, receiverId);
+        return messageMapper.toDTOs(allRelevantMessages);
+    }
 
 }

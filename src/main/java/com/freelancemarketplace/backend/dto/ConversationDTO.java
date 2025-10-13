@@ -31,6 +31,6 @@ public class ConversationDTO {
 
     private int unreadCount;
 
-    private Long roomId;
+    private String roomId;
 
 }
