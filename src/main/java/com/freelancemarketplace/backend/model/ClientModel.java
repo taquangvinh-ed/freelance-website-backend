@@ -38,6 +38,7 @@ public class ClientModel extends BaseEntity{
 
     private Boolean isVerified;
     private Boolean isBlocked;
+    private String avatar;
 
 
 

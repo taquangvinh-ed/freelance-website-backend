@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.controller;
 import com.freelancemarketplace.backend.auth.AppUser;
 import com.freelancemarketplace.backend.dto.ContactInfoDTO;
 import com.freelancemarketplace.backend.dto.ConversationDTO;
+import com.freelancemarketplace.backend.dto.CurrentUserProfileDTO;
 import com.freelancemarketplace.backend.dto.MessageDTO;
 import com.freelancemarketplace.backend.model.MessageModel;
 import com.freelancemarketplace.backend.model.UserModel;
@@ -55,10 +56,17 @@ public class ChatController {
         return ResponseEntity.ok(conversations);
     }
 
-    @GetMapping("/api/messages/history/senderId/{senderId}/receiverId/{receiverId}")
-    ResponseEntity<List<MessageDTO>> fetchMessagesHistory(@PathVariable Long senderId, @PathVariable Long receiverId){
-        List<MessageDTO> messages = chatService.fetchMessageHistory(senderId, receiverId);
+    @GetMapping("/api/messages/history/user1Id/{user1Id}/user2Id/{user2Id}")
+    ResponseEntity<List<MessageDTO>> fetchMessagesHistory(@PathVariable Long user1Id, @PathVariable Long user2Id){
+        List<MessageDTO> messages = chatService.fetchMessageHistory(user1Id, user2Id);
         return ResponseEntity.ok(messages);
+    }
+
+    @GetMapping("/api/chat/currentUserProfile")
+    ResponseEntity<CurrentUserProfileDTO> getCurrentUserProfile(@AuthenticationPrincipal AppUser appUser){
+        Long userId = appUser.getId();
+        CurrentUserProfileDTO userProfile = chatService.getCurrentUserProfile(userId);
+        return ResponseEntity.ok(userProfile);
     }
 
 }

@@ -1,7 +1,9 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import ch.qos.logback.core.net.server.Client;
 import com.freelancemarketplace.backend.dto.ContactInfoDTO;
 import com.freelancemarketplace.backend.dto.ConversationDTO;
+import com.freelancemarketplace.backend.dto.CurrentUserProfileDTO;
 import com.freelancemarketplace.backend.dto.MessageDTO;
 import com.freelancemarketplace.backend.enums.UserRoles;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
@@ -34,6 +36,7 @@ public class ChatServiceImp implements ChatService {
     private UserRepository userModelRepository;
     private FreelancersRepository freelancersRepository;
     private ClientsRepository clientsRepository;
+    private UserRepository userRepository;
 
 
     @Override
@@ -159,8 +162,42 @@ public class ChatServiceImp implements ChatService {
 
     @Override
     public List<MessageDTO> fetchMessageHistory(Long senderId, Long receiverId){
-        List<MessageModel> allRelevantMessages = messagesRepository.findBySenderIdAndReceiverId(senderId, receiverId);
+        List<MessageModel> allRelevantMessages = messagesRepository.findChatHistory(senderId, receiverId);
         return messageMapper.toDTOs(allRelevantMessages);
+    }
+
+
+    @Override
+    public CurrentUserProfileDTO getCurrentUserProfile(Long userId){
+
+        CurrentUserProfileDTO userProfile = new CurrentUserProfileDTO();
+
+        UserModel user = userRepository.findById(userId).orElseThrow(
+                ()-> new ResourceNotFoundException("User not found with id: " + userId)
+        );
+
+        String role = user.getRole().toString();
+        userProfile.setRole(role);
+
+
+        if(role.equalsIgnoreCase("FREELANCER")){
+            FreelancerModel freelancer = freelancersRepository.findById(userId).orElseThrow(
+                    ()-> new ResourceNotFoundException("Freelancer not found with id " + userId)
+            );
+            userProfile.setFirstName(freelancer.getFirstName());
+            userProfile.setLastName(freelancer.getLastName());
+            userProfile.setAvatar(freelancer.getAvatar());
+        }
+
+       if(role.equalsIgnoreCase("CLIENT")){
+           ClientModel client  = clientsRepository.findById(userId).orElseThrow(
+                   ()-> new ResourceNotFoundException("Client not found with id " + userId));
+           userProfile.setFirstName(client.getFirstName());
+           userProfile.setLastName(client.getLastName());
+           userProfile.setAvatar(client.getAvatar());
+       }
+
+        return  userProfile;
     }
 
 }
