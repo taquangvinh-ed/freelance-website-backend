@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/upload")
@@ -32,5 +33,24 @@ public class UploadFileController {
                         ResponseMessage.SUCCESS,
                         imageUrl
                 ));
+    }
+
+    @PostMapping("/file-chat")
+    ResponseEntity<?> uploadFileChat(@RequestParam MultipartFile file){
+        if(file.isEmpty())
+            return new ResponseEntity<>("File can not be empty", HttpStatus.BAD_REQUEST);
+        try{
+            String fileUrl = cloudinaryService.uploadFile(file);
+            return new ResponseEntity<>(Map.of(
+                    "fileUrl", fileUrl,
+                    "fileName", file.getOriginalFilename()
+            ),
+                    HttpStatus.OK);
+        }catch (IOException e){
+            e.printStackTrace();
+            return new ResponseEntity<>("File upload failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);        }
     }
 }

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -66,5 +67,20 @@ public class CloudinaryServiceImp implements CloudinaryService {
         }catch (IOException e){
             log.error("Clear disk errors: ", e);
         }
+    }
+
+
+    @Override
+    public String uploadFile(MultipartFile file) throws IOException{
+        Map<String, Object> uploadOptions = Map.of(
+                "folder", "chat_attachments",
+                "resource_type", "auto",
+                "use_filename", "true",
+                "unique_filenme", "false"
+        );
+
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadOptions);
+        cleanDisk(convert(file));
+        return uploadResult.get("secure_url").toString();
     }
 }
