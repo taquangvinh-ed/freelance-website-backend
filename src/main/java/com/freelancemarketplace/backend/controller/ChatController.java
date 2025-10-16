@@ -15,9 +15,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -67,6 +65,13 @@ public class ChatController {
         Long userId = appUser.getId();
         CurrentUserProfileDTO userProfile = chatService.getCurrentUserProfile(userId);
         return ResponseEntity.ok(userProfile);
+    }
+
+    @PatchMapping("/api/message/mark-as-read/{partnerId}")
+    ResponseEntity<String> updateMessageIsRead(@AuthenticationPrincipal AppUser appUser, @PathVariable Long partnerId){
+        Long userId = appUser.getId();
+        chatService.markAsRead(partnerId, userId);
+        return ResponseEntity.ok("Update message is read successfully");
     }
 
 }

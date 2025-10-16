@@ -23,4 +23,5 @@ public interface MessagesRepository extends JpaRepository<MessageModel, Long> {
     List<MessageModel> findChatHistory(@Param("user1Id") Long user1Id, @Param("user2Id") Long user2Id);
 
 
+
 }

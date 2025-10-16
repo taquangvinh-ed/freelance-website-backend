@@ -1,6 +1,5 @@
 package com.freelancemarketplace.backend.service.imp;
 
-import ch.qos.logback.core.net.server.Client;
 import com.freelancemarketplace.backend.dto.ContactInfoDTO;
 import com.freelancemarketplace.backend.dto.ConversationDTO;
 import com.freelancemarketplace.backend.dto.CurrentUserProfileDTO;
@@ -50,6 +49,7 @@ public class ChatServiceImp implements ChatService {
         newMessage.setRoomId(roomId);
         newMessage.setSentAt(Timestamp.from(Instant.now()));
         newMessage.setCreatedAt(Timestamp.from(Instant.now()));
+        newMessage.setIsRead(false);
         MessageModel savedMessage = messagesRepository.save(newMessage);
         log.info("message is saved successfully");
         return messageMapper.toDto(savedMessage);
@@ -114,12 +114,10 @@ public class ChatServiceImp implements ChatService {
                                 return null;
 
 
-//                            long unreadCount = conversationMessages.stream()
-//                                    .filter(msg -> msg.getReceiverId().equals(userId)) // Chỉ xét tin nhắn mà MÌNH là người nhận
-//                                    .filter(msg -> !msg.isRead()) // Giả định MessageModel có trường isRead()
-//                                    .count();
-//
-//                            conversation.setUnreadCount((int) unreadCount);
+                            long unreadCount = conversationMessages.stream()
+                                    .filter(msg -> msg.getReceiverId().equals(userId)) // Chỉ xét tin nhắn mà MÌNH là người nhận
+                                    .filter(msg -> !msg.getIsRead()) // Giả định MessageModel có trường isRead()
+                                    .count();
 
 
                             String roomId = createRoomId(userId, partnerId);
@@ -139,6 +137,7 @@ public class ChatServiceImp implements ChatService {
                             }
                             conversation.setLastMessageTime(lastMessage.getSentAt());
                             conversation.setRoomId(roomId);
+                            conversation.setUnreadCount((int) unreadCount);
 
                             return conversation;
                         }
@@ -202,6 +201,17 @@ public class ChatServiceImp implements ChatService {
        }
 
         return  userProfile;
+    }
+
+
+    @Override
+    public void markAsRead(Long partnerId, Long userId){
+        List<MessageModel> messages = messagesRepository.findBySenderIdAndReceiverId(partnerId, userId);
+        List<MessageModel> unreadMessages = messages.stream().filter(msg ->!msg.getIsRead()).toList();
+        if(!unreadMessages.isEmpty()){
+            unreadMessages.forEach(msg->msg.setIsRead(true));
+            messagesRepository.saveAll(unreadMessages);
+        }
     }
 
 }

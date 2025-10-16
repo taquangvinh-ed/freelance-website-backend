@@ -25,6 +25,7 @@ public class MessageModel extends BaseEntity{
     private String fileName;
     private String content;
     private Timestamp sentAt;
+    private Boolean isRead = Boolean.FALSE;
 
     @Enumerated(EnumType.STRING)
     private MessageStatus status;

@@ -55,12 +55,12 @@ public class SecurityConfig {
                                 "/api/stripe/**",
                                 "/api/projects/autocomplete-search",
                                 "/onboarding/**" ).permitAll()
-                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/{freelancerId}",
+                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/**",
                                 "/api/proposals/", "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
                                 "/api/projects/findProject/{projectId}",
                                  "/app/**", "/topic/chat/**", "/api/proposals/project/**",
                                 "/api/messages/history/senderId/*/receiverId/*", "/api/chat/currentUserProfile",
-                                "api/upload/file-chat"
+                                "api/upload/file-chat", "/api/message/mark-as-read/**"
                                 ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
@@ -89,7 +89,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Match your frontend origin
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Include OPTIONS for preflight
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); // Include OPTIONS for preflight
         configuration.setAllowedHeaders(List.of("*")); // Allow all headers
         configuration.setAllowCredentials(true); // Allow credentials (e.g., cookies, Authorization headers)
 

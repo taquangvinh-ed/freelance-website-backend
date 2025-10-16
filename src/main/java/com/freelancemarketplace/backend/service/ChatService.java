@@ -21,4 +21,6 @@ public interface ChatService {
     List<MessageDTO> fetchMessageHistory(Long senderId, Long receiverId);
 
     CurrentUserProfileDTO getCurrentUserProfile(Long userId);
+
+    void markAsRead(Long partnerId, Long userId);
 }
