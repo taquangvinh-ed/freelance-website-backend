@@ -132,7 +132,11 @@ public class ChatServiceImp implements ChatService {
                             conversation.setPartnerFullName(contactInfo.getLastName() + " " + contactInfo.getFirstName());
                             conversation.setPartnerAvatar(contactInfo.getAvatar());
                             conversation.setPartnerRole(contactInfo.getRole());
-                            conversation.setLastMessage(lastMessage.getContent());
+                            if (lastMessage.getType().equals("TEXT")) {
+                                conversation.setLastMessage(lastMessage.getContent());
+                            } else {
+                                conversation.setLastMessage(lastMessage.getFileName());
+                            }
                             conversation.setLastMessageTime(lastMessage.getSentAt());
                             conversation.setRoomId(roomId);
 
