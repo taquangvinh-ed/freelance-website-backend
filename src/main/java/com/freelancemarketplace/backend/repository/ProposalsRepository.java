@@ -18,4 +18,6 @@ public interface ProposalsRepository extends JpaRepository<ProposalModel, Long> 
     List<ProposalModel> getAllByTeam(TeamModel teamModel);
 
     List<ProposalModel> findAllByProject(ProjectModel project);
+
+    ProposalModel findByFreelancerAndProject(FreelancerModel freelancer, ProjectModel project);
   }

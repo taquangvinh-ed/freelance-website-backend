@@ -2,14 +2,13 @@ package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
+import com.freelancemarketplace.backend.enums.MileStoneStatus;
 import com.freelancemarketplace.backend.enums.ProposalStatus;
 import com.freelancemarketplace.backend.exception.ProposalException;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.mapper.MileStoneMapper;
 import com.freelancemarketplace.backend.mapper.ProposalMapper;
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
-import com.freelancemarketplace.backend.model.ProposalModel;
-import com.freelancemarketplace.backend.model.TeamModel;
+import com.freelancemarketplace.backend.model.*;
 import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ProposalService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +33,8 @@ public class ProposalServiceImp implements ProposalService {
     private final TeamsRepository teamsRepository;
     private final ProjectsRepository projectsRepository;
     private final UserRepository userRepository;
+    private final MileStoneModelRepository mileStoneModelRepository;
+    private final MileStoneMapper mileStoneMapper;
 
 
     @Override
@@ -39,29 +42,39 @@ public class ProposalServiceImp implements ProposalService {
 
         ProposalModel newProposal = proposalMapper.toEntity(proposalDTO);
 
-            FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
-                    ()->new ResourceNotFoundException("Freelancer id: " + freelancerId + "inside proposal creating request create not found")
-            );
-            newProposal.setFreelancer(freelancer);
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer id: " + freelancerId + "inside proposal creating request create not found")
+        );
+        newProposal.setFreelancer(freelancer);
 
 
-        if(proposalDTO.getTeamId() != null){
+        if (proposalDTO.getTeamId() != null) {
             TeamModel team = teamsRepository.findById(proposalDTO.getTeamId()).orElseThrow(
-                    ()->new ResourceNotFoundException("Team id: " + proposalDTO.getTeamId() + "inside proposal creating request create not found")
+                    () -> new ResourceNotFoundException("Team id: " + proposalDTO.getTeamId() + "inside proposal creating request create not found")
             );
             newProposal.setTeam(team);
         }
-            ProjectModel project = projectsRepository.findById(proposalDTO.getProjectId()).orElseThrow(
-                    ()->new ResourceNotFoundException("Project id: " + proposalDTO.getProjectId() + "inside proposal creating request create not found")
-            );
+        ProjectModel project = projectsRepository.findById(proposalDTO.getProjectId()).orElseThrow(
+                () -> new ResourceNotFoundException("Project id: " + proposalDTO.getProjectId() + "inside proposal creating request create not found")
+        );
 
-            if(proposalDTO.getAmount().compareTo(project.getBudget().getMaxValue()) > 0)
-                throw new ProposalException("The proposal price exceeds the maximum budget.");
-            newProposal.setProject(project);
-
-            ProposalModel savedProposal = proposalsRepository.save(newProposal);
+        if (proposalDTO.getAmount().compareTo(project.getBudget().getMaxValue()) > 0)
+            throw new ProposalException("The proposal price exceeds the maximum budget.");
+        newProposal.setProject(project);
 
 
+        if (proposalDTO.getMileStones() != null) {
+            Set<MileStoneModel> milestones = new HashSet<>();
+            proposalDTO.getMileStones().forEach(mileStoneDTO -> {
+                MileStoneModel milestone = mileStoneMapper.toEntity(mileStoneDTO);
+                milestone.setStatus(MileStoneStatus.PENDING);
+                milestone.setProposal(newProposal);
+                milestones.add(milestone);
+            });
+            newProposal.setMileStones(milestones);
+        }
+
+        ProposalModel savedProposal = proposalsRepository.save(newProposal);
         return proposalMapper.toDto(savedProposal);
     }
 
@@ -69,10 +82,10 @@ public class ProposalServiceImp implements ProposalService {
     public ProposalDTO updateProposal(Long proposalId, ProposalDTO proposalDTO) {
 
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
-                ()->new ResourceNotFoundException("Proposal with id: " + proposalId + " not found")
+                () -> new ResourceNotFoundException("Proposal with id: " + proposalId + " not found")
         );
 
-        ProposalModel updatedProposal = proposalMapper.partialUpdate(proposalDTO,proposal);
+        ProposalModel updatedProposal = proposalMapper.partialUpdate(proposalDTO, proposal);
 
         ProposalModel savedProposal = proposalsRepository.save(updatedProposal);
 
@@ -82,16 +95,16 @@ public class ProposalServiceImp implements ProposalService {
     @Override
     public void deleteProposal(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
-                ()->new ResourceNotFoundException("Proposal with id: " + proposalId + " not found")
+                () -> new ResourceNotFoundException("Proposal with id: " + proposalId + " not found")
         );
 
         proposalsRepository.deleteById(proposalId);
     }
 
     @Override
-    public List<ProposalDTO> getAllProposalByFreelancerId(Long freelancerId){
+    public List<ProposalDTO> getAllProposalByFreelancerId(Long freelancerId) {
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
-                ()->new ResourceNotFoundException("Freelancer id: " + freelancerId + "not found")
+                () -> new ResourceNotFoundException("Freelancer id: " + freelancerId + "not found")
         );
 
         List<ProposalModel> proposals = proposalsRepository.findAllByFreelancer(freelancer);
@@ -99,9 +112,9 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
-    public List<ProposalDTO> getAllProposalByTeamId(Long teamId){
+    public List<ProposalDTO> getAllProposalByTeamId(Long teamId) {
         TeamModel team = teamsRepository.findById(teamId).orElseThrow(
-                ()->new ResourceNotFoundException("team id: " + teamId + "not found")
+                () -> new ResourceNotFoundException("team id: " + teamId + "not found")
         );
 
         List<ProposalModel> proposals = proposalsRepository.getAllByTeam(team);
@@ -110,14 +123,14 @@ public class ProposalServiceImp implements ProposalService {
 
 
     @Override
-    public Page<ProjectProposalDTO> getAllProposalByProject(Long projectId, Pageable pageable){
+    public Page<ProjectProposalDTO> getAllProposalByProject(Long projectId, Pageable pageable) {
         ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
-                ()-> new ResourceNotFoundException("Project with id: " + projectId + " not found")
+                () -> new ResourceNotFoundException("Project with id: " + projectId + " not found")
         );
 
         List<ProposalModel> proposals = proposalsRepository.findAllByProject(project);
 
-       List<ProjectProposalDTO> projectProposals =  proposals.stream().map((proposal) -> {
+        List<ProjectProposalDTO> projectProposals = proposals.stream().map((proposal) -> {
             FreelancerModel freelancer = proposal.getFreelancer();
             ProjectProposalDTO projectProposal = new ProjectProposalDTO();
             projectProposal.setId(proposal.getProposalId());
@@ -136,9 +149,9 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
-    public void acceptProposal(Long proposalId){
+    public void acceptProposal(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
-                ()->new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
+                () -> new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
         );
         if (proposal.getStatus().equals(ProposalStatus.PENDING))
             proposal.setStatus(ProposalStatus.ACCEPTED);
@@ -147,9 +160,9 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
-    public void rejectProposal(Long proposalId){
+    public void rejectProposal(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
-                ()->new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
+                () -> new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
         );
         if (proposal.getStatus().equals(ProposalStatus.PENDING))
             proposal.setStatus(ProposalStatus.REJECTED);
@@ -158,9 +171,9 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
-    public void withdrawProposal(Long proposalId){
+    public void withdrawProposal(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
-                ()->new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
+                () -> new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
         );
         if (proposal.getStatus().equals(ProposalStatus.PENDING))
             proposal.setStatus(ProposalStatus.WITHDRAWN);
@@ -168,8 +181,20 @@ public class ProposalServiceImp implements ProposalService {
             throw new ProposalException(" Proposal cannot be withdraw from status " + proposal.getStatus());
     }
 
+    @Override
+    public ProposalDTO getProposalByFreelancerAndProject(Long freelancerId, Long projectId) {
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer not found with id: " + freelancerId)
+        );
 
+        ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer not found with id: " + freelancerId)
+        );
 
+        ProposalModel proposal = proposalsRepository.findByFreelancerAndProject(freelancer, project);
+
+        return proposalMapper.toDto(proposal);
+    }
 
 
 }

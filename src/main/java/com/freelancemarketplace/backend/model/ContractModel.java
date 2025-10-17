@@ -38,7 +38,7 @@ public class ContractModel extends BaseEntity{
     private ProposalModel proposal;
 
     //The payments that belong to a contract
-    @OneToMany(mappedBy = "contract")
+    @OneToMany(mappedBy = "contract", orphanRemoval = true)
     private Set<PaymentModel> payments = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -61,7 +61,7 @@ public class ContractModel extends BaseEntity{
     @JoinColumn(name = "projectId")
     private ProjectModel contractProject;
 
-    @OneToMany(mappedBy = "contract")
+    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MileStoneModel> mileStones = new HashSet<>();
 
 }

@@ -26,4 +26,6 @@ public interface ProposalService {
     void rejectProposal(Long proposalId);
 
     void withdrawProposal(Long proposalId);
+
+    ProposalDTO getProposalByFreelancerAndProject(Long freelancerId, Long projectId);
 }

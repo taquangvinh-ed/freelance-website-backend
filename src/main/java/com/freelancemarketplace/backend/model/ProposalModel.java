@@ -55,14 +55,14 @@ public class ProposalModel extends BaseEntity{
     private ProjectModel project;
 
 
-    @OneToOne(mappedBy = "proposal")
+    @OneToOne(mappedBy = "proposal", orphanRemoval = true)
     private ContractModel contract;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private TeamModel team;
 
-    @OneToMany(mappedBy = "proposal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "proposal",  cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MileStoneModel> mileStones;
 
     public void validateMilestones() {

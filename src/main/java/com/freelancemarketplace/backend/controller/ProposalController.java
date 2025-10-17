@@ -136,5 +136,13 @@ public class ProposalController {
         return ResponseEntity.ok(proposalPage);
     }
 
+    @GetMapping("/find-by-freelancer-and-project/{projectId}")
+    ResponseEntity<ProposalDTO> findProposalByFreelancerAndProject(@AuthenticationPrincipal AppUser appUser,
+                                                                   @PathVariable Long projectId){
+        Long userId = appUser.getId();
+        ProposalDTO proposal = proposalService.getProposalByFreelancerAndProject(userId, projectId);
+        return ResponseEntity.ok(proposal);
+    }
+
 
 }

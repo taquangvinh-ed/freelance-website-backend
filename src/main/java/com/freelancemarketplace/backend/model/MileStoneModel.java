@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "milestone")
 public class MileStoneModel extends BaseEntity{
 
     @Id
