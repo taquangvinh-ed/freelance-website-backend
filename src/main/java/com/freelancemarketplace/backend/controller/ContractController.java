@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.dto.ContractDTO;
+import com.freelancemarketplace.backend.dto.ContractResponseDTO;
 import com.freelancemarketplace.backend.dto.ProjectDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
 import com.freelancemarketplace.backend.response.ResponseMessage;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/contracts", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api/contracts", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class ContractController {
 
     private final ContractService contractService;
@@ -23,17 +24,7 @@ public class ContractController {
         this.contractService = contractService;
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO>createContract(@RequestBody ContractDTO contractDTO){
-        ContractDTO newContract = contractService.createContract(contractDTO);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new ResponseDTO(
-                        ResponseStatusCode.CREATED,
-                        ResponseMessage.CREATED,
-                        newContract
-                ));
-    }
+
 
     @PutMapping("/{contractId}")
     ResponseEntity<ResponseDTO>updateContract(@PathVariable Long contractId,
@@ -76,6 +67,12 @@ public class ContractController {
                         contracts
                 ));
 
+    }
+
+    @GetMapping("/get-contract/{contractId}")
+    ResponseEntity<ContractResponseDTO> getContractById(@PathVariable Long contractId){
+        ContractResponseDTO contract = contractService.getContractById(contractId);
+        return  ResponseEntity.ok(contract);
     }
 
 }

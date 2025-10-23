@@ -63,7 +63,7 @@ public class SecurityConfig {
                                  "/app/**", "/topic/chat/**", "/api/proposals/project/**",
                                 "/api/messages/history/senderId/*/receiverId/*", "/api/chat/currentUserProfile",
                                 "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**",
-                                "/api/proposals/{proposalId}"
+                                "/api/proposals/{proposalId}", "/api/contracts/get-contract/{contractId}"
                                 ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
