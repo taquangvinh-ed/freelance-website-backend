@@ -42,7 +42,7 @@ public class ProposalController {
                 ));
     }
 
-    @PutMapping("/{proposalId}")
+    @PatchMapping("/{proposalId}")
     public ResponseEntity<ResponseDTO>updatedProposal(@PathVariable Long proposalId,
                                                       @RequestBody ProposalDTO proposalDTO){
         ProposalDTO updatedProposal = proposalService.updateProposal(proposalId, proposalDTO);
@@ -68,6 +68,12 @@ public class ProposalController {
                 ));
     }
 
+
+    @GetMapping("/{proposalId}")
+    public ResponseEntity<ProposalDTO>getProposalById(@PathVariable Long proposalId){
+       ProposalDTO proposal =  proposalService.getProposalById(proposalId);
+        return ResponseEntity.ok(proposal);
+    }
 
     @GetMapping("/freelancer/{freelancerId}")
     public ResponseEntity<ResponseDTO>getAllProposalByFreelancerId(@PathVariable Long freelancerId){

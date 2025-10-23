@@ -18,7 +18,6 @@ public interface TestimonialMapper {
     @Mapping(target = "freelancerId", source = "freelancer.freelancerId")
     @Mapping(target = "teamId", source = "team.teamId")
     @Mapping(target = "clientId", source = "client.clientId")
-    @Mapping(target = "companyId", source = "company.companyId")
     @Mapping(target = "projectId", source = "project.projectId")
     TestimonialDTO toDto(TestimonialModel testimonialModel);
 

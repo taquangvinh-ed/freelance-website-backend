@@ -15,6 +15,8 @@ public interface ProposalService {
 
     void deleteProposal(Long proposalId);
 
+    ProposalDTO getProposalById(Long proposalId);
+
     List<ProposalDTO> getAllProposalByFreelancerId(Long freelancerId);
 
     List<ProposalDTO> getAllProposalByTeamId(Long teamId);

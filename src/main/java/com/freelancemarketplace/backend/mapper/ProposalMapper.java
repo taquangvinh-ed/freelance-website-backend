@@ -12,7 +12,11 @@ import java.util.List;
 public interface ProposalMapper {
     ProposalModel toEntity(ProposalDTO proposalDTO);
 
+    @Mapping(target = "freelancerId", ignore = true)
+    @Mapping(target = "contractId", ignore = true)
+    @Mapping(target = "proposalId", ignore = true)
     MileStoneDTO toMileStoneDTO(MileStoneModel model);
+
     MileStoneModel toMileStoneEntity(MileStoneDTO mileStoneDTO);
 
     @Mapping(target = "projectId", source = "project.projectId")

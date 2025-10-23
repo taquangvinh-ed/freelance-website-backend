@@ -60,12 +60,13 @@ public class SecurityConfig {
                                 "/api/projects/findProject/{projectId}",
                                  "/app/**", "/topic/chat/**", "/api/proposals/project/**",
                                 "/api/messages/history/senderId/*/receiverId/*", "/api/chat/currentUserProfile",
-                                "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**"
+                                "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**",
+                                "/api/proposals/{proposalId}"
                                 ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
-                                "/api/freelancers/{freelancerId}"
-
+                                "/api/freelancers/{freelancerId}",
+                                "/api/proposals/**"
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/").hasRole("CLIENT")
                         .anyRequest().authenticated())

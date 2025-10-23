@@ -57,11 +57,6 @@ public class TestimonialServiceImp implements TestomonialService {
             newReview.setClient(client);
         }
 
-        if(testimonialDTO.getCompanyId() != null){
-            CompanyModel company = companiesRepository.findById(testimonialDTO.getCompanyId()).orElseThrow(
-                    ()->  new ResourceNotFoundException("Company with id: " + testimonialDTO.getCompanyId() + " not found"));
-            newReview.setCompany(company);
-        }
 
         if(testimonialDTO.getProjectId() != null){
             ProjectModel project = projectsRepository.findById(testimonialDTO.getProjectId()).orElseThrow(

@@ -19,7 +19,6 @@ public class TestimonialDTO {
     // The date that the testimonial was given
     private Timestamp date;
 
-
     private Boolean testiminialBack;
 
     private Long freelancerId;
@@ -28,9 +27,6 @@ public class TestimonialDTO {
 
 
     private Long clientId;
-
-
-    private Long companyId;
 
     private Long teamId;
 

@@ -1,7 +1,9 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
+import com.freelancemarketplace.backend.enums.BudgetTypes;
 import com.freelancemarketplace.backend.enums.MileStoneStatus;
 import com.freelancemarketplace.backend.enums.ProposalStatus;
 import com.freelancemarketplace.backend.exception.ProposalException;
@@ -11,16 +13,15 @@ import com.freelancemarketplace.backend.mapper.ProposalMapper;
 import com.freelancemarketplace.backend.model.*;
 import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ProposalService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,18 +80,29 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
+    @Transactional
     public ProposalDTO updateProposal(Long proposalId, ProposalDTO proposalDTO) {
 
-        ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
+        // 1. Tải Proposal gốc (đối tượng Managed)
+        ProposalModel existingProposal = proposalsRepository.findById(proposalId).orElseThrow(
                 () -> new ResourceNotFoundException("Proposal with id: " + proposalId + " not found")
         );
 
-        ProposalModel updatedProposal = proposalMapper.partialUpdate(proposalDTO, proposal);
+        // 2. Cập nhật các trường Proposal chính (Áp dụng logic PATCH: chỉ cập nhật nếu giá trị DTO khác null)
+        applyProposalPatch(existingProposal, proposalDTO);
 
-        ProposalModel savedProposal = proposalsRepository.save(updatedProposal);
+        // 3. XỬ LÝ MERGE MILESTONE THỦ CÔNG (Nếu DTO có Milestone)
+        if (proposalDTO.getMileStones() != null) {
+            // ✅ GỌI HÀM VÀ TRUYỀN TẬP HỢP GỐC ĐỂ THAO TÁC TRỰC TIẾP TRÊN NÓ
+            mergeMilestones(existingProposal, proposalDTO.getMileStones());
+        }
+
+        // 4. Lưu Proposal gốc (KHÔNG GỌI existingProposal.setMileStones()!)
+        ProposalModel savedProposal = proposalsRepository.save(existingProposal);
 
         return proposalMapper.toDto(savedProposal);
     }
+
 
     @Override
     public void deleteProposal(Long proposalId) {
@@ -100,6 +112,15 @@ public class ProposalServiceImp implements ProposalService {
 
         proposalsRepository.deleteById(proposalId);
     }
+
+    @Override
+    public ProposalDTO getProposalById(Long proposalId){
+        ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
+                ()-> new ResourceNotFoundException("Proposal not found with id: " + proposalId)
+        );
+        return proposalMapper.toDto(proposal);
+    }
+
 
     @Override
     public List<ProposalDTO> getAllProposalByFreelancerId(Long freelancerId) {
@@ -196,5 +217,103 @@ public class ProposalServiceImp implements ProposalService {
         return proposalMapper.toDto(proposal);
     }
 
+    private void applyProposalPatch(ProposalModel existingProposal, ProposalDTO proposalDTO) {
+        if (proposalDTO.getName() != null) {
+            existingProposal.setName(proposalDTO.getName());
+        }
+        if (proposalDTO.getDescription() != null) {
+            existingProposal.setDescription(proposalDTO.getDescription());
+        }
+        if (proposalDTO.getCurrencyUnit() != null) {
+            existingProposal.setCurrencyUnit(proposalDTO.getCurrencyUnit());
+        }
+        if (proposalDTO.getStatus() != null) {
+            existingProposal.setStatus(ProposalStatus.valueOf(proposalDTO.getStatus()));
+        }
+        if (proposalDTO.getAmount() != null) {
+            existingProposal.setAmount(proposalDTO.getAmount());
+        }
+        if (proposalDTO.getDeliveryDays() != null) {
+            existingProposal.setDeliveryDays(proposalDTO.getDeliveryDays());
+        }
+        if (proposalDTO.getBudgetType() != null) {
+            existingProposal.setBudgetType(BudgetTypes.valueOf(proposalDTO.getBudgetType()));
+        }
+        if (proposalDTO.getHourlyRate() != null) {
+            existingProposal.setHourlyRate(proposalDTO.getHourlyRate());
+        }
+        if (proposalDTO.getEstimatedHours() != null) {
+            existingProposal.setEstimatedHours(proposalDTO.getEstimatedHours());
+        }
+        // KHÔNG CẦN CẬP NHẬT proposalId, projectId, teamId
+    }
+
+    private void mergeMilestones(ProposalModel existingProposal, Set<MileStoneDTO> dtoMilestones) {
+
+        Set<MileStoneModel> existingMilestones = existingProposal.getMileStones();
+
+        // 1. CHUẨN BỊ DỮ LIỆU: Tạo Map Milestones cần được giữ lại/cập nhật (từ DTO)
+        Map<Long, MileStoneModel> incomingMilestonesMap = new HashMap<>();
+
+        for (MileStoneDTO dtoMilestone : dtoMilestones) {
+
+            MileStoneModel milestoneToUpdate;
+
+            if (dtoMilestone.getMileStoneId() != null) {
+                // TRƯỜNG HỢP A: CẬP NHẬT MILESTONE HIỆN CÓ
+                milestoneToUpdate = existingMilestones.stream()
+                        .filter(m -> m.getMileStoneId().equals(dtoMilestone.getMileStoneId()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (milestoneToUpdate != null) {
+                    applyMilestonePatch(milestoneToUpdate, dtoMilestone);
+                    incomingMilestonesMap.put(milestoneToUpdate.getMileStoneId(), milestoneToUpdate);
+                }
+                // Nếu không tìm thấy (milestoneToUpdate == null), ta coi đó là lỗi logic và bỏ qua
+            } else {
+                // TRƯỜNG HỢP B: TẠO MỚI MILESTONE
+                milestoneToUpdate = proposalMapper.toMileStoneEntity(dtoMilestone);
+
+                // ✅ QUAN TRỌNG: Thêm trực tiếp vào tập hợp gốc (sẽ được thêm vào DB)
+                existingMilestones.add(milestoneToUpdate);
+                milestoneToUpdate.setProposal(existingProposal); // Thiết lập mối quan hệ
+
+                // Nếu Milestone mới, nó sẽ không có ID nên không cần đưa vào map theo dõi ID
+            }
+        }
+
+        // 2. XỬ LÝ XÓA: Lọc và xóa các Milestone bị thiếu trong request (orphans)
+
+        // Tạo danh sách các Milestone cần xóa
+        Set<MileStoneModel> milestonesToDelete = existingMilestones.stream()
+                .filter(m -> m.getMileStoneId() != null && !incomingMilestonesMap.containsKey(m.getMileStoneId()))
+                .collect(Collectors.toSet());
+
+        // ✅ QUAN TRỌNG: Xóa trực tiếp khỏi tập hợp Managed (Hibernate sẽ xử lý DELETE)
+        existingMilestones.removeAll(milestonesToDelete);
+
+        // KHÔNG CÓ LỆNH RETURN Ở ĐÂY
+    }
+
+    private void applyMilestonePatch(MileStoneModel existingMilestone, MileStoneDTO dtoMilestone) {
+        if (dtoMilestone.getName() != null) {
+            existingMilestone.setName(dtoMilestone.getName());
+        }
+        if (dtoMilestone.getAmount() != null) {
+            existingMilestone.setAmount(dtoMilestone.getAmount());
+        }
+        if (dtoMilestone.getCurrencyUnit() != null) {
+            existingMilestone.setCurrencyUnit(dtoMilestone.getCurrencyUnit());
+        }
+        if (dtoMilestone.getDueDate() != null) {
+            existingMilestone.setDueDate(dtoMilestone.getDueDate());
+        }
+        if (dtoMilestone.getDescription() != null) {
+            existingMilestone.setDescription(dtoMilestone.getDescription());
+        }
+
+        // ⚠️ KHÔNG BAO GIỜ CẬP NHẬT CÁC TRƯỜNG ID LIÊN KẾT NHƯ proposalId, contractId, freelancerId
+    }
 
 }
