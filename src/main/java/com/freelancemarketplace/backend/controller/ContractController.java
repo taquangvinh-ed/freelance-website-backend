@@ -1,9 +1,6 @@
 package com.freelancemarketplace.backend.controller;
 
-import com.freelancemarketplace.backend.dto.ContractDTO;
-import com.freelancemarketplace.backend.dto.ContractResponseDTO;
-import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.ContractService;
@@ -73,6 +70,12 @@ public class ContractController {
     ResponseEntity<ContractResponseDTO> getContractById(@PathVariable Long contractId){
         ContractResponseDTO contract = contractService.getContractById(contractId);
         return  ResponseEntity.ok(contract);
+    }
+
+    @PostMapping("/{contractId}/milestones/{milestoneId}/pay")
+    ResponseEntity<MileStoneDTO> payMilestone(@PathVariable Long contractId, @PathVariable Long milestoneId) throws Exception {
+        MileStoneDTO updatedMilestone = contractService.processMilestonePayment(contractId, milestoneId);
+        return ResponseEntity.ok(updatedMilestone);
     }
 
 }

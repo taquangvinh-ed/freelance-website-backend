@@ -32,6 +32,8 @@ public class MileStoneModel extends BaseEntity{
 
     private Boolean isActived;
 
+    private String paymentIntentId;
+
     @Enumerated(EnumType.STRING)
     private MileStoneStatus status;
 

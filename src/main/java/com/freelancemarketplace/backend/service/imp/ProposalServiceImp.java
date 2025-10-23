@@ -1,6 +1,5 @@
 package com.freelancemarketplace.backend.service.imp;
 
-import com.freelancemarketplace.backend.dto.ContractDTO;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
@@ -173,7 +172,7 @@ public class ProposalServiceImp implements ProposalService {
 
     @Override
     @Transactional
-    public ContractDTO approveProposal(Long proposalId) {
+    public Long approveProposal(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
                 () -> new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
         );
@@ -193,7 +192,7 @@ public class ProposalServiceImp implements ProposalService {
         ContractModel newContract = createContractFromProposal(proposal);
         ContractModel savedContract = contractsRepository.save(newContract);
 
-        return contractMapper.toDto(savedContract);
+        return savedContract.getContractId();
     }
 
     @Override

@@ -105,15 +105,9 @@ public class ProposalController {
     }
 
     @PatchMapping("/{proposalId}/approve")
-    public ResponseEntity<ResponseDTO>acceptProposal(@PathVariable Long proposalId){
-        ContractDTO contract = proposalService.approveProposal(proposalId);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDTO(
-                        ResponseStatusCode.SUCCESS,
-                        ResponseMessage.SUCCESS,
-                        contract
-                ));
+    public ResponseEntity<Long>acceptProposal(@PathVariable Long proposalId){
+        Long contractId = proposalService.approveProposal(proposalId);
+        return ResponseEntity.ok(contractId);
     }
 
     @PutMapping("/{proposalId}/reject")

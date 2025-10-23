@@ -60,30 +60,30 @@ public class StripeController {
      * Cần chạy /create/client trước.
      * http://localhost:8080/api/test/stripe/escrow?amount=1000000
      */
-    @PostMapping("/escrow")
-    public ResponseEntity<String> createEscrow(@RequestParam BigDecimal amount) throws Exception {
-
-        if (!testIds.containsKey("clientId")) {
-            return ResponseEntity.badRequest().body("Vui lòng tạo Client trước (/create/client).");
-        }
-
-        // 1. Chuẩn bị DTO giả lập
-        ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setStripeCustomerId(testIds.get("clientId")); // Lấy ID đã lưu
-
-        MileStoneDTO milestoneDTO = new MileStoneDTO();
-        milestoneDTO.setAmount(amount); // Số tiền của dự án
-        milestoneDTO.setDescription("Thiết kế logo mới");
-
-        // 2. Tạo Payment Intent (Escrow)
-        String intentId = paymentService.createEscrowPayment(milestoneDTO, clientDTO);
-
-        // Lưu ID Intent
-        testIds.put("paymentIntentId", intentId);
-
-        return ResponseEntity.ok("Payment Intent created (Escrow): " + intentId
-                + ". Total charged: " + amount.multiply(BigDecimal.valueOf(1.03)) + " VND (bao gồm 3% phí client)");
-    }
+//    @PostMapping("/escrow")
+//    public ResponseEntity<String> createEscrow(@RequestParam BigDecimal amount) throws Exception {
+//
+//        if (!testIds.containsKey("clientId")) {
+//            return ResponseEntity.badRequest().body("Vui lòng tạo Client trước (/create/client).");
+//        }
+//
+//        // 1. Chuẩn bị DTO giả lập
+//        ClientDTO clientDTO = new ClientDTO();
+//        clientDTO.setStripeCustomerId(testIds.get("clientId")); // Lấy ID đã lưu
+//
+//        MileStoneDTO milestoneDTO = new MileStoneDTO();
+//        milestoneDTO.setAmount(amount); // Số tiền của dự án
+//        milestoneDTO.setDescription("Thiết kế logo mới");
+//
+//        // 2. Tạo Payment Intent (Escrow)
+//        String intentId = paymentService.createEscrowPayment(milestoneDTO, clientDTO);
+//
+//        // Lưu ID Intent
+//        testIds.put("paymentIntentId", intentId);
+//
+//        return ResponseEntity.ok("Payment Intent created (Escrow): " + intentId
+//                + ". Total charged: " + amount.multiply(BigDecimal.valueOf(1.03)) + " VND (bao gồm 3% phí client)");
+//    }
 
     /**
      * Giải ngân tiền cho Freelancer sau khi dự án hoàn thành.
@@ -127,7 +127,6 @@ public class StripeController {
 
         return ResponseEntity.ok("Payment Intent " + testIds.get("paymentIntentId") + " refunded/cancelled.");
     }
-
 
 
     @GetMapping("/onboarding/refresh")

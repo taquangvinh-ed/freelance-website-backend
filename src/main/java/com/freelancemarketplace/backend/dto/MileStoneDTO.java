@@ -35,4 +35,6 @@ public class MileStoneDTO {
     private Long contractId;
 
     private Long proposalId;
+
+    private String clientSecret;
 }

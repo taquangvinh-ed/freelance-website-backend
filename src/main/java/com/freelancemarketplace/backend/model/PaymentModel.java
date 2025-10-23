@@ -22,13 +22,6 @@ public class PaymentModel extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-//    @Enumerated(EnumType.STRING)
-//    private RecuiterTypes recruiter;
-
-//    @Enumerated(EnumType.STRING)
-//    private TailentTypes talent;
-
-
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)

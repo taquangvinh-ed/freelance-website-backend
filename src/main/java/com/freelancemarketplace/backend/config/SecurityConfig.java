@@ -57,6 +57,7 @@ public class SecurityConfig {
                                 "/api/projects/autocomplete-search",
                                 "/onboarding/**" ).permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/api/contracts/{contractId}/milestones/{milestoneId}/pay").hasRole("CLIENT")
                         .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/**",
                                  "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
                                 "/api/projects/findProject/{projectId}",
