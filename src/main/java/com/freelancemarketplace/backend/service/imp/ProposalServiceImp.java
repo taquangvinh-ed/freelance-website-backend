@@ -1,13 +1,13 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.dto.ContractDTO;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
-import com.freelancemarketplace.backend.enums.BudgetTypes;
-import com.freelancemarketplace.backend.enums.MileStoneStatus;
-import com.freelancemarketplace.backend.enums.ProposalStatus;
+import com.freelancemarketplace.backend.enums.*;
 import com.freelancemarketplace.backend.exception.ProposalException;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.mapper.ContractMapper;
 import com.freelancemarketplace.backend.mapper.MileStoneMapper;
 import com.freelancemarketplace.backend.mapper.ProposalMapper;
 import com.freelancemarketplace.backend.model.*;
@@ -20,8 +20,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,9 +35,9 @@ public class ProposalServiceImp implements ProposalService {
     private final FreelancersRepository freelancersRepository;
     private final TeamsRepository teamsRepository;
     private final ProjectsRepository projectsRepository;
-    private final UserRepository userRepository;
-    private final MileStoneModelRepository mileStoneModelRepository;
     private final MileStoneMapper mileStoneMapper;
+    private final ContractMapper contractMapper;
+    private final ContractsRepository contractsRepository;
 
 
     @Override
@@ -114,9 +116,9 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
-    public ProposalDTO getProposalById(Long proposalId){
+    public ProposalDTO getProposalById(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
-                ()-> new ResourceNotFoundException("Proposal not found with id: " + proposalId)
+                () -> new ResourceNotFoundException("Proposal not found with id: " + proposalId)
         );
         return proposalMapper.toDto(proposal);
     }
@@ -170,14 +172,28 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
-    public void acceptProposal(Long proposalId) {
+    @Transactional
+    public ContractDTO approveProposal(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
                 () -> new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
         );
+
+
         if (proposal.getStatus().equals(ProposalStatus.PENDING))
             proposal.setStatus(ProposalStatus.ACCEPTED);
         else
             throw new ProposalException("Cannot proposal cannot be accepted from status " + proposal.getStatus());
+
+        ProposalModel savedProposal = proposalsRepository.save(proposal);
+        proposalsRepository.rejectOtherProposalsInProject(
+                savedProposal.getProject().getProjectId(),
+                savedProposal.getProposalId()
+        );
+
+        ContractModel newContract = createContractFromProposal(proposal);
+        ContractModel savedContract = contractsRepository.save(newContract);
+
+        return contractMapper.toDto(savedContract);
     }
 
     @Override
@@ -314,6 +330,34 @@ public class ProposalServiceImp implements ProposalService {
         }
 
         // ⚠️ KHÔNG BAO GIỜ CẬP NHẬT CÁC TRƯỜNG ID LIÊN KẾT NHƯ proposalId, contractId, freelancerId
+    }
+
+    private ContractModel createContractFromProposal(ProposalModel proposalModel) {
+        ContractModel contract = new ContractModel();
+        contract.setAmount(proposalModel.getAmount().doubleValue());
+        if (proposalModel.getBudgetType() == BudgetTypes.FIXED_PRICE)
+            contract.setTypes(ContractTypes.FIXED_PRICE);
+        else contract.setTypes(ContractTypes.HOURLY);
+        contract.setStartDate(Timestamp.from(Instant.now()));
+        if (proposalModel.getDeliveryDays() != null) {
+            Timestamp startDate = Timestamp.from(Instant.now());
+            LocalDateTime dateTime = startDate.toLocalDateTime();
+            int deliveryDate = proposalModel.getDeliveryDays();
+            dateTime = dateTime.plusDays(deliveryDate);
+            Timestamp endDate = Timestamp.valueOf(dateTime);
+            contract.setEndDate(endDate);
+        }
+        contract.setStatus(ContractStatus.ACTIVE);
+        contract.setProposal(proposalModel);
+        contract.setFreelancer(proposalModel.getFreelancer());
+        contract.setClient(proposalModel.getProject().getClient());
+        contract.setContractProject(proposalModel.getProject());
+        contract.getMileStones().addAll(proposalModel.getMileStones());
+        proposalModel.getMileStones().forEach(milestone -> {
+            milestone.setContract(contract);
+            milestone.setStatus(MileStoneStatus.ACCEPTED);
+        });
+        return contract;
     }
 
 }

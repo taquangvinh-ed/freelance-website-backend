@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.dto.ContractDTO;
 import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
@@ -103,14 +104,15 @@ public class ProposalController {
                 ));
     }
 
-    @PutMapping("/{proposalId}/accept")
+    @PatchMapping("/{proposalId}/approve")
     public ResponseEntity<ResponseDTO>acceptProposal(@PathVariable Long proposalId){
-        proposalService.acceptProposal(proposalId);
+        ContractDTO contract = proposalService.approveProposal(proposalId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDTO(
                         ResponseStatusCode.SUCCESS,
-                        ResponseMessage.SUCCESS
+                        ResponseMessage.SUCCESS,
+                        contract
                 ));
     }
 

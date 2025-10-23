@@ -4,6 +4,7 @@ import com.freelancemarketplace.backend.auth.CustomUsernamePasswordAuthenticatio
 import com.freelancemarketplace.backend.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -55,8 +56,9 @@ public class SecurityConfig {
                                 "/api/stripe/**",
                                 "/api/projects/autocomplete-search",
                                 "/onboarding/**" ).permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
                         .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/**",
-                                "/api/proposals/", "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
+                                 "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
                                 "/api/projects/findProject/{projectId}",
                                  "/app/**", "/topic/chat/**", "/api/proposals/project/**",
                                 "/api/messages/history/senderId/*/receiverId/*", "/api/chat/currentUserProfile",
