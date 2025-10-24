@@ -5,6 +5,7 @@ import com.freelancemarketplace.backend.dto.ContractResponseDTO;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import jakarta.transaction.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface ContractService {
@@ -19,4 +20,6 @@ public interface ContractService {
 
     @Transactional
     MileStoneDTO processMilestonePayment(Long contractId, Long milestoneId) throws Exception;
+
+    Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId) throws Exception;
 }

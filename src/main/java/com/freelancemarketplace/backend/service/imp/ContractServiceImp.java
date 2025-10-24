@@ -6,14 +6,22 @@ import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ClientMapper;
 import com.freelancemarketplace.backend.mapper.ContractMapper;
 import com.freelancemarketplace.backend.mapper.MileStoneMapper;
-import com.freelancemarketplace.backend.model.*;
-import com.freelancemarketplace.backend.repository.*;
+import com.freelancemarketplace.backend.model.ClientModel;
+import com.freelancemarketplace.backend.model.ContractModel;
+import com.freelancemarketplace.backend.model.FreelancerModel;
+import com.freelancemarketplace.backend.model.MileStoneModel;
+import com.freelancemarketplace.backend.repository.ClientsRepository;
+import com.freelancemarketplace.backend.repository.ContractsRepository;
+import com.freelancemarketplace.backend.repository.FreelancersRepository;
+import com.freelancemarketplace.backend.repository.MileStoneModelRepository;
 import com.freelancemarketplace.backend.service.ContractService;
 import com.freelancemarketplace.backend.service.PaymentService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +37,13 @@ public class ContractServiceImp implements ContractService {
     private MileStoneModelRepository mileStoneModelRepository;
     private ClientMapper clientMapper;
     private PaymentService paymentService;
+    private ClientsRepository clientsRepository;
 
     @Override
     public ContractDTO updateContract(Long contractId, ContractDTO contractDTO) {
 
         ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
-                () -> new ResourceNotFoundException("Contract with id: " +contractId+ " not found")
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );
         ContractModel updatedContract = contractMapper.partialUpdate(contractDTO, contract);
 
@@ -45,8 +54,8 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public void deleteContract(Long contractId) {
-        if(!contractsRepository.existsById(contractId))
-            throw new ResourceNotFoundException("Contract with id: " +contractId+ " not found");
+        if (!contractsRepository.existsById(contractId))
+            throw new ResourceNotFoundException("Contract with id: " + contractId + " not found");
         contractsRepository.deleteById(contractId);
     }
 
@@ -54,7 +63,7 @@ public class ContractServiceImp implements ContractService {
     public List<ContractDTO> findAllContractByFreelancerId(Long freelancerId) {
 
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
-                ()-> new ResourceNotFoundException("Freelancer with id: " +freelancerId+ " not found")
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
@@ -63,9 +72,9 @@ public class ContractServiceImp implements ContractService {
     }
 
     @Override
-    public ContractResponseDTO getContractById(Long contractId){
+    public ContractResponseDTO getContractById(Long contractId) {
         ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
-                ()-> new ResourceNotFoundException("Contract with id: " +contractId+ " not found")
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );
         ContractResponseDTO contractResponseDTO = new ContractResponseDTO();
         contractResponseDTO.setContractId(contract.getContractId());
@@ -76,7 +85,7 @@ public class ContractServiceImp implements ContractService {
         contractResponseDTO.setStatus(contract.getStatus().toString());
         contractResponseDTO.setProposalId(contract.getProposal().getProposalId());
         contractResponseDTO.setFreelancerName(contract.getFreelancer().getFirstName() + " " + contract.getFreelancer().getLastName());
-        contractResponseDTO.setClientName(contract.getClient().getFirstName()+" " + contract.getClient().getLastName());
+        contractResponseDTO.setClientName(contract.getClient().getFirstName() + " " + contract.getClient().getLastName());
 
         List<MileStoneDTO> milestones = new ArrayList<>();
 
@@ -93,14 +102,21 @@ public class ContractServiceImp implements ContractService {
     @Override
     public MileStoneDTO processMilestonePayment(Long contractId, Long milestoneId) throws Exception {
         MileStoneModel mileStone = mileStoneModelRepository.findById(milestoneId).orElseThrow(
-                ()-> new ResourceNotFoundException("Milestone with id: " + milestoneId + " not found")
+                () -> new ResourceNotFoundException("Milestone with id: " + milestoneId + " not found")
         );
 
         ContractModel contractModel = contractsRepository.findById(contractId).orElseThrow(
-                ()-> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );
 
         ClientModel client = contractModel.getClient();
+        if(client.getStripeCustomerId() == null){
+            String clientName = client.getFirstName() + client.getLastName();
+            String stripeCustomerId = paymentService.createStripeCustomer(client.getUser().getEmail(), clientName);
+            client.setStripeCustomerId(stripeCustomerId);
+            clientsRepository.save(client);
+        }
+
 
         ClientDTO clientDTO = clientMapper.toDto(client);
         MileStoneDTO milestoneDTO = mileStoneMapper.toDto(mileStone);
@@ -109,9 +125,33 @@ public class ContractServiceImp implements ContractService {
         mileStone.setPaymentIntentId(response.getPaymentIntentId());
         mileStone.setStatus(MileStoneStatus.ESCROWED);
         MileStoneModel savedMilestone = mileStoneModelRepository.save(mileStone);
-        MileStoneDTO result =  mileStoneMapper.toDto(savedMilestone);
+        MileStoneDTO result = mileStoneMapper.toDto(savedMilestone);
         result.setClientSecret(response.getClientSecret());
         return result;
+    }
+
+
+    @Override
+    public Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId) throws Exception {
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+
+        FreelancerModel freelancer = contract.getFreelancer();
+        if(freelancer.getStripeCustomerId() == null){
+            String freelancerName = freelancer.getFirstName()+freelancer.getLastName();
+            String stripeCustomerId = paymentService.createStripeCustomer(freelancer.getUser().getEmail(), freelancerName);
+            freelancer.setStripeCustomerId(stripeCustomerId);
+            freelancersRepository.save(freelancer);
+        }
+
+        MileStoneModel milestone = contract.getMileStones().stream().filter(m -> m.getMileStoneId().equals(milestoneId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Milestone with id: " + milestoneId + " not found"));
+        milestone.setStatus(MileStoneStatus.COMPLETED);
+        milestone.setCompletedAt(Timestamp.from(Instant.now()));
+        contractsRepository.save(contract);
+        return milestone.getCompletedAt();
     }
 
 

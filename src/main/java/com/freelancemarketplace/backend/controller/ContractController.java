@@ -4,15 +4,18 @@ import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.ContractService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/contracts", produces = {MediaType.APPLICATION_JSON_VALUE})
+@Slf4j
 public class ContractController {
 
     private final ContractService contractService;
@@ -76,6 +79,13 @@ public class ContractController {
     ResponseEntity<MileStoneDTO> payMilestone(@PathVariable Long contractId, @PathVariable Long milestoneId) throws Exception {
         MileStoneDTO updatedMilestone = contractService.processMilestonePayment(contractId, milestoneId);
         return ResponseEntity.ok(updatedMilestone);
+    }
+
+    @PostMapping("/{contractId}/milestones/{milestoneId}/complete")
+    ResponseEntity<Timestamp> markMilestoneAsCompleted(@PathVariable Long contractId, @PathVariable Long milestoneId) throws Exception {
+        log.info("Da nhan duoc yeu cau");
+        Timestamp result = contractService.markMilestoneAsCompleted(contractId, milestoneId);
+        return ResponseEntity.ok(result);
     }
 
 }

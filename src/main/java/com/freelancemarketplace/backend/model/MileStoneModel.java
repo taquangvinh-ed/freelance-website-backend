@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -33,6 +34,8 @@ public class MileStoneModel extends BaseEntity{
     private Boolean isActived;
 
     private String paymentIntentId;
+
+    private Timestamp completedAt;
 
     @Enumerated(EnumType.STRING)
     private MileStoneStatus status;

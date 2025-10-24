@@ -4,8 +4,10 @@
     import com.freelancemarketplace.backend.dto.MileStoneDTO;
     import com.freelancemarketplace.backend.dto.PaymentIntentResponse;
     import com.freelancemarketplace.backend.service.PaymentService;
+    import com.stripe.model.Customer;
     import com.stripe.model.PaymentIntent;
     import com.stripe.model.Transfer;
+    import com.stripe.param.CustomerCreateParams;
     import com.stripe.param.PaymentIntentCreateParams;
     import com.stripe.param.TransferCreateParams;
     import org.springframework.stereotype.Service;
@@ -20,12 +22,21 @@
         }
 
         @Override
+        public String createStripeCustomer(String email, String name) throws Exception{
+            CustomerCreateParams params = CustomerCreateParams.builder()
+                    .setEmail(email)
+                    .setName(name)
+                    .build();
+            Customer customer = Customer.create(params);
+            return customer.getId();
+        }
+
+        @Override
         public PaymentIntentResponse createEscrowPayment(MileStoneDTO mileStoneDTO, ClientDTO clientDTO) throws Exception {
 
             BigDecimal amount = mileStoneDTO.getAmount();
             BigDecimal postingFee = amount.multiply(BigDecimal.valueOf(0.03));
             BigDecimal total = amount.add(postingFee);
-
 
             PaymentIntent intent = PaymentIntent.create(
                     PaymentIntentCreateParams.builder()
@@ -52,7 +63,7 @@
 
             Transfer.create(TransferCreateParams.builder()
                     .setAmount(freelancerAmount.multiply(BigDecimal.valueOf(100)).longValue())
-                    .setCurrency("vnd")
+                    .setCurrency("usd")
                     .setDestination(freelancerstripeCustomerId)
                     .setSourceTransaction(intent.getId())
                     .build());
@@ -64,4 +75,6 @@
             PaymentIntent intent = PaymentIntent.retrieve(paymentIntentId);
             intent.cancel();
         }
+
+
     }

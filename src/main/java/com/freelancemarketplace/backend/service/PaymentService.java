@@ -6,6 +6,8 @@ import com.freelancemarketplace.backend.dto.PaymentIntentResponse;
 
 public interface PaymentService {
 
+    String createStripeCustomer(String email, String name) throws Exception;
+
     public PaymentIntentResponse createEscrowPayment(MileStoneDTO mileStoneDTO, ClientDTO clientDTO) throws Exception;
 
     void releasePayment(String paymentIntentId, MileStoneDTO mileStoneDTO, String freelancerstripeCustomerId) throws Exception;

@@ -1,14 +1,12 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.enums.MileStoneStatus;
-import com.freelancemarketplace.backend.model.ContractModel;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -28,7 +26,7 @@ public class MileStoneDTO {
 
     private String freelancerId;
 
-    private Boolean isActived;
+    private Boolean isActivated;
 
     private String status;
 
@@ -37,4 +35,6 @@ public class MileStoneDTO {
     private Long proposalId;
 
     private String clientSecret;
+    private Timestamp completedAt;
+
 }
