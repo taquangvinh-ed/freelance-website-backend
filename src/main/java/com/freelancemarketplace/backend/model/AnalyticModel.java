@@ -32,7 +32,6 @@ public class AnalyticModel extends BaseEntity{
     @OneToOne(mappedBy = "analytic")
     private FreelancerModel freelancer;
 
-    @OneToOne(mappedBy = "analytic")
-    private CompanyModel company;
+
 
 }

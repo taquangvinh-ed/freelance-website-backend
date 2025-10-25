@@ -10,4 +10,4 @@ import java.util.List;
 @Repository
 public interface ContractsRepository extends JpaRepository<ContractModel, Long> {
   List<ContractModel> findAllByFreelancer(FreelancerModel freelancer);
-  }
+}

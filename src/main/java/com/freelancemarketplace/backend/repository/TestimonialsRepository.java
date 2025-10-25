@@ -19,5 +19,6 @@ public interface TestimonialsRepository extends JpaRepository<TestimonialModel, 
 
   Page<TestimonialModel> findAllByProject(ProjectModel projectModel,Pageable pageable);
 
+  long countByFreelancer(FreelancerModel freelancerModel);
 
 }

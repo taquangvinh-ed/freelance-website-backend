@@ -18,6 +18,7 @@ public class TestimonialModel extends BaseEntity {
     private Long testimonialId;
 
     private String rating;
+
     private String comment;
 
     // The date that the testimonial was given

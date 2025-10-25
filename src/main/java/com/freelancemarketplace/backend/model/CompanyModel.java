@@ -39,10 +39,6 @@ public class CompanyModel extends BaseEntity {
     @Column(columnDefinition = "jsonb")
     private Bio bio;
 
-    @OneToOne
-    @JoinColumn(name = "analyticsId")
-    private AnalyticModel analytic;
-
     @ManyToOne
     @JoinColumn(name = "locationId")
     private LocationModel location;
