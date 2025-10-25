@@ -7,9 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class MonthlyEarningsDTO {
-    String monthLabel;
-    double earnings;
+@NoArgsConstructor
+public class ActivedProjectDTO {
+    String projectName;
+    String clientName;
+    String Deadlind;
 }

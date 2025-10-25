@@ -1,9 +1,6 @@
 package com.freelancemarketplace.backend.service.imp;
 
-import com.freelancemarketplace.backend.dto.MonthlyEarningsDTO;
-import com.freelancemarketplace.backend.dto.OverallStatsDTO;
-import com.freelancemarketplace.backend.dto.RecentClientDTO;
-import com.freelancemarketplace.backend.dto.SkillDistributionDTO;
+import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.enums.ContractStatus;
 import com.freelancemarketplace.backend.enums.MileStoneStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
@@ -190,6 +187,15 @@ public class DashboardFreelancerServiceImp implements DashboardFreelancerService
                 .limit(5) // Mặc định 5 khách hàng
                 .collect(Collectors.toList());
 
+    }
+
+    public List<ActivedProjectDTO> getAllActivedProjects(Long freelancerId){
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+        );
+
+        List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
+        List
     }
 
 }
