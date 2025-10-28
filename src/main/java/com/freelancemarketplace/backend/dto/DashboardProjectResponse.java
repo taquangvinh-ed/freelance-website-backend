@@ -9,8 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActivedProjectDTO {
+public class DashboardProjectResponse {
+    Long projectId;
+    Long contractId;
     String projectName;
     String clientName;
-    String Deadlind;
+    String deadline;
 }

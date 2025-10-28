@@ -71,7 +71,8 @@ public class SecurityConfig {
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",
                                 "/api/proposals/**", "/api/dashboard/freelancer/monthly-earnings", "/api/dashboard/freelancer/stats",
-                                "/api/dashboard/freelancer/skillDistribution", "/api/dashboard/freelancer/recentClient"
+                                "/api/dashboard/freelancer/skillDistribution", "/api/dashboard/freelancer/recentClient",
+                                "/api/dashboard/freelancer/projects/**"
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/").hasRole("CLIENT")
                         .anyRequest().authenticated())

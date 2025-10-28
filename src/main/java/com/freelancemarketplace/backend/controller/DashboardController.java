@@ -1,10 +1,7 @@
 package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.auth.AppUser;
-import com.freelancemarketplace.backend.dto.MonthlyEarningsDTO;
-import com.freelancemarketplace.backend.dto.OverallStatsDTO;
-import com.freelancemarketplace.backend.dto.RecentClientDTO;
-import com.freelancemarketplace.backend.dto.SkillDistributionDTO;
+import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.service.DashboardFreelancerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -56,6 +53,27 @@ public class DashboardController {
         Long userId = appUser.getId();
         List<RecentClientDTO> recentClients = dashboardFreelancerService.getRencentClients(userId);
         return ResponseEntity.ok(recentClients);
+    }
+
+    @GetMapping("/freelancer/projects/activatedProjects")
+    ResponseEntity<List<DashboardProjectResponse>> getALlActivatedProjects(@AuthenticationPrincipal AppUser appUser){
+        Long userId = appUser.getId();
+        List<DashboardProjectResponse> activatedProjects = dashboardFreelancerService.getAllActivedProjects(userId);
+        return ResponseEntity.ok(activatedProjects);
+    }
+
+    @GetMapping("/freelancer/projects/cancelledProjects")
+    ResponseEntity<List<DashboardProjectResponse>> getAllCancelledProjects(@AuthenticationPrincipal AppUser appUser){
+        Long userId = appUser.getId();
+        List<DashboardProjectResponse> cancelledProjects = dashboardFreelancerService.getAllCancelledProjects(userId);
+        return ResponseEntity.ok(cancelledProjects);
+    }
+
+    @GetMapping("/freelancer/projects/completedProjects")
+    ResponseEntity<List<DashboardProjectResponse>> getAllCompletedProjects(@AuthenticationPrincipal AppUser appUser){
+        Long userId = appUser.getId();
+        List<DashboardProjectResponse> completedProjects = dashboardFreelancerService.getAllCompletedProjects(userId);
+        return ResponseEntity.ok(completedProjects);
     }
 
 }

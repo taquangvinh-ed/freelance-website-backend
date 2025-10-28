@@ -189,13 +189,61 @@ public class DashboardFreelancerServiceImp implements DashboardFreelancerService
 
     }
 
-    public List<ActivedProjectDTO> getAllActivedProjects(Long freelancerId){
+    @Override
+    public List<DashboardProjectResponse> getAllActivedProjects(Long freelancerId){
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
                 () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
-        List
+        return contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.ACTIVE)
+                .map(contractModel -> {
+                    DashboardProjectResponse activedProject = new DashboardProjectResponse();
+                    activedProject.setProjectId(contractModel.getContractProject().getProjectId());
+                    activedProject.setContractId(contractModel.getContractId());
+                    activedProject.setProjectName(contractModel.getContractProject().getTitle());
+                    activedProject.setClientName(contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName());
+                    activedProject.setDeadline(contractModel.getEndDate().toString());
+                    return activedProject;
+                }).toList();
     }
+
+    @Override
+    public List<DashboardProjectResponse> getAllCancelledProjects(Long freelancerId){
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+        );
+
+        List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
+        return contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.CANCELLED)
+                .map(contractModel -> {
+                    DashboardProjectResponse cancelledProject = new DashboardProjectResponse();
+                    cancelledProject.setProjectId(contractModel.getContractProject().getProjectId());
+                    cancelledProject.setContractId(contractModel.getContractId());
+                    cancelledProject.setProjectName(contractModel.getContractProject().getTitle());
+                    cancelledProject.setClientName(contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName());
+                    return cancelledProject;
+                }).toList();
+    }
+
+    @Override
+    public List<DashboardProjectResponse> getAllCompletedProjects(Long freelancerId){
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+        );
+
+        List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
+        return contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.COMPLETED)
+                .map(contractModel -> {
+                    DashboardProjectResponse completedProject = new DashboardProjectResponse();
+                    completedProject.setProjectId(contractModel.getContractProject().getProjectId());
+                    completedProject.setContractId(contractModel.getContractId());
+                    completedProject.setProjectName(contractModel.getContractProject().getTitle());
+                    completedProject.setClientName(contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName());
+                    return completedProject;
+                }).toList();
+    }
+
+
 
 }
