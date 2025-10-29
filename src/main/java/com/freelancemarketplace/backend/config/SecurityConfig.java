@@ -74,7 +74,7 @@ public class SecurityConfig {
                                 "/api/dashboard/freelancer/skillDistribution", "/api/dashboard/freelancer/recentClient",
                                 "/api/dashboard/freelancer/projects/**"
                         ).hasRole("FREELANCER")
-                        .requestMatchers("/api/projects/").hasRole("CLIENT")
+                        .requestMatchers("/api/projects/", "/api/dashboard/client/**").hasRole("CLIENT")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

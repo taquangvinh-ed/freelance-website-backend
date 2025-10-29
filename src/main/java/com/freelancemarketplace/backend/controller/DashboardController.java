@@ -2,6 +2,7 @@ package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.auth.AppUser;
 import com.freelancemarketplace.backend.dto.*;
+import com.freelancemarketplace.backend.service.DashboardClientService;
 import com.freelancemarketplace.backend.service.DashboardFreelancerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import java.util.List;
 public class DashboardController {
 
     private final DashboardFreelancerService dashboardFreelancerService;
+    private final DashboardClientService dashboardClientService;
 
     @GetMapping("/freelancer/monthly-earnings")
     public ResponseEntity<List<MonthlyEarningsDTO>> getMonthlyEarnings(@AuthenticationPrincipal AppUser appUser,
@@ -74,6 +76,21 @@ public class DashboardController {
         Long userId = appUser.getId();
         List<DashboardProjectResponse> completedProjects = dashboardFreelancerService.getAllCompletedProjects(userId);
         return ResponseEntity.ok(completedProjects);
+    }
+
+
+    @GetMapping("/client/getStats")
+    ResponseEntity<ClientDashboardStatsDTO> getStats(@AuthenticationPrincipal AppUser appUser){
+        Long userId = appUser.getId();
+        ClientDashboardStatsDTO result = dashboardClientService.getStats(userId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/client/trackingProjects")
+    ResponseEntity<List<ProjectTrackingDTO>>trackProjects(@AuthenticationPrincipal AppUser appUser){
+        Long userId = appUser.getId();
+        List<ProjectTrackingDTO> list = dashboardClientService.getClientActiveProjects(userId);
+        return ResponseEntity.ok(list);
     }
 
 }
