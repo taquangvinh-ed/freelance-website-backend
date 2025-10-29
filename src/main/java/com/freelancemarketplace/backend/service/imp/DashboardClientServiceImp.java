@@ -2,16 +2,15 @@ package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.ClientDashboardStatsDTO;
 import com.freelancemarketplace.backend.dto.ProjectTrackingDTO;
+import com.freelancemarketplace.backend.dto.RecentPaymentDTO;
 import com.freelancemarketplace.backend.enums.ContractStatus;
 import com.freelancemarketplace.backend.enums.ContractTypes;
 import com.freelancemarketplace.backend.enums.MileStoneStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.model.ClientModel;
-import com.freelancemarketplace.backend.model.ContractModel;
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.MileStoneModel;
+import com.freelancemarketplace.backend.model.*;
 import com.freelancemarketplace.backend.repository.ClientsRepository;
 import com.freelancemarketplace.backend.repository.ContractsRepository;
+import com.freelancemarketplace.backend.repository.PaymentsRepository;
 import com.freelancemarketplace.backend.service.DashboardClientService;
 import com.freelancemarketplace.backend.service.ProgressCalculationService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,7 @@ public class DashboardClientServiceImp implements DashboardClientService {
     private final ContractsRepository contractsRepository;
     private final ClientsRepository clientsRepository;
     private final ProgressCalculationService progressService;
+    private final PaymentsRepository paymentsRepository;
 
     @Override
     public ClientDashboardStatsDTO getStats(Long clientId) {
@@ -106,6 +106,28 @@ public class DashboardClientServiceImp implements DashboardClientService {
 
                     return dto;
                 })
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<RecentPaymentDTO> getRecentPayments(Long clientId) {
+        // 1. Truy vấn từ Repository:
+        // Logic cần đảm bảo lấy các giao dịch (thành công) theo thứ tự giảm dần của ngày tạo/thanh toán.
+        // Giới hạn 5 bản ghi.
+        // Bạn cần viết một method tùy chỉnh trong PaymentRepository cho việc này.
+
+        List<PaymentModel> recentPayments = paymentsRepository.findTop5ByContractClientClientIdOrderByPaidAtDesc(clientId);
+
+        // 2. Map Entity sang DTO
+        return recentPayments.stream()
+                .map(payment -> new RecentPaymentDTO(
+                        payment.getPaymentId(),
+                        payment.getAmount(),
+                        payment.getContract().getContractProject().getTitle(), // Giả sử Payment liên kết với Contract
+                        payment.getPaidAt(),
+                        payment.getStatus().toString()
+                ))
                 .collect(Collectors.toList());
     }
 

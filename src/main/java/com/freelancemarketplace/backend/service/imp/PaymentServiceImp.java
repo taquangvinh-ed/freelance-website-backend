@@ -3,6 +3,15 @@
     import com.freelancemarketplace.backend.dto.ClientDTO;
     import com.freelancemarketplace.backend.dto.MileStoneDTO;
     import com.freelancemarketplace.backend.dto.PaymentIntentResponse;
+    import com.freelancemarketplace.backend.enums.PaymentStatus;
+    import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
+    import com.freelancemarketplace.backend.mapper.ClientMapper;
+    import com.freelancemarketplace.backend.model.ClientModel;
+    import com.freelancemarketplace.backend.model.ContractModel;
+    import com.freelancemarketplace.backend.model.PaymentModel;
+    import com.freelancemarketplace.backend.repository.ClientsRepository;
+    import com.freelancemarketplace.backend.repository.ContractsRepository;
+    import com.freelancemarketplace.backend.repository.PaymentsRepository;
     import com.freelancemarketplace.backend.service.PaymentService;
     import com.stripe.model.Customer;
     import com.stripe.model.PaymentIntent;
@@ -13,13 +22,26 @@
     import org.springframework.stereotype.Service;
 
     import java.math.BigDecimal;
+    import java.sql.Timestamp;
+    import java.time.Instant;
 
     @Service
     public class PaymentServiceImp implements PaymentService {
 
+        private PaymentsRepository paymentsRepository;
+        private ClientsRepository clientsRepository;
+        private ContractsRepository contractsRepository;
 
-        public PaymentServiceImp() {
+        public PaymentServiceImp(PaymentsRepository paymentsRepository, ClientsRepository clientsRepository, ContractsRepository contractsRepository) {
+            this.paymentsRepository = paymentsRepository;
+            this.clientsRepository = clientsRepository;
+            this.contractsRepository = contractsRepository;
         }
+
+
+
+
+
 
         @Override
         public String createStripeCustomer(String email, String name) throws Exception{
@@ -32,11 +54,27 @@
         }
 
         @Override
-        public PaymentIntentResponse createEscrowPayment(MileStoneDTO mileStoneDTO, ClientDTO clientDTO) throws Exception {
+        public PaymentIntentResponse createEscrowPayment(MileStoneDTO mileStoneDTO, Long clientId, ClientDTO clientDTO, Long contractId) throws Exception {
 
             BigDecimal amount = mileStoneDTO.getAmount();
             BigDecimal postingFee = amount.multiply(BigDecimal.valueOf(0.03));
             BigDecimal total = amount.add(postingFee);
+
+            PaymentModel paymentModel = new PaymentModel();
+            paymentModel.setAmount(total);
+            paymentModel.setStatus(PaymentStatus.COMPLETED);
+            ClientModel client = clientsRepository.findById(clientId).orElseThrow(
+                    ()-> new ResourceNotFoundException("Client with id " + clientId + " not found")
+            );
+            ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                    ()-> new ResourceNotFoundException("Contract with id " + contractId + " not found")
+            );
+
+            paymentModel.setClient(client);
+            paymentModel.setPaidAt(Timestamp.from(Instant.now()));
+            paymentModel.setContract(contract);
+            paymentsRepository.save(paymentModel);
+
 
             PaymentIntent intent = PaymentIntent.create(
                     PaymentIntentCreateParams.builder()

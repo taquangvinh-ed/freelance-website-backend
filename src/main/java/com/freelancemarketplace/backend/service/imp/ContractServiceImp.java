@@ -121,7 +121,7 @@ public class ContractServiceImp implements ContractService {
         ClientDTO clientDTO = clientMapper.toDto(client);
         MileStoneDTO milestoneDTO = mileStoneMapper.toDto(mileStone);
 
-        PaymentIntentResponse response = paymentService.createEscrowPayment(milestoneDTO, clientDTO);
+        PaymentIntentResponse response = paymentService.createEscrowPayment(milestoneDTO, client.getClientId(), clientDTO, contractId);
         mileStone.setPaymentIntentId(response.getPaymentIntentId());
         mileStone.setStatus(MileStoneStatus.ESCROWED);
         MileStoneModel savedMilestone = mileStoneModelRepository.save(mileStone);

@@ -93,4 +93,11 @@ public class DashboardController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("/client/recentPayment")
+    ResponseEntity<List<RecentPaymentDTO>> getRecentPayments(@AuthenticationPrincipal AppUser appUser){
+        Long userId = appUser.getId();
+        List<RecentPaymentDTO> recentPayments = dashboardClientService.getRecentPayments(userId);
+        return ResponseEntity.ok(recentPayments);
+    }
+
 }
