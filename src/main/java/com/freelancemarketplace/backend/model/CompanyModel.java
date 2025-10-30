@@ -43,8 +43,6 @@ public class CompanyModel extends BaseEntity {
     @JoinColumn(name = "locationId")
     private LocationModel location;
 
-    @OneToMany(mappedBy = "company")
-    private Set<TestimonialModel> testimonials;
 
     @OneToMany(mappedBy = "company")
     private Set<PaymentModel> payments;

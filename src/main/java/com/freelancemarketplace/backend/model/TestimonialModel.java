@@ -1,5 +1,7 @@
 package com.freelancemarketplace.backend.model;
 
+import com.freelancemarketplace.backend.enums.ReviewTypes;
+import com.freelancemarketplace.backend.enums.ReviewerRoles;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,15 +19,20 @@ public class TestimonialModel extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long testimonialId;
 
-    private String rating;
+    private Integer ratingScore;
 
+    @Column(length = 1000)
     private String comment;
 
-    // The date that the testimonial was given
-    private Timestamp date;
+    private Timestamp datePosted;
 
+    private Boolean isResponded;
 
-    private Boolean testiminialBack;
+    @Enumerated(EnumType.STRING)
+    private ReviewerRoles reviewerRole;
+
+    @Enumerated(EnumType.STRING)
+    private ReviewTypes type;
 
     @ManyToOne
     @JoinColumn(name = "freelancerId")
@@ -38,10 +45,6 @@ public class TestimonialModel extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "clientId")
     private ClientModel client;
-
-    @ManyToOne
-    @JoinColumn(name = "companyId")
-    private CompanyModel company;
 
     @ManyToOne
     @JoinColumn(name = "teamId")

@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.dto.TestimonialDTO;
+import com.freelancemarketplace.backend.dto.ReviewDTO;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.TestomonialService;
@@ -24,33 +24,21 @@ public class TestimonialController {
 
 
     @PostMapping
-    ResponseEntity<ResponseDTO> create(@RequestBody TestimonialDTO testimonialDTO){
-        TestimonialDTO newTestimonial = testomonialService.createReview(testimonialDTO);
+    ResponseEntity<ResponseDTO> create(@RequestBody ReviewDTO reviewDTO) {
+        ReviewDTO newReview = testomonialService.createReview(reviewDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDTO(
                         ResponseStatusCode.CREATED,
                         ResponseMessage.CREATED,
-                        newTestimonial
+                        newReview
                 ));
     }
 
-    @PutMapping("/{testimonialId}")
-    ResponseEntity<ResponseDTO> update(@PathVariable Long testimonialId,
-                                       @RequestBody TestimonialDTO testimonialDTO){
-        TestimonialDTO updatedTestimonial = testomonialService.updateReview(testimonialId,testimonialDTO);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDTO(
-                        ResponseStatusCode.SUCCESS,
-                        ResponseMessage.SUCCESS,
-                        updatedTestimonial
-                ));
-    }
 
     @DeleteMapping("/{testimonialId}")
     ResponseEntity<ResponseDTO> delete(@PathVariable Long testimonialId
-                                       ){
+    ) {
         testomonialService.deleteReview(testimonialId);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
@@ -62,8 +50,8 @@ public class TestimonialController {
 
     @GetMapping("/{freelancerId}")
     ResponseEntity<ResponseDTO> getAllByFreelancer(@PathVariable Long freelancerId, Pageable pageable
-    ){
-        Page<TestimonialDTO> testimonialPage  = testomonialService.getAllReviewByFreelancer(freelancerId, pageable);
+    ) {
+        Page<ReviewDTO> testimonialPage = testomonialService.getAllReviewByFreelancer(freelancerId, pageable);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDTO(
@@ -75,8 +63,8 @@ public class TestimonialController {
 
     @GetMapping("/{clientId}")
     ResponseEntity<ResponseDTO> getAllByClient(@PathVariable Long clientId, Pageable pageable
-    ){
-        Page<TestimonialDTO> testimonialPage  = testomonialService.getAllReviewByClient(clientId, pageable);
+    ) {
+        Page<ReviewDTO> testimonialPage = testomonialService.getAllReviewByClient(clientId, pageable);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDTO(
@@ -88,34 +76,8 @@ public class TestimonialController {
 
     @GetMapping("/{teamId}")
     ResponseEntity<ResponseDTO> getAllByTeam(@PathVariable Long teamId, Pageable pageable
-    ){
-        Page<TestimonialDTO> testimonialPage  = testomonialService.getAllReviewByTeam(teamId, pageable);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDTO(
-                        ResponseStatusCode.SUCCESS,
-                        ResponseMessage.SUCCESS,
-                        testimonialPage
-                ));
-    }
-
-    @GetMapping("/{companyId}")
-    ResponseEntity<ResponseDTO> getAllByCompany(@PathVariable Long companyId, Pageable pageable
-    ){
-        Page<TestimonialDTO> testimonialPage  = testomonialService.getAllReviewByCompany(companyId, pageable);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDTO(
-                        ResponseStatusCode.SUCCESS,
-                        ResponseMessage.SUCCESS,
-                        testimonialPage
-                ));
-    }
-
-    @GetMapping("/{projectId}")
-    ResponseEntity<ResponseDTO> getAllByProject(@PathVariable Long projectId, Pageable pageable
-    ){
-        Page<TestimonialDTO> testimonialPage  = testomonialService.getAllReviewByCompany(projectId, pageable);
+    ) {
+        Page<ReviewDTO> testimonialPage = testomonialService.getAllReviewByTeam(teamId, pageable);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDTO(

@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.mapper;
 
+import com.freelancemarketplace.backend.dto.ReviewDTO;
 import com.freelancemarketplace.backend.dto.TestimonialDTO;
 import com.freelancemarketplace.backend.model.TestimonialModel;
 import org.mapstruct.*;
@@ -11,20 +12,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface TestimonialMapper {
+public interface ReviewMapper {
 
-    TestimonialModel toEntity(TestimonialDTO testimonialDTO);
+    @Mapping(target = "reviewerRole", ignore = true)
+    @Mapping(target = "freelancer", ignore = true)
+    @Mapping(target = "client", ignore = true)
+    @Mapping(target = "project", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "datePosted", ignore = true)
+    TestimonialModel toEntity(ReviewDTO reviewDTO);
 
     @Mapping(target = "freelancerId", source = "freelancer.freelancerId")
-    @Mapping(target = "teamId", source = "team.teamId")
     @Mapping(target = "clientId", source = "client.clientId")
-    TestimonialDTO toDto(TestimonialModel testimonialModel);
+    @Mapping(target = "teamId", source = "team.teamId")
+    ReviewDTO toDto(TestimonialModel testimonialModel);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    TestimonialModel partialUpdate(TestimonialDTO testimonialDTO, @MappingTarget TestimonialModel testimonialModel);
+    TestimonialModel partialUpdate(ReviewDTO reviewDTO, @MappingTarget TestimonialModel testimonialModel);
 
-    default  Page<TestimonialDTO> toDTOPage(Page<TestimonialModel> modelpage, Pageable pageable){
-        List<TestimonialDTO> dtoList = modelpage.getContent().stream()
+
+    default Page<ReviewDTO> toDTOPage(Page<TestimonialModel> modelpage, Pageable pageable){
+        List<ReviewDTO> dtoList = modelpage.getContent().stream()
                 .map(this::toDto) // Use the single-item mapping method
                 .collect(Collectors.toList());
 
