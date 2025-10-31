@@ -23,7 +23,7 @@ public class TestimonialController {
     }
 
 
-    @PostMapping
+    @PostMapping("/")
     ResponseEntity<ResponseDTO> create(@RequestBody ReviewDTO reviewDTO) {
         ReviewDTO newReview = testomonialService.createReview(reviewDTO);
         return ResponseEntity

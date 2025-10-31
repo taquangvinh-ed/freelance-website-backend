@@ -11,6 +11,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,8 +26,6 @@ public class FreelancerDTO {
     private String firstName;
     private String lastName;
     private String title;
-
-
     private String profilePicture;
     private String phoneNumber;
     private String passwordHash;
@@ -44,4 +43,9 @@ public class FreelancerDTO {
 
     private String stripeCustomerId;
 
+    private Timestamp createdAt;
+
+    private double averageScore;
+
+    private int reviews;
 }

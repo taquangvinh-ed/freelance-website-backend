@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.controller;
 
+import com.freelancemarketplace.backend.auth.AppUser;
 import com.freelancemarketplace.backend.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.dto.Q_ADTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,8 +65,9 @@ public class FreelancerController {
                         ResponseMessage.NO_CONTENT));
     }
 
-    @GetMapping("/getById/{freelancerId}")
-    public ResponseEntity<ResponseDTO>getSkillById(@PathVariable Long freelancerId){
+    @GetMapping("/getById/")
+    public ResponseEntity<ResponseDTO>getSkillById(@AuthenticationPrincipal AppUser appUser){
+        Long freelancerId = appUser.getId();
         FreelancerDTO givenFreelancer = freelancerService.getFreelancerById(freelancerId);
         return ResponseEntity
                 .status(HttpStatus.OK)

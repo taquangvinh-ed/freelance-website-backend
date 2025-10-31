@@ -65,14 +65,14 @@ public class SecurityConfig {
                                  "/app/**", "/topic/chat/**", "/api/proposals/project/**",
                                 "/api/messages/history/senderId/*/receiverId/*", "/api/chat/currentUserProfile",
                                 "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**",
-                                "/api/proposals/{proposalId}", "/api/contracts/get-contract/{contractId}"
+                                    "/api/proposals/{proposalId}", "/api/contracts/get-contract/{contractId}", "/api/testimonials/**"
                                 ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",
                                 "/api/proposals/**", "/api/dashboard/freelancer/monthly-earnings", "/api/dashboard/freelancer/stats",
                                 "/api/dashboard/freelancer/skillDistribution", "/api/dashboard/freelancer/recentClient",
-                                "/api/dashboard/freelancer/projects/**"
+                                "/api/dashboard/freelancer/projects/**", "/api/freelancers/getById/"
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/", "/api/dashboard/client/**").hasRole("CLIENT")
                         .anyRequest().authenticated())

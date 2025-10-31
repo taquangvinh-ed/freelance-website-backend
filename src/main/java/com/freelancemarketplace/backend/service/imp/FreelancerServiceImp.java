@@ -9,6 +9,7 @@ import com.freelancemarketplace.backend.model.SkillModel;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
+import com.freelancemarketplace.backend.repository.TestimonialsRepository;
 import com.freelancemarketplace.backend.service.FreelancerService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class FreelancerServiceImp implements FreelancerService {
     private final FreelancerMapper freelancerMapper;
     private final SkillsRepository skillsRepository;
     private final EmbeddingService embeddingService;
-
+    private final TestimonialsRepository testimonialsRepository;
 
 
     @Override
@@ -107,32 +108,39 @@ public class FreelancerServiceImp implements FreelancerService {
     }
 
 
-@Override
-@Transactional
-public List<FreelancerDTO> getAllFreelancer() {
-    List<FreelancerModel> freelancers = freelancersRepository.findAll();
+    @Override
+    @Transactional
+    public List<FreelancerDTO> getAllFreelancer() {
+        List<FreelancerModel> freelancers = freelancersRepository.findAll();
 
-    return freelancerMapper.toDTOs(freelancers);
-}
+        return freelancerMapper.toDTOs(freelancers);
+    }
 
-@Override
-@Transactional
-public FreelancerDTO getFreelancerById(Long freelancerId){
+    @Override
+    @Transactional
+    public FreelancerDTO getFreelancerById(Long freelancerId) {
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
-    ()-> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found"));
-        return freelancerMapper.toDTO(freelancer);
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found"));
+        FreelancerDTO freelancerDTO = freelancerMapper.toDTO(freelancer);
 
+        long numberOfReviews = testimonialsRepository.countByFreelancer(freelancer);
+        freelancerDTO.setReviews((int) numberOfReviews);
+
+        double averageRating = testimonialsRepository.findAllByFreelancer(freelancer).stream().mapToDouble(testimonialModel -> testimonialModel.getRatingScore())
+                .average().orElse(0.0);
+        freelancerDTO.setAverageScore(averageRating);
+        return freelancerDTO;
     }
 
 
     @Override
     public FreelancerDTO assignSkillToFreelancer(Long freelancerId, Long skillId) {
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
-                ()->new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
-                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
+                () -> new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
 
         freelancer.getSkills().add(skill);
         freelancer.setSkillVector(embeddingService.generateSkillVector(freelancer));
@@ -144,11 +152,11 @@ public FreelancerDTO getFreelancerById(Long freelancerId){
     @Override
     public FreelancerDTO removeSkillFromFreelancer(Long freelancerId, Long skillId) {
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
-                ()->new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
-                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
+                () -> new ResourceNotFoundException("Skill with id: " + skillId + " not found"));
 
         freelancer.getSkills().remove(skill);
         freelancer.setSkillVector(embeddingService.generateSkillVector(freelancer));

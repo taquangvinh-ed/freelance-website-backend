@@ -53,6 +53,7 @@ public class TestimonialServiceImp implements TestomonialService {
                 }
                 newReview.setReviewerRole(ReviewerRoles.FREELANCER);
                 newReview.setType(ReviewTypes.FREELANCER_TO_CLIENT);
+                newReview.setClient(contract.getClient());
             }
             if (ReviewerRoles.CLIENT.toString().equals(reviewDTO.getReviewerRole())) {
                 if (reviewDTO.getClientId() != null) {
@@ -62,6 +63,7 @@ public class TestimonialServiceImp implements TestomonialService {
                 }
                 newReview.setReviewerRole(ReviewerRoles.CLIENT);
                 newReview.setType(ReviewTypes.CLIENT_TO_FREELANCER);
+                newReview.setFreelancer(contract.getFreelancer());
             }
 
         }
