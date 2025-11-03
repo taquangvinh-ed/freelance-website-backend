@@ -78,6 +78,24 @@ public class FreelancerController {
                 ));
     }
 
+
+    @GetMapping("/profile/{freelancerId}") // 👈 Truyền ID qua URL
+    public ResponseEntity<FreelancerDTO> getOtherFreelancerProfile(
+            @PathVariable Long freelancerId) {
+
+        // ************************************************
+        // ⚠️ BƯỚC QUAN TRỌNG: Kiểm tra Quyền truy cập
+        // ************************************************
+
+        // Bạn phải thêm logic kiểm tra sau:
+        // 1. Kiểm tra: Hồ sơ này có phải là hồ sơ công khai không? (Ví dụ: Chỉ trả về các trường công khai)
+        // 2. Kiểm tra: Nếu người gọi là Client, họ có quyền xem hồ sơ đầy đủ của Freelancer này không? (Ví dụ: Đã thuê hoặc đang trong quá trình thương lượng)
+
+        FreelancerDTO givenFreelancer = freelancerService.getFreelancerById(freelancerId);
+
+        return ResponseEntity.ok(givenFreelancer);
+    }
+
     @PutMapping("/assignSkillToFreelancer/freelancer/{freelancerId}/skill/{skillId}")
     public ResponseEntity<ResponseDTO>assignSkillToFreelancer(@PathVariable Long skillId,
                                                               @PathVariable Long freelancerId){

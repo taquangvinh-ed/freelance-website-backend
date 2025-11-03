@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,6 +40,7 @@ public class FreelancerModel extends BaseEntity {
     private Double wallet;
     private Integer connections;
     private Integer hoursPerWeek;
+    private String clockifyApiKey;
 
 
     @OneToMany(mappedBy = "freelancer")
@@ -75,8 +78,8 @@ public class FreelancerModel extends BaseEntity {
     )
     private Set<SkillModel> skills = new HashSet<>();
 
-    @OneToMany(mappedBy = "freelancer")
-    private Set<CertificateModel> certificates;
+    @OneToMany(mappedBy = "freelancer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CertificateModel> certificates = new HashSet<>();
 
     @OneToMany(mappedBy = "freelancer")
     private Set<EducationModel> educations;
@@ -113,6 +116,9 @@ public class FreelancerModel extends BaseEntity {
     private byte[] skillVector;
 
     private String stripeCustomerId;
+
+    @OneToMany(mappedBy = "freelancer")
+    private List<TimeLog> timeLog = new ArrayList<>();
 
 
 }

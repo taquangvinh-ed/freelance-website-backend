@@ -40,6 +40,8 @@ public class FreelancerDTO {
     private UserDTO user;
 
     private Set<SkillDTO> skills = new HashSet<>();
+    private Set<CertificateDTO>certificates= new HashSet<>();
+    private Set<ExperienceDTO>experiences = new HashSet<>();
 
     private String stripeCustomerId;
 

@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -63,5 +65,8 @@ public class ContractModel extends BaseEntity{
 
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MileStoneModel> mileStones = new HashSet<>();
+
+    @OneToMany(mappedBy = "contract")
+    private List<TimeLog> timeLog = new ArrayList<>();
 
 }
