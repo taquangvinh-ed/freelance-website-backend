@@ -42,6 +42,8 @@ public class ProposalDTO {
     @NotNull(message = "Project id must not be null")
     private Long projectId;
 
+    private Long freelancerId;
+
     private Long teamId;
 
     private Set<MileStoneDTO> mileStones;

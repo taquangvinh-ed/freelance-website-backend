@@ -1,16 +1,19 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.ClientDashboardStatsDTO;
+import com.freelancemarketplace.backend.dto.PostedProject;
 import com.freelancemarketplace.backend.dto.ProjectTrackingDTO;
 import com.freelancemarketplace.backend.dto.RecentPaymentDTO;
 import com.freelancemarketplace.backend.enums.ContractStatus;
 import com.freelancemarketplace.backend.enums.ContractTypes;
 import com.freelancemarketplace.backend.enums.MileStoneStatus;
+import com.freelancemarketplace.backend.enums.ProjectStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.model.*;
 import com.freelancemarketplace.backend.repository.ClientsRepository;
 import com.freelancemarketplace.backend.repository.ContractsRepository;
 import com.freelancemarketplace.backend.repository.PaymentsRepository;
+import com.freelancemarketplace.backend.repository.ProjectsRepository;
 import com.freelancemarketplace.backend.service.DashboardClientService;
 import com.freelancemarketplace.backend.service.ProgressCalculationService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class DashboardClientServiceImp implements DashboardClientService {
     private final ClientsRepository clientsRepository;
     private final ProgressCalculationService progressService;
     private final PaymentsRepository paymentsRepository;
+    private final ProjectsRepository projectsRepository;
 
     @Override
     public ClientDashboardStatsDTO getStats(Long clientId) {
@@ -39,13 +43,14 @@ public class DashboardClientServiceImp implements DashboardClientService {
 
         List<ContractModel> contracts = contractsRepository.findAllByClient(client);
 
+
+
         if(contracts.isEmpty())
             return new ClientDashboardStatsDTO();
 
         ClientDashboardStatsDTO result = new ClientDashboardStatsDTO();
 
-        long totalProjects = contracts.stream().count();
-        result.setTotalProjects((int)totalProjects);
+        long totalProjects = projectsRepository.findAllByClient(client).size();
 
         long activeProjects = contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.ACTIVE).count();
         result.setActiveProjects((int)activeProjects);
@@ -129,6 +134,24 @@ public class DashboardClientServiceImp implements DashboardClientService {
                         payment.getStatus().toString()
                 ))
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<PostedProject> getAllPostedProject(Long clientId){
+        ClientModel client = clientsRepository.findById(clientId).orElseThrow(
+                ()->new ResourceNotFoundException("Client with id: " + clientId + " not found")
+        );
+        List<ProjectModel> projects = projectsRepository.findAllByClient(client);
+
+       return  projects.stream().filter(projectModel -> projectModel.getStatus() == ProjectStatus.IN_PROGRESS).map(
+                projectModel -> {
+                    PostedProject postedProject = new PostedProject();
+                    postedProject.setProjectId(projectModel.getProjectId());
+                    postedProject.setTitle(projectModel.getTitle());
+                    return postedProject;
+                }
+        ).toList();
     }
 
 }

@@ -21,6 +21,7 @@ public interface ProposalMapper {
 
     @Mapping(target = "projectId", source = "project.projectId")
     @Mapping(target = "teamId", source = "team.teamId")
+    @Mapping(target = "freelancerId", source = "freelancer.freelancerId")
     ProposalDTO toDto(ProposalModel proposalModel);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

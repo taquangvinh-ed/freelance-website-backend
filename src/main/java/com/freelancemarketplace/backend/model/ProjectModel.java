@@ -23,6 +23,8 @@ public class ProjectModel extends BaseEntity{
     private Long projectId;
 
     private String title;
+
+    @Column(length = 2000)
     private String description;
 
     @Enumerated(EnumType.STRING)

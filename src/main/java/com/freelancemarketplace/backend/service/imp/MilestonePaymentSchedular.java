@@ -44,7 +44,6 @@ public class MilestonePaymentSchedular {
                             throw new RuntimeException("Failed to release payment for milestone with id: " + milestone.getMileStoneId() + ": " + e);
                         }
                     }
-
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.ClientDashboardStatsDTO;
+import com.freelancemarketplace.backend.dto.PostedProject;
 import com.freelancemarketplace.backend.dto.ProjectTrackingDTO;
 import com.freelancemarketplace.backend.dto.RecentPaymentDTO;
 
@@ -12,4 +13,6 @@ public interface DashboardClientService {
     List<ProjectTrackingDTO> getClientActiveProjects(Long clientId);
 
     List<RecentPaymentDTO> getRecentPayments(Long clientId);
+
+    List<PostedProject> getAllPostedProject(Long clientId);
 }

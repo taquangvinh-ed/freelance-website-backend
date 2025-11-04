@@ -48,7 +48,7 @@ public class ProposalServiceImp implements ProposalService {
                 () -> new ResourceNotFoundException("Freelancer id: " + freelancerId + "inside proposal creating request create not found")
         );
         newProposal.setFreelancer(freelancer);
-
+        newProposal.setStatus(ProposalStatus.PENDING);
 
         if (proposalDTO.getTeamId() != null) {
             TeamModel team = teamsRepository.findById(proposalDTO.getTeamId()).orElseThrow(
@@ -60,8 +60,6 @@ public class ProposalServiceImp implements ProposalService {
                 () -> new ResourceNotFoundException("Project id: " + proposalDTO.getProjectId() + "inside proposal creating request create not found")
         );
 
-        if (proposalDTO.getAmount().compareTo(project.getBudget().getMaxValue()) > 0)
-            throw new ProposalException("The proposal price exceeds the maximum budget.");
         newProposal.setProject(project);
 
 

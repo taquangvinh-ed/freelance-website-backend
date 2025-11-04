@@ -100,4 +100,12 @@ public class DashboardController {
         return ResponseEntity.ok(recentPayments);
     }
 
+
+    @GetMapping("/client/getAllPostedProjects")
+    ResponseEntity<List<PostedProject>>getAllPostedProject(@AuthenticationPrincipal AppUser appUser){
+        Long userId = appUser.getId();
+        List<PostedProject> list = dashboardClientService.getAllPostedProject(userId);
+        return ResponseEntity.ok(list);
+    }
+
 }
