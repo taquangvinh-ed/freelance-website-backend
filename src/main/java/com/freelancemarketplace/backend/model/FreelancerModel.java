@@ -35,7 +35,7 @@ public class FreelancerModel extends BaseEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private Bio bio;
+    private Bio bio = new Bio();
 
     private Double wallet;
     private Integer connections;

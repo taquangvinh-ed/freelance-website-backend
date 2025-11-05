@@ -45,6 +45,14 @@ public class UserServiceImp implements UserService {
             newFreelancer.setLastName(registrationtDTO.getLastName());
             newFreelancer.setOnboardingCompleted(false);
             newFreelancer.setUser(savedUser);
+            if (registrationtDTO.getSummary() != null)
+                newFreelancer.getBio().setSummary(registrationtDTO.getSummary());
+            if (registrationtDTO.getFacebookUrl() != null)
+                newFreelancer.getBio().setFacebookLink(registrationtDTO.getFacebookUrl());
+            if (registrationtDTO.getLinkedlnUrl() != null)
+                newFreelancer.getBio().setLinkedinLink(registrationtDTO.getLinkedlnUrl());
+            if (registrationtDTO.getGithubUrl() != null)
+                newFreelancer.getBio().setTwitterLink(registrationtDTO.getGithubUrl());
             FreelancerModel savedFreelancer = freelancersRepository.save(newFreelancer);
             String stripeConnectAccountId = paymentService.createStripeConnectAccount(savedUser.getEmail(), "US", savedFreelancer.getFreelancerId());
             savedFreelancer.setStripeAccountId(stripeConnectAccountId);

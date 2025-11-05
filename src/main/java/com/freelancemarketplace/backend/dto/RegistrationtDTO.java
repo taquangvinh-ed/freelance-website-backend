@@ -25,4 +25,12 @@ public class RegistrationtDTO {
 
     private String token;
 
+    private String summary;
+
+    private String facebookUrl;
+
+    private String linkedlnUrl;
+
+    private String githubUrl;
+
 }
