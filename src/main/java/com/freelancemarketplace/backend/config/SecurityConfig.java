@@ -54,6 +54,7 @@ public class SecurityConfig {
                                 "/api/projects/filter",
                                 "/api/skills/search", "/ws/**",
                                 "/api/stripe/**",
+                                "/api/stripe/webhook",
                                 "/api/projects/autocomplete-search",
                                 "/onboarding/**" ).permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
@@ -72,7 +73,7 @@ public class SecurityConfig {
                                 "/api/freelancers/{freelancerId}",
                                 "/api/proposals/**", "/api/dashboard/freelancer/monthly-earnings", "/api/dashboard/freelancer/stats",
                                 "/api/dashboard/freelancer/skillDistribution", "/api/dashboard/freelancer/recentClient",
-                                "/api/dashboard/freelancer/projects/**", "/api/freelancers/getById/", "/api/certificate/**"
+                                "/api/dashboard/freelancer/projects/**", "/api/freelancers/getById/", "/api/certificate/**", "/api/freelancers/me/status","/api/stripe/create-onboarding-link"
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/", "/api/dashboard/client/**").hasRole("CLIENT")
                         .anyRequest().authenticated())

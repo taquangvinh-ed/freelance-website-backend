@@ -41,6 +41,9 @@ public class FreelancerModel extends BaseEntity {
     private Integer connections;
     private Integer hoursPerWeek;
     private String clockifyApiKey;
+    private String stripeAccountId;
+    @Column(nullable = true)
+    private Boolean onboardingCompleted;
 
 
     @OneToMany(mappedBy = "freelancer")

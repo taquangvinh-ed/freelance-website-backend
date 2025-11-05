@@ -101,15 +101,17 @@ public class ContractServiceImp implements ContractService {
     @Transactional
     @Override
     public MileStoneDTO processMilestonePayment(Long contractId, Long milestoneId) throws Exception {
+
         MileStoneModel mileStone = mileStoneModelRepository.findById(milestoneId).orElseThrow(
                 () -> new ResourceNotFoundException("Milestone with id: " + milestoneId + " not found")
         );
 
-        ContractModel contractModel = contractsRepository.findById(contractId).orElseThrow(
+        ContractModel contractModel = contractsRepository.findByIdWithClientAndUser(contractId).orElseThrow(
                 () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );
 
         ClientModel client = contractModel.getClient();
+        System.out.println("ClientId: " + client.getClientId());
         if(client.getStripeCustomerId() == null){
             String clientName = client.getFirstName() + client.getLastName();
             String stripeCustomerId = paymentService.createStripeCustomer(client.getUser().getEmail(), clientName);

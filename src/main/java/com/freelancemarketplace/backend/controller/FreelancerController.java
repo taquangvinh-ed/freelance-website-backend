@@ -5,10 +5,13 @@ import com.freelancemarketplace.backend.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.dto.Q_ADTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
 import com.freelancemarketplace.backend.dto.SkillDTO;
+import com.freelancemarketplace.backend.model.FreelancerModel;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.FreelancerService;
 import com.freelancemarketplace.backend.service.SkillSerivice;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/freelancers", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -120,5 +124,24 @@ public class FreelancerController {
                         ResponseMessage.SUCCESS,
                         updatedFreelancer
                 ));
+    }
+
+    @GetMapping("/me/status")
+    public ResponseEntity<?> status(@AuthenticationPrincipal AppUser appUser) throws StripeException {
+        Long freelancerId = appUser.getId();
+        FreelancerModel freelancer = freelancerService.findById(freelancerId);
+
+        String stripeAccountId = freelancer.getStripeAccountId();
+        Account account = Account.retrieve(stripeAccountId);
+        boolean completed = account.getChargesEnabled() && account.getPayoutsEnabled();
+        if(completed){
+            freelancerService.markOnboardingCompleted(stripeAccountId);
+        }
+        return ResponseEntity.ok(Map.of(
+                "onboardingCompleted", completed,
+                "stripeAccountId", stripeAccountId,
+                "chargesEnabled", account.getChargesEnabled(),
+                "payoutsEnabled", account.getPayoutsEnabled()
+        ));
     }
 }

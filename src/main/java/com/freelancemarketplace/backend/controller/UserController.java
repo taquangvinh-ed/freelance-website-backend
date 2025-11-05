@@ -10,6 +10,7 @@ import com.freelancemarketplace.backend.model.UserModel;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.UserService;
+import com.stripe.exception.StripeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/")
-    ResponseEntity<ResponseDTO> registerUser(@RequestBody RegistrationtDTO registrationtDTO) {
+    ResponseEntity<ResponseDTO> registerUser(@RequestBody RegistrationtDTO registrationtDTO) throws StripeException {
         RegistrationtDTO responseRegistration = userService.registerUser(registrationtDTO);
 
         UserModel newUser = userMapper.registraionDtoToUserEntity(registrationtDTO);

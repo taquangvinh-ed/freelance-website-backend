@@ -12,4 +12,5 @@ import java.util.Optional;
 
 @Repository
 public interface FreelancersRepository extends JpaRepository<FreelancerModel, Long> {
+  Optional<FreelancerModel> findByStripeAccountId(String stripeAccountId);
   }

@@ -37,7 +37,7 @@ public class MilestonePaymentSchedular {
                     if (milestone.getCompletedAt().before(sevenDaysAgo)) {
                         try {
                             MileStoneDTO mileStoneDTO = mileStoneMapper.toDto(milestone);
-                            paymentService.releasePayment(milestone.getPaymentIntentId(), mileStoneDTO, contract.getFreelancer().getStripeCustomerId());
+                            paymentService.releasePayment(milestone.getPaymentIntentId(), mileStoneDTO, contract.getFreelancer().getStripeAccountId());
                             milestone.setStatus(MileStoneStatus.RELEASED);
                             contractsRepository.save(contract);
                         } catch (Exception e) {

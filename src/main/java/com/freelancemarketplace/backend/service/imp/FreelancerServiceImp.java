@@ -13,12 +13,16 @@ import com.freelancemarketplace.backend.repository.TestimonialsRepository;
 import com.freelancemarketplace.backend.service.FreelancerService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class FreelancerServiceImp implements FreelancerService {
 
     private final FreelancersRepository freelancersRepository;
@@ -26,6 +30,7 @@ public class FreelancerServiceImp implements FreelancerService {
     private final SkillsRepository skillsRepository;
     private final EmbeddingService embeddingService;
     private final TestimonialsRepository testimonialsRepository;
+
 
 
     @Override
@@ -132,6 +137,13 @@ public class FreelancerServiceImp implements FreelancerService {
         return freelancerDTO;
     }
 
+    @Override
+    public FreelancerModel findById(Long freelancerId){
+        return freelancersRepository.findById(freelancerId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+        );
+    }
+
 
     @Override
     public FreelancerDTO assignSkillToFreelancer(Long freelancerId, Long skillId) {
@@ -165,5 +177,19 @@ public class FreelancerServiceImp implements FreelancerService {
 
         return freelancerMapper.toDTO(savedFreelancer);
 
+    }
+
+
+    @Override
+    public void markOnboardingCompleted(String stripeAccountId){
+        FreelancerModel freelancer = freelancersRepository.findByStripeAccountId(stripeAccountId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer with stripeAccountId: " + stripeAccountId + " not found")
+        );
+
+        if(!freelancer.getOnboardingCompleted()){
+            freelancer.setOnboardingCompleted(true);
+            freelancersRepository.save(freelancer);
+            log.info("Mark onboarding completed successfully");
+        }
     }
 }

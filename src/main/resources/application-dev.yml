@@ -4,7 +4,7 @@ spring:
     username: ${TEST_DATABASE_USERNAME}
     password: ${TEST_DATABASE_PASSWORD}
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
     properties:
@@ -36,6 +36,8 @@ logging:
 stripe:
   api:
     key: ${STRIPE_SECRET_KEY}
+  webhook:
+    secret: ${STRIPE_WEBHOOK_SECRET}
 
 embedding:
   service:
