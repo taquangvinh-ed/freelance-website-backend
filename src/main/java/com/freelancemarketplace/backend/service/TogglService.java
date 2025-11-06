@@ -15,5 +15,5 @@ public interface TogglService {
                                               String description);
 
     @Transactional
-    TogglTimeEntryResponseDTO stopTimeEntry(Long freelancerId);
+    TogglTimeEntryResponseDTO stopTimeEntry(Long freelancerId, Long contractId);
 }

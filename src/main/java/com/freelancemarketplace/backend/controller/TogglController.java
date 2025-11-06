@@ -43,13 +43,13 @@ public class TogglController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/stop")
+    @PostMapping("/stop/{contractId}")
     public ResponseEntity<TogglTimeEntryResponseDTO> stopTimer(
-            @AuthenticationPrincipal AppUser appUser) {
+            @AuthenticationPrincipal AppUser appUser, @PathVariable Long contractId) {
 
         Long freelancerId = appUser.getId();
 
-        TogglTimeEntryResponseDTO response = togglService.stopTimeEntry(freelancerId);
+        TogglTimeEntryResponseDTO response = togglService.stopTimeEntry(freelancerId, contractId);
 
         return ResponseEntity.ok(response);
     }

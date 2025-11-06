@@ -23,9 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -220,18 +218,21 @@ public class TogglServiceImp implements TogglService {
 
     @Transactional
     @Override
-    public TogglTimeEntryResponseDTO stopTimeEntry(Long freelancerId) { // Đã đổi kiểu trả về
+    public TogglTimeEntryResponseDTO stopTimeEntry(Long freelancerId, Long contractId) { // Đã đổi kiểu trả về
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
                 () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         // 1. Tìm bản ghi TimeLog đang ACTIVE trong DB nội bộ
-        TimeLog activeTimeLog = timeLogRepository.findByFreelancerAndStatus(freelancer, TimeLogStatus.ACTIVE)
-                .orElseThrow(() -> new IllegalStateException("No active timer found for this freelancer."));
+        List<TimeLog> activeTimeLog = timeLogRepository.findByFreelancerAndStatus(freelancer, TimeLogStatus.ACTIVE);
+
+        Optional<TimeLog> timelog = Optional.ofNullable(activeTimeLog.stream().filter(log -> log.getContract().getContractId().equals(contractId)).findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "No active timer found for Contract ID: " + contractId + " for this freelancer."
+                )));
 
         String workspaceId = config.getDefaultWorkspaceId();
-        // Lấy ID Time Entry của Toggl
-        String timeEntryId = activeTimeLog.getTogglEntryId(); // Giữ nguyên trường DB để chứa Toggl ID
+        String timeEntryId = timelog.get().getTogglEntryId(); // Giữ nguyên trường DB để chứa Toggl ID
 
         // 2. Chuẩn bị Header (Basic Auth)
         HttpHeaders headers = createAuthHeaders(); // <-- Sử dụng Basic Auth Headers
@@ -256,9 +257,10 @@ public class TogglServiceImp implements TogglService {
 
                 // 4. ĐỒNG BỘ DB NỘI BỘ
                 // Toggl trả về thời gian kết thúc trong trường 'stop' (hoặc 'at') của phản hồi
-                activeTimeLog.setEndTime(Instant.parse(togglResponse.getStop()));
-                activeTimeLog.setStatus(TimeLogStatus.COMPLETED);
-                timeLogRepository.save(activeTimeLog);
+
+                timelog.get().setEndTime(Instant.parse(togglResponse.getStop()));
+                timelog.get().setStatus(TimeLogStatus.COMPLETED);
+                timeLogRepository.save(timelog.get());
 
                 return togglResponse;
 
