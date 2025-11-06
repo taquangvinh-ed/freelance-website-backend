@@ -40,7 +40,8 @@ public class FreelancerModel extends BaseEntity {
     private Double wallet;
     private Integer connections;
     private Integer hoursPerWeek;
-    private String clockifyApiKey;
+    private String clockifyUserId;
+    private String togglUserId;
     private String stripeAccountId;
     @Column(nullable = true)
     private Boolean onboardingCompleted;

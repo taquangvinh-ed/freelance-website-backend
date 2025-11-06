@@ -73,7 +73,10 @@ public class SecurityConfig {
                                 "/api/freelancers/{freelancerId}",
                                 "/api/proposals/**", "/api/dashboard/freelancer/monthly-earnings", "/api/dashboard/freelancer/stats",
                                 "/api/dashboard/freelancer/skillDistribution", "/api/dashboard/freelancer/recentClient",
-                                "/api/dashboard/freelancer/projects/**", "/api/freelancers/getById/", "/api/certificate/**", "/api/freelancers/me/status","/api/stripe/create-onboarding-link"
+                                "/api/dashboard/freelancer/projects/**", "/api/freelancers/getById/", "/api/certificate/**",
+                                "/api/freelancers/me/status","/api/stripe/create-onboarding-link",
+                                "/api/tracker/**"
+
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/", "/api/dashboard/client/**").hasRole("CLIENT")
                         .anyRequest().authenticated())

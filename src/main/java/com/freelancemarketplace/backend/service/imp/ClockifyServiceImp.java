@@ -1,9 +1,7 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.config.ClockifyConfig;
-import com.freelancemarketplace.backend.dto.ClockifyStartRequest;
-import com.freelancemarketplace.backend.dto.ClockifyStopRequest;
-import com.freelancemarketplace.backend.dto.ClockifyTimeEntryResponse;
+import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.enums.TimeLogStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.model.ContractModel;
@@ -21,6 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +33,57 @@ public class ClockifyServiceImp implements ClockifyService {
 
 
     @Override
+    public String getOrCreateFreelancerUser(Long freelancerId, String freelancerName, String email) {
+
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                ()->new ResourceNotFoundException("Freelancer with id:" + freelancerId + " not found")
+        );
+
+        String clockifyUserId = freelancer.getClockifyUserId();
+        if(clockifyUserId != null && !clockifyUserId.isEmpty())
+            return clockifyUserId;
+
+
+        String url = String.format("%s/workspaces/%s/users", config.getBaseUrl(),config.getDefaultWorkspaceId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(config.getApiKeyHeaderName(), config.getKey());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        ClockifyUserRequestDTO requestBody = new ClockifyUserRequestDTO(freelancerName,email);
+        HttpEntity<ClockifyUserRequestDTO>entity =  new HttpEntity<>(requestBody,headers);
+        try{
+            ResponseEntity<ClockifyUserResponseDTO> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    ClockifyUserResponseDTO.class
+            );
+
+            if(response.getStatusCode() == HttpStatus.CREATED){
+                ClockifyUserResponseDTO jsonResponse = response.getBody();
+                if(jsonResponse != null && jsonResponse.getId() != null){
+                freelancer.setClockifyUserId(jsonResponse.getId());
+                freelancersRepository.save(freelancer);
+                return jsonResponse.getId();}
+                else{
+                    throw new RuntimeException("Clockify user response is valid but not contains userId");
+                }
+            }else{
+                throw new RuntimeException("Error create freelancer user in clockify service");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Can not connect to clockify API: " +e);
+        }
+    }
+
+    @Override
     @Transactional
     public ClockifyTimeEntryResponse startTimeEntry(
             Long freelancerId,
             Long contractId,
-            ClockifyStartRequest request) {
+            String description) {
 
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
                 ()-> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
@@ -52,19 +97,23 @@ public class ClockifyServiceImp implements ClockifyService {
             throw new IllegalStateException("Freelancer already has an active timer running in contract " + contractId);
         }
 
-
-        String freelancerClockifyApiKey = freelancer.getClockifyApiKey();
+        String freelancerName = freelancer.getFirstName()+freelancer.getLastName();
+        String email = freelancer.getUser().getEmail();
+        String clockifyUserId = getOrCreateFreelancerUser(freelancerId, freelancerName, email);
         String workspaceId = config.getDefaultWorkspaceId();
 
         Long  clockifyProjectId = contract.getContractProject().getProjectId();
+
+        ClockifyStartRequest request = new ClockifyStartRequest();
+        request.setUserId(clockifyUserId);
+        String startTime = Instant.now().toString();
+        request.setStart(startTime);
         request.setProjectId(clockifyProjectId);
-
-        request.setStart(Instant.now().toString());
-
+        request.setDescription(description);
 
         // 1. Chuẩn bị Headers
         HttpHeaders headers = new HttpHeaders();
-        headers.set(config.getApiKeyHeaderName(), freelancerClockifyApiKey);
+        headers.set(config.getApiKeyHeaderName(), config.getKey());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<ClockifyStartRequest> entity = new HttpEntity<>(request, headers);
@@ -84,7 +133,7 @@ public class ClockifyServiceImp implements ClockifyService {
                 timeLog.setContract(contract);
 
                 // Lấy ID và Thời gian từ phản hồi Clockify
-                timeLog.setClockifyEntryId(clockifyResponse.getId());
+                timeLog.setTogglEntryId(clockifyResponse.getId());
                 timeLog.setStartTime(Instant.parse(clockifyResponse.getTimeInterval().getStart()));
                 timeLog.setStatus(TimeLogStatus.ACTIVE);
                 timeLogRepository.save(timeLog);
@@ -110,16 +159,16 @@ public class ClockifyServiceImp implements ClockifyService {
         TimeLog activeTimeLog = timeLogRepository.findByFreelancerAndStatus(freelancer, TimeLogStatus.ACTIVE)
                 .orElseThrow(() -> new IllegalStateException("No active timer found for this freelancer."));
 
-        String freelancerClockifyApiKey = freelancer.getClockifyApiKey();
+        String freelancerClockifyApiKey = freelancer.getClockifyUserId();
         String workspaceId = config.getDefaultWorkspaceId();
-        String timeEntryId = activeTimeLog.getClockifyEntryId(); // 🎯 Lấy ID Clockify đã lưu
+        String timeEntryId = activeTimeLog.getTogglEntryId(); // 🎯 Lấy ID Clockify đã lưu
 
         // 3. Chuẩn bị và Gọi Clockify API (PATCH)
         ClockifyStopRequest request = new ClockifyStopRequest();
         request.setEnd(Instant.now().toString()); // Dừng timer ngay bây giờ
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(config.getApiKeyHeaderName(), freelancerClockifyApiKey);
+        headers.set(config.getApiKeyHeaderName(), config.getKey());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<ClockifyStopRequest> entity = new HttpEntity<>(request, headers);
@@ -149,5 +198,6 @@ public class ClockifyServiceImp implements ClockifyService {
             throw new RuntimeException("Clockify API Error (Stop): " + e.getResponseBodyAsString(), e);
         }
     }
+
 
 }

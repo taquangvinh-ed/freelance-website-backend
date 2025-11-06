@@ -16,12 +16,11 @@ public class TimeLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long timeLogId;
 
-    @Column(name = "clockify_entry_id", nullable = false, unique = true)
-    private String clockifyEntryId;
+    @Column(name = "toggl_entry_id", nullable = false, unique = true)
+    private String togglEntryId;
 
     @Enumerated(EnumType.STRING)
     private TimeLogStatus status;
-
 
     @Column(name = "start_time", nullable = false)
     private Instant startTime; // Dùng Instant cho thời gian chính xác (ISO 8601)

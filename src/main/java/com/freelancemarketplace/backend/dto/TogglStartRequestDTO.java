@@ -9,11 +9,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClockifyStartRequest {
+public class TogglStartRequestDTO {
     private String userId;
     private String start; // Timestamp bắt đầu (ISO 8601 format)
     private String description;
-    private Long projectId;
-//    private String taskId; // Tùy chọn, nếu bạn dùng Task trong Clockify
-//    private boolean billable = true;
+    private Long project_id;
+    private String created_with;
+    private Long workspace_id;
+    private Long duration;
+    private boolean billable = true;
 }

@@ -32,6 +32,8 @@ public class ContractModel extends BaseEntity{
 
     private Timestamp endDate;
 
+    private Long toggleProjectId;
+
     @Enumerated(EnumType.STRING)
     private ContractStatus status;
 

@@ -43,3 +43,22 @@ embedding:
   service:
     url: http://localhost:5000
 
+clockify:
+  api:
+    key: ${CLOCKIFY_API_KEY}
+    base_url: https://api.clockify.me/api/v1
+    header:
+      key_name: X-Api-Key
+  reports:
+    base_url: https://reports.api.clockify.me/v1
+  workspace:
+    default_id: 69055ed8133ebe6373fc9c18
+
+toggl:
+  api_key: ${TOGGL_API_KEY}
+  workspace:
+    id: 20938694
+  base_url: "https://api.track.toggl.com/api/v9"
+  organization_id: 20939604
+
+

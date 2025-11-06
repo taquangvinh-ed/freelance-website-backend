@@ -8,16 +8,19 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class ClockifyConfig {
 
-    @Value("${CLOCKIFY_API_BASE_URL}")
+    @Value("${clockify.api.key}")
+    private String key;
+
+    @Value("${clockify.api.base_url}")
     private String baseUrl;
 
-    @Value("${CLOCKIFY_API_REPORTS_BASE_URL}")
+    @Value("${clockify.reports.base_url}")
     private String reportsBaseUrl;
 
-    @Value("${CLOCKIFY_HEADER_API_KEY_NAME}")
+    @Value("${clockify.api.header.key_name}")
     private String apiKeyHeaderName;
 
-    @Value("${CLOCKIFY_WORKSPACE_DEFAULT_ID}")
+    @Value("${clockify.workspace.default_id}")
     private String defaultWorkspaceId;
 
 }

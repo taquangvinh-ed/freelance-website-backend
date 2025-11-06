@@ -25,20 +25,15 @@ public class ClockifyController {
     @PostMapping("/start/{contractId}")
     public ResponseEntity<ClockifyTimeEntryResponse> startTimer(
             @AuthenticationPrincipal AppUser appUser,
-            @PathVariable Long contractId, // Vẫn cần Contract ID cho các logic khác
-            @RequestBody ClockifyStartRequest request) {
+            @PathVariable Long contractId,
+            @RequestBody(required = false) String description) {
 
-        // 1. Logic Lấy API Key cá nhân từ DB
         Long freelancerId = appUser.getId();
 
-        // 3. Cập nhật Request Body và Gọi Service Clockify
-        request.setStart(java.time.Instant.now().toString());
-
-        // Gọi Service mà không cần truyền workspaceId
         ClockifyTimeEntryResponse response = clockifyService.startTimeEntry(
                 freelancerId,
                 contractId,
-                request
+                description
         );
 
 
