@@ -56,8 +56,8 @@ public class ContractReportingServiceImp implements ContractReportingService {
         double totalHours = completedLogs.stream().mapToDouble(log -> ChronoUnit.MILLIS.between(log.getStartTime(), log.getEndTime())/3600000.0).sum();
         List<WeeklyReportItemModel> taskList = completedLogs.stream().map(log->{
             WeeklyReportItemModel item = new WeeklyReportItemModel();
-            item.setStart(log.getStartTime());
-            item.setEnd(log.getEndTime());
+            item.setStartTime(log.getStartTime());
+            item.setEndTime(log.getEndTime());
             item.setDescription(log.getDescription());
             return item;
         }).toList();

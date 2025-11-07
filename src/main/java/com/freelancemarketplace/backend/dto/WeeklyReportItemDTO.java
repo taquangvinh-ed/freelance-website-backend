@@ -11,7 +11,7 @@ import java.time.Instant;
 @NoArgsConstructor
 public class WeeklyReportItemDTO {
     private Long weeklyReportItemId;
-    Instant start;
-    Instant end;
+    Instant startTime;
+    Instant endTime;
     String description;
 }

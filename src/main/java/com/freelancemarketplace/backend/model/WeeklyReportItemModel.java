@@ -16,8 +16,8 @@ public class WeeklyReportItemModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long weeklyReportItemId;
-    Instant start;
-    Instant end;
+    Instant startTime;
+    Instant endTime;
     String description;
 
     @ManyToOne
