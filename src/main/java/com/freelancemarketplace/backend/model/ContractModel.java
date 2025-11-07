@@ -71,4 +71,7 @@ public class ContractModel extends BaseEntity{
     @OneToMany(mappedBy = "contract")
     private List<TimeLog> timeLog = new ArrayList<>();
 
+    @OneToMany(mappedBy = "contract")
+    private List<WeeklyReportModel> weeklyReports;
+
 }

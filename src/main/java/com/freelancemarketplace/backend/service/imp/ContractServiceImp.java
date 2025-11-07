@@ -7,14 +7,9 @@ import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ClientMapper;
 import com.freelancemarketplace.backend.mapper.ContractMapper;
 import com.freelancemarketplace.backend.mapper.MileStoneMapper;
-import com.freelancemarketplace.backend.model.ClientModel;
-import com.freelancemarketplace.backend.model.ContractModel;
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.MileStoneModel;
-import com.freelancemarketplace.backend.repository.ClientsRepository;
-import com.freelancemarketplace.backend.repository.ContractsRepository;
-import com.freelancemarketplace.backend.repository.FreelancersRepository;
-import com.freelancemarketplace.backend.repository.MileStoneModelRepository;
+import com.freelancemarketplace.backend.mapper.WeeklyReportMapper;
+import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ContractLifeCycleService;
 import com.freelancemarketplace.backend.service.ContractService;
 import com.freelancemarketplace.backend.service.PaymentService;
@@ -41,7 +36,8 @@ public class ContractServiceImp implements ContractService {
     private PaymentService paymentService;
     private ClientsRepository clientsRepository;
     private ContractLifeCycleService contractLifeCycleService;
-
+    private WeeklyReportModelRepository weeklyReportModelRepository;
+private WeeklyReportMapper weeklyReportMapper;
     @Override
     public ContractDTO updateContract(Long contractId, ContractDTO contractDTO) {
 
@@ -161,15 +157,23 @@ public class ContractServiceImp implements ContractService {
 
 
     @Override
-    public void doneCotractract(Long contractId){
+    public void doneContractract(Long contractId){
         ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
                 () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );
         if(contract.getStatus() != ContractStatus.ACTIVE){
-            throw new RuntimeException("This contract is not active");
-        }
+            throw new IllegalStateException("Cannot complete contract. This contract is not currently ACTIVE.");        }
         contract.setStatus(ContractStatus.DONE);
         contractLifeCycleService.stopWeeklyReporting(contract.getContractId());
+    }
+
+    @Override
+    public List<WeeklyReportDTO> getAllWeeklyReports(Long contractId){
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+        List<WeeklyReportModel> reports = weeklyReportModelRepository.findAllByContract(contract);
+        return weeklyReportMapper.toDTOs(reports);
     }
 
 }

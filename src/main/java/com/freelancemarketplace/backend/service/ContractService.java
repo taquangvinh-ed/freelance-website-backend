@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.service;
 import com.freelancemarketplace.backend.dto.ContractDTO;
 import com.freelancemarketplace.backend.dto.ContractResponseDTO;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
+import com.freelancemarketplace.backend.dto.WeeklyReportDTO;
 import jakarta.transaction.Transactional;
 
 import java.sql.Timestamp;
@@ -23,5 +24,7 @@ public interface ContractService {
 
     Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId) throws Exception;
 
-    void doneCotractract(Long contractId);
+    void doneContractract(Long contractId);
+
+    List<WeeklyReportDTO> getAllWeeklyReports(Long contractId);
 }

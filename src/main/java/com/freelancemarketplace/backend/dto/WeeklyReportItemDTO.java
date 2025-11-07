@@ -10,6 +10,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 public class WeeklyReportItemDTO {
+    private Long weeklyReportItemId;
     Instant start;
     Instant end;
     String description;
