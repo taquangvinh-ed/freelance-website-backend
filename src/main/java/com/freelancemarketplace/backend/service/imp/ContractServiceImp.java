@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.*;
+import com.freelancemarketplace.backend.enums.ContractStatus;
 import com.freelancemarketplace.backend.enums.MileStoneStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ClientMapper;
@@ -14,6 +15,7 @@ import com.freelancemarketplace.backend.repository.ClientsRepository;
 import com.freelancemarketplace.backend.repository.ContractsRepository;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.MileStoneModelRepository;
+import com.freelancemarketplace.backend.service.ContractLifeCycleService;
 import com.freelancemarketplace.backend.service.ContractService;
 import com.freelancemarketplace.backend.service.PaymentService;
 import jakarta.transaction.Transactional;
@@ -38,6 +40,7 @@ public class ContractServiceImp implements ContractService {
     private ClientMapper clientMapper;
     private PaymentService paymentService;
     private ClientsRepository clientsRepository;
+    private ContractLifeCycleService contractLifeCycleService;
 
     @Override
     public ContractDTO updateContract(Long contractId, ContractDTO contractDTO) {
@@ -156,5 +159,17 @@ public class ContractServiceImp implements ContractService {
         return milestone.getCompletedAt();
     }
 
+
+    @Override
+    public void doneCotractract(Long contractId){
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+        if(contract.getStatus() != ContractStatus.ACTIVE){
+            throw new RuntimeException("This contract is not active");
+        }
+        contract.setStatus(ContractStatus.DONE);
+        contractLifeCycleService.stopWeeklyReporting(contract.getContractId());
+    }
 
 }

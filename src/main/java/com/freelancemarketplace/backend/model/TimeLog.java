@@ -25,6 +25,9 @@ public class TimeLog {
     @Column(name = "start_time", nullable = false)
     private Instant startTime; // Dùng Instant cho thời gian chính xác (ISO 8601)
 
+    @Column(length = 1000)
+    private String description;
+
     @Column(name = "end_time")
     private Instant endTime;
 

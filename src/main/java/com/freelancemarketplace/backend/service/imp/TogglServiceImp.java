@@ -18,11 +18,16 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 @Slf4j
@@ -200,6 +205,7 @@ public class TogglServiceImp implements TogglService {
 
                 // Lấy ID và Thời gian từ phản hồi Toggl
                 timeLog.setTogglEntryId(togglResponse.getId().toString());
+                timeLog.setDescription(togglResponse.getDescription());
                 // Toggl trả về startTime dưới trường "start" (hoặc "at") trong response body
                 timeLog.setStartTime(Instant.parse(togglResponse.getStart()));
                 timeLog.setStatus(TimeLogStatus.ACTIVE);
@@ -271,6 +277,25 @@ public class TogglServiceImp implements TogglService {
             // Xử lý lỗi API client
             throw new RuntimeException("Toggl API Error (Stop): " + e.getResponseBodyAsString(), e);
         }
+    }
+
+    @Transactional
+    public void generateWeeklyReport(Long contractId){
+        ZoneId zoneId = ZoneId.systemDefault();
+
+        LocalDate today = LocalDate.now();
+        LocalDate weekStart = today.with(DayOfWeek.MONDAY);
+        LocalDate weekEnd = today.with(DayOfWeek.SUNDAY);
+
+        ContractModel contractModel = contractsRepository.findById(contractId).orElseThrow(
+                ()->new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+        generateReportForContract(contractModel, weekStart, weekEnd);
+    }
+
+    private void generateReportForContract(ContractModel contract, LocalDate weekStart, LocalDate weekEnd){
+        HttpHeaders headers = createAuthHeaders();
+
     }
 
 }

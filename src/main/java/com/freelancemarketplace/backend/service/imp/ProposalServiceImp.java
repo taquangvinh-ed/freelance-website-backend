@@ -11,6 +11,7 @@ import com.freelancemarketplace.backend.mapper.MileStoneMapper;
 import com.freelancemarketplace.backend.mapper.ProposalMapper;
 import com.freelancemarketplace.backend.model.*;
 import com.freelancemarketplace.backend.repository.*;
+import com.freelancemarketplace.backend.service.ContractLifeCycleService;
 import com.freelancemarketplace.backend.service.ProposalService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class ProposalServiceImp implements ProposalService {
     private final MileStoneMapper mileStoneMapper;
     private final ContractMapper contractMapper;
     private final ContractsRepository contractsRepository;
+    private final ContractLifeCycleService contractLifeCycleService;
 
 
     @Override
@@ -188,8 +190,11 @@ public class ProposalServiceImp implements ProposalService {
         );
 
         ContractModel newContract = createContractFromProposal(proposal);
-        ContractModel savedContract = contractsRepository.save(newContract);
 
+        ContractModel savedContract = contractsRepository.save(newContract);
+        if(newContract.getTypes().equals(ContractTypes.HOURLY)){
+            contractLifeCycleService.startWeeklyReporting(savedContract.getContractId());
+        }
         return savedContract.getContractId();
     }
 

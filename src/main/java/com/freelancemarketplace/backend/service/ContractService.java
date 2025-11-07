@@ -22,4 +22,6 @@ public interface ContractService {
     MileStoneDTO processMilestonePayment(Long contractId, Long milestoneId) throws Exception;
 
     Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId) throws Exception;
+
+    void doneCotractract(Long contractId);
 }
