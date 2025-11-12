@@ -3,7 +3,9 @@ package com.freelancemarketplace.backend.controller;
 import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
+import com.freelancemarketplace.backend.service.ContractReportingService;
 import com.freelancemarketplace.backend.service.ContractService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,14 +17,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/contracts", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequiredArgsConstructor
 @Slf4j
 public class ContractController {
 
     private final ContractService contractService;
+    private final ContractReportingService contractReportingService;
 
-    public ContractController(ContractService contractService) {
-        this.contractService = contractService;
-    }
 
 
 
@@ -88,4 +89,11 @@ public class ContractController {
         return ResponseEntity.ok(result);
     }
 
+
+    @GetMapping("/{contractId}/hourly-contract-logs")
+    public ResponseEntity<List<WeeklyReportDTO>> getLogs(@PathVariable Long contractId){
+        log.info("ContractId: {}",contractId);
+        List<WeeklyReportDTO> logs = contractReportingService.getAllLogs(contractId);
+        return ResponseEntity.ok(logs);
+    }
 }

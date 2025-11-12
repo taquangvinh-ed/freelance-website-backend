@@ -192,7 +192,7 @@ public class ProposalServiceImp implements ProposalService {
         ContractModel newContract = createContractFromProposal(proposal);
 
         ContractModel savedContract = contractsRepository.save(newContract);
-        if(newContract.getTypes().equals(ContractTypes.HOURLY)){
+        if (newContract.getTypes().equals(ContractTypes.HOURLY)) {
             contractLifeCycleService.startWeeklyReporting(savedContract.getContractId());
         }
         return savedContract.getContractId();
@@ -336,19 +336,32 @@ public class ProposalServiceImp implements ProposalService {
 
     private ContractModel createContractFromProposal(ProposalModel proposalModel) {
         ContractModel contract = new ContractModel();
-        contract.setAmount(proposalModel.getAmount().doubleValue());
-        if (proposalModel.getBudgetType() == BudgetTypes.FIXED_PRICE)
+        if (proposalModel.getBudgetType() == BudgetTypes.FIXED_PRICE) {
             contract.setTypes(ContractTypes.FIXED_PRICE);
-        else contract.setTypes(ContractTypes.HOURLY);
-        contract.setStartDate(Timestamp.from(Instant.now()));
-        if (proposalModel.getDeliveryDays() != null) {
-            Timestamp startDate = Timestamp.from(Instant.now());
-            LocalDateTime dateTime = startDate.toLocalDateTime();
-            int deliveryDate = proposalModel.getDeliveryDays();
-            dateTime = dateTime.plusDays(deliveryDate);
-            Timestamp endDate = Timestamp.valueOf(dateTime);
-            contract.setEndDate(endDate);
+            contract.setAmount(proposalModel.getAmount().doubleValue());
+            contract.setStartDate(Timestamp.from(Instant.now()));
+            if (proposalModel.getDeliveryDays() != null) {
+                Timestamp startDate = Timestamp.from(Instant.now());
+                LocalDateTime dateTime = startDate.toLocalDateTime();
+                int deliveryDate = proposalModel.getDeliveryDays();
+                dateTime = dateTime.plusDays(deliveryDate);
+                Timestamp endDate = Timestamp.valueOf(dateTime);
+                contract.setEndDate(endDate);
+            }
         }
+        if (proposalModel.getBudgetType() == BudgetTypes.HOURLY_RATE) {
+            contract.setTypes(ContractTypes.HOURLY);
+            contract.setAmount(proposalModel.getHourlyRate().doubleValue());
+            Timestamp startDate = Timestamp.from(Instant.now());
+            contract.setStartDate(startDate);
+            Integer estimatedHours = proposalModel.getEstimatedHours();
+            if (estimatedHours != null && estimatedHours > 0) {
+                LocalDateTime dateTime = startDate.toLocalDateTime();
+                dateTime.plusHours(estimatedHours);
+                contract.setEndDate(Timestamp.valueOf(dateTime));
+            }
+        };
+
         contract.setStatus(ContractStatus.ACTIVE);
         contract.setProposal(proposalModel);
         contract.setFreelancer(proposalModel.getFreelancer());
