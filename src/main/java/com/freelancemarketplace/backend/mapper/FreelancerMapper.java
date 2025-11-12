@@ -1,9 +1,6 @@
 package com.freelancemarketplace.backend.mapper;
 
-import com.freelancemarketplace.backend.dto.CertificateDTO;
-import com.freelancemarketplace.backend.dto.ExperienceDTO;
-import com.freelancemarketplace.backend.dto.FreelancerDTO;
-import com.freelancemarketplace.backend.dto.SkillDTO;
+import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.model.CertificateModel;
 import com.freelancemarketplace.backend.model.ExperienceModel;
 import com.freelancemarketplace.backend.model.FreelancerModel;
@@ -24,6 +21,8 @@ public interface FreelancerMapper {
     FreelancerModel toEntity(FreelancerDTO freelancerDTO);
 
     List<FreelancerDTO>toDTOs(List<FreelancerModel> freelancerModelList);
+
+    FreelancerInfoDTO toInfoDTO(FreelancerModel freelancerModel);
 
     SkillDTO toSkillDTO(SkillModel skill);
 

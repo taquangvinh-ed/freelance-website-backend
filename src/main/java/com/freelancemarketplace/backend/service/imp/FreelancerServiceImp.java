@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.FreelancerDTO;
+import com.freelancemarketplace.backend.dto.FreelancerInfoDTO;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.FreelancerMapper;
 import com.freelancemarketplace.backend.model.Bio;
@@ -14,8 +15,6 @@ import com.freelancemarketplace.backend.service.FreelancerService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -135,6 +134,22 @@ public class FreelancerServiceImp implements FreelancerService {
                 .average().orElse(0.0);
         freelancerDTO.setAverageScore(averageRating);
         return freelancerDTO;
+    }
+
+
+    @Override
+    public FreelancerInfoDTO getInfo(Long freelancerId){
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found"));
+        FreelancerInfoDTO freelancerInfo = freelancerMapper.toInfoDTO(freelancer);
+
+        long numberOfReviews = testimonialsRepository.countByFreelancer(freelancer);
+        freelancerInfo.setReviews((int) numberOfReviews);
+
+        double averageRating = testimonialsRepository.findAllByFreelancer(freelancer).stream().mapToDouble(testimonialModel -> testimonialModel.getRatingScore())
+                .average().orElse(0.0);
+        freelancerInfo.setAverageScore(averageRating);
+        return freelancerInfo;
     }
 
     @Override

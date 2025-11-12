@@ -92,4 +92,7 @@ public class ProjectModel extends BaseEntity{
 
     @Column(name = "skill_vector", columnDefinition = "bytea")
     private byte[] skillVector;
+
+    @OneToMany(mappedBy = "project")
+    private List<InvitationModel> invitation;
 }

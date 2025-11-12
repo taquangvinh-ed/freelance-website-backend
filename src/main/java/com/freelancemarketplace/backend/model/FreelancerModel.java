@@ -125,4 +125,6 @@ public class FreelancerModel extends BaseEntity {
     private List<TimeLog> timeLog = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "freelancer")
+    private List<InvitationModel> invitation;
 }

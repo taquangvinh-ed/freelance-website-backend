@@ -2,6 +2,7 @@ package com.freelancemarketplace.backend.recommandation.imp;
 
 import com.freelancemarketplace.backend.dto.ProjectDTO;
 import com.freelancemarketplace.backend.dto.RecommendFreelancerDTO;
+import com.freelancemarketplace.backend.enums.InvitationStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ProjectMapper;
 import com.freelancemarketplace.backend.model.*;
@@ -10,6 +11,7 @@ import com.freelancemarketplace.backend.recommandation.RecommendationService;
 import com.freelancemarketplace.backend.recommandation.ScoredFreelancer;
 import com.freelancemarketplace.backend.recommandation.ScoredProject;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
+import com.freelancemarketplace.backend.repository.InvitationRepository;
 import com.freelancemarketplace.backend.repository.ProjectInteractionModelRepository;
 import com.freelancemarketplace.backend.repository.ProjectsRepository;
 import lombok.AllArgsConstructor;
@@ -41,6 +43,7 @@ public class RecommendationServiceImp implements RecommendationService {
     private final RestTemplate restTemplate;
     private final ProjectMapper projectMapper;
     private final ProjectInteractionModelRepository projectInteractionModelRepository;
+    private final InvitationRepository invitationRepository;
 
     @Override
     public Page<ProjectDTO> recommendProjects(Long freelancerId, Pageable pageable) {
@@ -140,6 +143,16 @@ public class RecommendationServiceImp implements RecommendationService {
                 recommendedFreelancer.setAvatar(freelancerModel.getAvatar());
             if (freelancerModel.getTitle() != null)
                 recommendedFreelancer.setTitle(freelancerModel.getTitle());
+            if(freelancerModel.getUser() != null){
+                recommendedFreelancer.setEmail(freelancerModel.getUser().getEmail());
+            }else{
+                recommendedFreelancer.setEmail("freelancerhub@gmail.com");
+            }
+            if (invitationRepository.existsByFreelancer(freelancerModel)){
+                recommendedFreelancer.setInvitation(InvitationStatus.SENT.toString());
+            }else{
+                recommendedFreelancer.setInvitation(InvitationStatus.NOT_SENT.toString());
+            }
             return recommendedFreelancer;
         }).toList();
 

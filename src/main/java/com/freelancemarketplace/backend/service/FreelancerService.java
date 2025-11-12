@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.FreelancerDTO;
+import com.freelancemarketplace.backend.dto.FreelancerInfoDTO;
 import com.freelancemarketplace.backend.model.FreelancerModel;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface FreelancerService {
     List<FreelancerDTO>getAllFreelancer();
 
     FreelancerDTO getFreelancerById(Long freelancerId);
+
+    FreelancerInfoDTO getInfo(Long freelancerId);
 
     FreelancerModel findById(Long freelancerId);
 

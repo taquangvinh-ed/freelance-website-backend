@@ -1,10 +1,7 @@
 package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.auth.AppUser;
-import com.freelancemarketplace.backend.dto.FreelancerDTO;
-import com.freelancemarketplace.backend.dto.Q_ADTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.dto.SkillDTO;
+import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.model.FreelancerModel;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
@@ -143,5 +140,11 @@ public class FreelancerController {
                 "chargesEnabled", account.getChargesEnabled(),
                 "payoutsEnabled", account.getPayoutsEnabled()
         ));
+    }
+
+    @GetMapping("/info/{freelancerId}")
+    public ResponseEntity<FreelancerInfoDTO> getInfo(@PathVariable Long freelancerId){
+        FreelancerInfoDTO info = freelancerService.getInfo(freelancerId);
+        return ResponseEntity.ok(info);
     }
 }
