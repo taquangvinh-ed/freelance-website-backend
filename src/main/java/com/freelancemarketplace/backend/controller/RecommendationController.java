@@ -2,6 +2,7 @@ package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.auth.AppUser;
 import com.freelancemarketplace.backend.dto.ProjectDTO;
+import com.freelancemarketplace.backend.dto.RecommendFreelancerDTO;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.model.ProjectInteractionModel;
 import com.freelancemarketplace.backend.recommandation.RecommendationService;
@@ -27,17 +28,17 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping(path = "/api/projects/recommend", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Slf4j
-public class RecommendationProjectController {
+public class RecommendationController {
 
     private final RecommendationService recommendationService;
     private final ProjectInteractionModelRepository projectInteractionModelRepository;
     private final RestTemplate restTemplate;
     private final String embeddingServiceUrl;
 
-    public RecommendationProjectController(RecommendationService recommendationService,
-                                           ProjectInteractionModelRepository projectInteractionModelRepository,
-                                           RestTemplate restTemplate,
-                                           @Value("${embedding.service.url}") String embeddingServiceUrl) {
+    public RecommendationController(RecommendationService recommendationService,
+                                    ProjectInteractionModelRepository projectInteractionModelRepository,
+                                    RestTemplate restTemplate,
+                                    @Value("${embedding.service.url}") String embeddingServiceUrl) {
         this.recommendationService = recommendationService;
         this.projectInteractionModelRepository = projectInteractionModelRepository;
         this.restTemplate = restTemplate;
@@ -65,6 +66,12 @@ public class RecommendationProjectController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An unexpected error occurred: " + e.getMessage()); // Trả về thông báo lỗi
         }
+    }
+
+    @GetMapping("/{projectId}")
+    public ResponseEntity<?>recommendFreelancersToProject(@PathVariable Long projectId, Pageable pageable){
+        Page<RecommendFreelancerDTO> freelancers = recommendationService.recommendFreelancers(projectId, pageable);
+        return ResponseEntity.ok(freelancers);
     }
 
 

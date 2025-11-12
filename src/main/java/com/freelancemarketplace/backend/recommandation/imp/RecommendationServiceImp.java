@@ -1,19 +1,19 @@
 package com.freelancemarketplace.backend.recommandation.imp;
 
 import com.freelancemarketplace.backend.dto.ProjectDTO;
+import com.freelancemarketplace.backend.dto.RecommendFreelancerDTO;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ProjectMapper;
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.ProjectInteractionModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
-import com.freelancemarketplace.backend.model.SkillModel;
+import com.freelancemarketplace.backend.model.*;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.recommandation.RecommendationService;
+import com.freelancemarketplace.backend.recommandation.ScoredFreelancer;
 import com.freelancemarketplace.backend.recommandation.ScoredProject;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.ProjectInteractionModelRepository;
 import com.freelancemarketplace.backend.repository.ProjectsRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +22,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +31,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.freelancemarketplace.backend.enums.BudgetTypes.HOURLY_RATE;
+
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RecommendationServiceImp implements RecommendationService {
 
     private final ProjectsRepository projectsRepository;
@@ -86,6 +90,60 @@ public class RecommendationServiceImp implements RecommendationService {
 
         return new PageImpl<>(pagedDtos, pageable, hybrid.size());
 
+    }
+
+    @Override
+    public Page<RecommendFreelancerDTO> recommendFreelancers(Long projectId, Pageable pageable) {
+        ProjectModel project = projectsRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found: " + projectId));
+
+        List<FreelancerModel> allFreelancers = freelancersRepository.findAll();
+
+        // === 1. LỌC THEO BUDGET (nếu là HOURLY) ===
+        List<FreelancerModel> candidates = allFreelancers.stream()
+                .filter(f -> !hasApplied(f, project)) // loại đã apply
+                .filter(f -> isFreelancerInBudget(f, project.getBudget())) // lọc theo budget
+                .collect(Collectors.toList());
+
+        // === 2. CONTENT-BASED: skill + rating ===
+        List<ScoredFreelancer> scored = candidates.stream()
+                .map(f -> new ScoredFreelancer(f, calculateProjectToFreelancerSimilarity(project, f)))
+                .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
+                .collect(Collectors.toList());
+
+        List<FreelancerModel> contentRecs = scored.stream()
+                .map(ScoredFreelancer::getFreelancer)
+                .collect(Collectors.toList());
+
+        // === 3. COLLABORATIVE FILTERING ===
+        List<FreelancerModel> cfRecs = getCFFreelancerRecommendations(projectId);
+
+        // === 4. HYBRID ===
+        List<FreelancerModel> hybrid = Stream.concat(contentRecs.stream(), cfRecs.stream())
+                .distinct()
+                .collect(Collectors.toList());
+
+        // === 5. PHÂN TRANG ===
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), hybrid.size());
+        List<FreelancerModel> paged = start >= hybrid.size() ? List.of() : hybrid.subList(start, end);
+
+        List<RecommendFreelancerDTO> freelancerList = paged.stream().map(freelancerModel -> {
+            RecommendFreelancerDTO recommendedFreelancer = new RecommendFreelancerDTO();
+            recommendedFreelancer.setFreelancerId(freelancerModel.getFreelancerId());
+            recommendedFreelancer.setFirstName(freelancerModel.getFirstName());
+            recommendedFreelancer.setLastName(freelancerModel.getLastName());
+            double ratingScored = calculateFreelancerRating(freelancerModel);
+            recommendedFreelancer.setRating(ratingScored);
+            recommendedFreelancer.setDescription(freelancerModel.getBio().getSummary());
+            recommendedFreelancer.setHourlyRate(freelancerModel.getHourlyRate());
+            recommendedFreelancer.setAvatar(freelancerModel.getAvatar());
+            recommendedFreelancer.setTitle(freelancerModel.getTitle());
+            return recommendedFreelancer;
+        }).toList();
+
+
+        return new PageImpl<>(freelancerList, pageable, hybrid.size());
     }
 
 
@@ -168,5 +226,138 @@ public class RecommendationServiceImp implements RecommendationService {
     private String bytesToHex(byte[] bytes) {
         return bytes != null ? new BigInteger(1, bytes).toString(16) : "";
     }
+
+    private boolean isFreelancerInBudget(FreelancerModel freelancer, BudgetModel budget) {
+        if (budget == null || freelancer.getHourlyRate() == null) {
+            return false;
+        }
+
+        return switch (budget.getType()) {
+            case HOURLY_RATE -> {
+                BigDecimal rate = BigDecimal.valueOf(freelancer.getHourlyRate());
+                BigDecimal min = budget.getMinValue();
+                BigDecimal max = budget.getMaxValue();
+                // Cả min và max phải có
+                if (min != null && max != null) {
+                    yield rate.compareTo(min) >= 0 && rate.compareTo(max) <= 0;
+                } else if (min != null) {
+                    yield rate.compareTo(min) >= 0;
+                } else if (max != null) {
+                    yield rate.compareTo(max) <= 0;
+                } else {
+                    yield true; // không giới hạn
+                }
+            }
+            case FIXED_PRICE -> true; // không lọc theo hourly rate
+        };
+    }
+
+
+    private boolean hasApplied(FreelancerModel f, ProjectModel p) {
+        return f.getProposals().stream()
+                .anyMatch(prop -> prop.getProject().getProjectId().equals(p.getProjectId()));
+    }
+
+
+
+    private double calculateProjectToFreelancerSimilarity(ProjectModel project, FreelancerModel freelancer) {
+        double skillScore = 0.0;
+        String projectVectorHex = bytesToHex(project.getSkillVector());
+        String freelancerSkillsText = freelancer.getSkills().stream()
+                .map(SkillModel::getName)
+                .collect(Collectors.joining(", "));
+
+        if (!projectVectorHex.isEmpty() && !freelancerSkillsText.isEmpty()) {
+            skillScore = callProjectSkillSimilarity(projectVectorHex, freelancerSkillsText);
+        }
+
+        double rating = calculateFreelancerRating(freelancer);
+        double ratingScore = rating / 5.0;
+
+        return 0.8 * skillScore + 0.2 * ratingScore;
+    }
+
+
+    private double calculateFreelancerRating(FreelancerModel f) {
+        return f.getTestimonials().stream()
+                .filter(t -> t.getRatingScore() != null)
+                .mapToInt(TestimonialModel::getRatingScore)
+                .average()
+                .orElse(0.0);
+    }
+
+
+
+
+    private double callProjectSkillSimilarity(String projectSkillVectorHex, String freelancerSkillsText) {
+        String url = "http://localhost:5000/project-skill-similarity";
+
+        Map<String, String> request = new HashMap<>();
+        request.put("project_skill_vector", projectSkillVectorHex);
+        request.put("freelancer_skills", freelancerSkillsText);
+
+        HttpHeaders headers = getJsonHeaders();
+        HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
+
+        try {
+            ResponseEntity<Map<String, Double>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    new ParameterizedTypeReference<Map<String, Double>>() {}
+            );
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                Double similarity = response.getBody().get("similarity");
+                return similarity != null ? similarity : 0.0;
+            }
+        } catch (Exception e) {
+            log.warn("Failed to call /project-skill-similarity: {}", e.getMessage());
+        }
+
+        return 0.0;
+    }
+
+
+
+    private List<FreelancerModel> getCFFreelancerRecommendations(Long projectId) {
+        String url = "http://localhost:5000/cf-recommend-freelancers";
+
+        // Lấy danh sách tất cả freelancer ID
+        List<Long> allFreelancerIds = freelancersRepository.findAll()
+                .stream()
+                .map(FreelancerModel::getFreelancerId)
+                .collect(Collectors.toList());
+
+        // Tạo request body
+        Map<String, Object> request = new HashMap<>();
+        request.put("projectId", projectId);
+        request.put("n", 10); // gợi ý tối đa 10 người
+        request.put("allFreelancers", allFreelancerIds);
+
+        HttpHeaders headers = getJsonHeaders();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+
+        try {
+            ResponseEntity<Map<String, List<Long>>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    new ParameterizedTypeReference<Map<String, List<Long>>>() {}
+            );
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                List<Long> recommendedIds = response.getBody().get("recommendedFreelancers");
+                if (recommendedIds != null && !recommendedIds.isEmpty()) {
+                    return freelancersRepository.findAllById(recommendedIds);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("CF recommendation failed for project {}: {}", projectId, e.getMessage());
+        }
+
+        return List.of(); // trả về rỗng nếu lỗi
+    }
+
 }
 

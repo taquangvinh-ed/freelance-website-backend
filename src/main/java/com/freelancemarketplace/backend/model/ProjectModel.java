@@ -89,4 +89,7 @@ public class ProjectModel extends BaseEntity{
 
     @Column(name = "description_embedding", columnDefinition = "bytea")
     private byte[] descriptionEmbedding;
+
+    @Column(name = "skill_vector", columnDefinition = "bytea")
+    private byte[] skillVector;
 }

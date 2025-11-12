@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.recommandation.imp;
 
 import com.freelancemarketplace.backend.model.FreelancerModel;
+import com.freelancemarketplace.backend.model.ProjectModel;
 import com.freelancemarketplace.backend.model.SkillModel;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import lombok.AllArgsConstructor;
@@ -90,5 +91,20 @@ public class EmbeddingServiceImp implements EmbeddingService {
             sb.append(". With experience in ").append(freelancer.getExperiences().iterator().next().getTitle());
         }
         return sb.toString();
+    }
+
+    @Override
+    public void generateProjectSkillVector(ProjectModel project) {
+        String skillsText = project.getSkills().stream()
+                .map(SkillModel::getName)
+                .collect(Collectors.joining(", "));
+
+        if (skillsText.isBlank()) {
+            project.setSkillVector(null);
+            return;
+        }
+
+        byte[] vector = generateEmbedding(skillsText);
+        project.setSkillVector(vector);
     }
 }

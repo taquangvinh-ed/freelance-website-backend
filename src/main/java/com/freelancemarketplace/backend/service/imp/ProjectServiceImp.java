@@ -71,6 +71,8 @@ public class ProjectServiceImp implements ProjectService {
 
         newProject.setClient(client);
 
+
+
         ProjectModel savedProject = projectsRepository.save(newProject);
         return projectMapper.toDto(savedProject);
     }
@@ -129,6 +131,8 @@ public class ProjectServiceImp implements ProjectService {
         );
 
         project.getSkills().add(skill);
+        embeddingService.generateProjectSkillVector(project);
+
         projectsRepository.save(project);
     }
 
@@ -142,6 +146,7 @@ public class ProjectServiceImp implements ProjectService {
         );
 
         project.getSkills().remove(skill);
+        embeddingService.generateProjectSkillVector(project);
         projectsRepository.save(project);
     }
 

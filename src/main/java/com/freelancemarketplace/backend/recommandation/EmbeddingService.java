@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.recommandation;
 
 import com.freelancemarketplace.backend.model.FreelancerModel;
+import com.freelancemarketplace.backend.model.ProjectModel;
 
 public interface EmbeddingService {
 
@@ -9,4 +10,7 @@ public interface EmbeddingService {
     byte[] generateSkillVector(FreelancerModel freelancer);
 
     String generateSummary(FreelancerModel freelancer);
+
+    public void generateProjectSkillVector(ProjectModel project);
+
 }

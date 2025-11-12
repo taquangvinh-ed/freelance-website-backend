@@ -51,6 +51,7 @@ public class SecurityConfig {
                                 "/api/categories/getAll",
                                 "/api/login", "/api/projects/getAllProjects",
                                 "/api/projects/recommend/train-cf",
+
                                 "/api/projects/filter",
                                 "/api/skills/search", "/ws/**",
                                 "/api/stripe/**",
@@ -78,7 +79,7 @@ public class SecurityConfig {
                                 "/api/tracker/**"
 
                         ).hasRole("FREELANCER")
-                        .requestMatchers("/api/projects/", "/api/dashboard/client/**").hasRole("CLIENT")
+                        .requestMatchers("/api/projects/", "/api/dashboard/client/**", "/api/projects/recommend/{projectId}").hasRole("CLIENT")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
