@@ -179,7 +179,7 @@ public class TogglServiceImp implements TogglService {
         request.setWorkspace_id(Long.parseLong(workspaceId));
         request.setProject_id(togglProjectId);
         request.setStart(startTime);
-        request.setDescription(description + "| Freelancer: " + freelancerName);
+        request.setDescription(description);
         request.setBillable(true);
         request.setCreated_with("FreelanceMVP_App");
         request.setDuration(-1L);
