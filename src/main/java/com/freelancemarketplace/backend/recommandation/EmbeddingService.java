@@ -11,6 +11,6 @@ public interface EmbeddingService {
 
     String generateSummary(FreelancerModel freelancer);
 
-    public void generateProjectSkillVector(ProjectModel project);
+    public byte[] generateProjectSkillVector(ProjectModel project);
 
 }

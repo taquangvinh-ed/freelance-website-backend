@@ -24,14 +24,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.freelancemarketplace.backend.enums.BudgetTypes.HOURLY_RATE;
 
 @Service
 @AllArgsConstructor
@@ -60,7 +57,7 @@ public class RecommendationServiceImp implements RecommendationService {
         List<ScoredProject> scoredProjectList = projects.stream()
                 .map(p -> new ScoredProject(p, calculateSkillSimilarity(freelancer, p)))
                 .sorted((sp1, sp2) -> Double.compare(sp2.getScore(), sp1.getScore())) // SẮP XẾP giảm dần
-                .collect(Collectors.toList());
+                .toList();
 
         // Tạo danh sách ProjectModel đã sắp xếp theo Content-Based
         List<ProjectModel> contentRecommendations = scoredProjectList.stream()
@@ -103,17 +100,17 @@ public class RecommendationServiceImp implements RecommendationService {
         List<FreelancerModel> candidates = allFreelancers.stream()
                 .filter(f -> !hasApplied(f, project)) // loại đã apply
                 .filter(f -> isFreelancerInBudget(f, project.getBudget())) // lọc theo budget
-                .collect(Collectors.toList());
+                .toList();
 
         // === 2. CONTENT-BASED: skill + rating ===
         List<ScoredFreelancer> scored = candidates.stream()
                 .map(f -> new ScoredFreelancer(f, calculateProjectToFreelancerSimilarity(project, f)))
                 .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
-                .collect(Collectors.toList());
+                .toList();
 
         List<FreelancerModel> contentRecs = scored.stream()
                 .map(ScoredFreelancer::getFreelancer)
-                .collect(Collectors.toList());
+                .toList();
 
         // === 3. COLLABORATIVE FILTERING ===
         List<FreelancerModel> cfRecs = getCFFreelancerRecommendations(projectId);
@@ -135,10 +132,14 @@ public class RecommendationServiceImp implements RecommendationService {
             recommendedFreelancer.setLastName(freelancerModel.getLastName());
             double ratingScored = calculateFreelancerRating(freelancerModel);
             recommendedFreelancer.setRating(ratingScored);
-            recommendedFreelancer.setDescription(freelancerModel.getBio().getSummary());
-            recommendedFreelancer.setHourlyRate(freelancerModel.getHourlyRate());
-            recommendedFreelancer.setAvatar(freelancerModel.getAvatar());
-            recommendedFreelancer.setTitle(freelancerModel.getTitle());
+            if (freelancerModel.getBio() != null)
+                recommendedFreelancer.setDescription(freelancerModel.getBio().getSummary());
+            if (freelancerModel.getHourlyRate() != null)
+                recommendedFreelancer.setHourlyRate(freelancerModel.getHourlyRate());
+            if (freelancerModel.getAvatar() != null)
+                recommendedFreelancer.setAvatar(freelancerModel.getAvatar());
+            if (freelancerModel.getTitle() != null)
+                recommendedFreelancer.setTitle(freelancerModel.getTitle());
             return recommendedFreelancer;
         }).toList();
 
@@ -169,7 +170,8 @@ public class RecommendationServiceImp implements RecommendationService {
                 url,
                 HttpMethod.POST,
                 new HttpEntity<>(request, getJsonHeaders()),
-                new ParameterizedTypeReference<>() {}
+                new ParameterizedTypeReference<>() {
+                }
         );
 
         List<Long> recommendedIds = response.getBody().get("recommendedProjects");
@@ -259,7 +261,6 @@ public class RecommendationServiceImp implements RecommendationService {
     }
 
 
-
     private double calculateProjectToFreelancerSimilarity(ProjectModel project, FreelancerModel freelancer) {
         double skillScore = 0.0;
         String projectVectorHex = bytesToHex(project.getSkillVector());
@@ -287,8 +288,6 @@ public class RecommendationServiceImp implements RecommendationService {
     }
 
 
-
-
     private double callProjectSkillSimilarity(String projectSkillVectorHex, String freelancerSkillsText) {
         String url = "http://localhost:5000/project-skill-similarity";
 
@@ -304,7 +303,8 @@ public class RecommendationServiceImp implements RecommendationService {
                     url,
                     HttpMethod.POST,
                     entity,
-                    new ParameterizedTypeReference<Map<String, Double>>() {}
+                    new ParameterizedTypeReference<Map<String, Double>>() {
+                    }
             );
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
@@ -317,7 +317,6 @@ public class RecommendationServiceImp implements RecommendationService {
 
         return 0.0;
     }
-
 
 
     private List<FreelancerModel> getCFFreelancerRecommendations(Long projectId) {
@@ -343,7 +342,8 @@ public class RecommendationServiceImp implements RecommendationService {
                     url,
                     HttpMethod.POST,
                     entity,
-                    new ParameterizedTypeReference<Map<String, List<Long>>>() {}
+                    new ParameterizedTypeReference<Map<String, List<Long>>>() {
+                    }
             );
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
@@ -353,7 +353,8 @@ public class RecommendationServiceImp implements RecommendationService {
                 }
             }
         } catch (Exception e) {
-            log.warn("CF recommendation failed for project {}: {}", projectId, e.getMessage());
+            log.error("CF recommendation FAILED for project {}: {}", projectId, e.toString(), e);
+            throw new RuntimeException("Collaborative filtering service unavailable", e);
         }
 
         return List.of(); // trả về rỗng nếu lỗi

@@ -61,7 +61,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/{contractId}/milestones/{milestoneId}/pay").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/*/milestones/*/complete").hasRole("FREELANCER")
-                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/**",
+                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/**", "/api/projects/recommend/client/**",
                                  "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
                                 "/api/projects/findProject/{projectId}",
                                  "/app/**", "/topic/chat/**", "/api/proposals/project/**",
@@ -79,7 +79,7 @@ public class SecurityConfig {
                                 "/api/tracker/**"
 
                         ).hasRole("FREELANCER")
-                        .requestMatchers("/api/projects/", "/api/dashboard/client/**", "/api/projects/recommend/{projectId}").hasRole("CLIENT")
+                        .requestMatchers("/api/projects/", "/api/dashboard/client/**",  "/api/email").hasRole("CLIENT")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

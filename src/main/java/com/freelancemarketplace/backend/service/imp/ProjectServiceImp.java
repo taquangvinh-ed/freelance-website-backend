@@ -71,6 +71,7 @@ public class ProjectServiceImp implements ProjectService {
 
         newProject.setClient(client);
 
+        newProject.setSkillVector(embeddingService.generateProjectSkillVector(newProject));
 
 
         ProjectModel savedProject = projectsRepository.save(newProject);
@@ -131,7 +132,7 @@ public class ProjectServiceImp implements ProjectService {
         );
 
         project.getSkills().add(skill);
-        embeddingService.generateProjectSkillVector(project);
+        project.setSkillVector(embeddingService.generateProjectSkillVector(project));
 
         projectsRepository.save(project);
     }
@@ -146,7 +147,7 @@ public class ProjectServiceImp implements ProjectService {
         );
 
         project.getSkills().remove(skill);
-        embeddingService.generateProjectSkillVector(project);
+        project.setSkillVector(embeddingService.generateProjectSkillVector(project));
         projectsRepository.save(project);
     }
 

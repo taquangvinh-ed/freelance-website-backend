@@ -68,7 +68,7 @@ public class RecommendationController {
         }
     }
 
-    @GetMapping("/{projectId}")
+    @GetMapping("/client/{projectId}")
     public ResponseEntity<?>recommendFreelancersToProject(@PathVariable Long projectId, Pageable pageable){
         Page<RecommendFreelancerDTO> freelancers = recommendationService.recommendFreelancers(projectId, pageable);
         return ResponseEntity.ok(freelancers);

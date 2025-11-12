@@ -94,17 +94,16 @@ public class EmbeddingServiceImp implements EmbeddingService {
     }
 
     @Override
-    public void generateProjectSkillVector(ProjectModel project) {
+    public byte[] generateProjectSkillVector(ProjectModel project) {
         String skillsText = project.getSkills().stream()
                 .map(SkillModel::getName)
                 .collect(Collectors.joining(", "));
 
         if (skillsText.isBlank()) {
             project.setSkillVector(null);
-            return;
+            return null;
         }
 
-        byte[] vector = generateEmbedding(skillsText);
-        project.setSkillVector(vector);
+        return generateEmbedding(skillsText);
     }
 }

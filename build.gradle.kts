@@ -52,6 +52,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("org.apache.httpcomponents.client5:httpclient5:5.5.1")
+	implementation("org.springframework.boot:spring-boot-starter-mail")
+
 }
 
 tasks.withType<Test> {
