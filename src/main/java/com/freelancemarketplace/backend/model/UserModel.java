@@ -47,6 +47,8 @@ public class UserModel implements AppUser {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private ClientModel client;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private AdminModel admin;
 
     @Override
     public Long getId() {

@@ -80,6 +80,7 @@ public class SecurityConfig {
 
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/", "/api/dashboard/client/**",  "/api/email/send-invitation").hasRole("CLIENT")
+                        .requestMatchers("/api/categories/new-category", "/api/skills/new-skill").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

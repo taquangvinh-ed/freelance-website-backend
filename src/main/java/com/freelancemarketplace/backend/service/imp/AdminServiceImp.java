@@ -33,34 +33,34 @@ public class AdminServiceImp implements AdminService {
     Logger logger = LoggerFactory.getLogger(AdminServiceImp.class.getName());
 
 
-    @Override
-    @Transactional
-    public AdminModel createAdmin(AdminDTO adminDTO) {
-
-        if (adminsRepository.existsByEmail(adminDTO.getEmail())) {
-            throw new AdminException("Admin with email:  " + adminDTO.getEmail()
-                    + " already exist");
-        }
-
-        if (adminsRepository.existsByUsername(adminDTO.getUsername())) {
-            throw new AdminException("Admin with username:  " + adminDTO.getUsername()
-                    + " already exist");
-        }
-
-        if (adminsRepository.existsByPhoneNumber(adminDTO.getPhoneNumber())) {
-            throw new AdminException("Admin with email:  " + adminDTO.getPhoneNumber()
-                    + " already exist");
-        }
-
-
-        AdminModel adminEntity = adminMapper.toEntity(adminDTO);
-        adminEntity.setCreatedAt(Timestamp.from(Instant.now()));
-        AdminModel savedAdmin = adminsRepository.save(adminEntity);
-        logger.info("Successfully created admin with ID:" + savedAdmin.getAdminId());
-        return savedAdmin;
-
-
-    }
+//    @Override
+//    @Transactional
+//    public AdminModel createAdmin(AdminDTO adminDTO) {
+//
+//        if (adminsRepository.existsByEmail(adminDTO.getEmail())) {
+//            throw new AdminException("Admin with email:  " + adminDTO.getEmail()
+//                    + " already exist");
+//        }
+//
+//        if (adminsRepository.existsByUsername(adminDTO.getUsername())) {
+//            throw new AdminException("Admin with username:  " + adminDTO.getUsername()
+//                    + " already exist");
+//        }
+//
+//        if (adminsRepository.existsByPhoneNumber(adminDTO.getPhoneNumber())) {
+//            throw new AdminException("Admin with email:  " + adminDTO.getPhoneNumber()
+//                    + " already exist");
+//        }
+//
+//
+//        AdminModel adminEntity = adminMapper.toEntity(adminDTO);
+//        adminEntity.setCreatedAt(Timestamp.from(Instant.now()));
+//        AdminModel savedAdmin = adminsRepository.save(adminEntity);
+//        logger.info("Successfully created admin with ID:" + savedAdmin.getAdminId());
+//        return savedAdmin;
+//
+//
+//    }
 
     @Transactional
     @Override
@@ -68,15 +68,6 @@ public class AdminServiceImp implements AdminService {
 
         AdminModel existedAdmin = adminsRepository.findById(adminId).orElseThrow(() -> new AdminException("Admin account with id: " + adminId + " not found"));
 
-
-        if (adminDTO.getEmail() != null && !adminDTO.getEmail().equals(existedAdmin.getEmail())
-                && adminsRepository.existsByEmail(adminDTO.getEmail())) {
-            throw new AdminException("Email " + adminDTO.getEmail() + " has adready exited");
-        }
-        if (adminDTO.getUsername() != null && !adminDTO.getUsername().equals(existedAdmin.getUsername())
-                && adminsRepository.existsByUsername(adminDTO.getUsername())) {
-            throw new AdminException("Username " + adminDTO.getUsername() + " has adready exited");
-        }
         if (adminDTO.getPhoneNumber() != null && !adminDTO.getPhoneNumber().equals(existedAdmin.getPhoneNumber())
                 && adminsRepository.existsByPhoneNumber(adminDTO.getPhoneNumber())) {
             throw new AdminException("Phone number " + adminDTO.getPhoneNumber() + " has adready exited");
@@ -89,12 +80,7 @@ public class AdminServiceImp implements AdminService {
         if (adminDTO.getLastName() != null) {
             existedAdmin.setLastName(adminDTO.getLastName());
         }
-        if (adminDTO.getUsername() != null) {
-            existedAdmin.setUsername(adminDTO.getUsername());
-        }
-        if (adminDTO.getEmail() != null) {
-            existedAdmin.setEmail(adminDTO.getEmail());
-        }
+
         if (adminDTO.getPhoneNumber() != null) {
             existedAdmin.setPhoneNumber(adminDTO.getPhoneNumber());
         }

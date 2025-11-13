@@ -6,7 +6,7 @@ import com.freelancemarketplace.backend.model.AdminModel;
 import java.util.List;
 
 public interface AdminService {
-    public AdminModel createAdmin(AdminDTO adminDTO);
+//    public AdminModel createAdmin(AdminDTO adminDTO);
 
     AdminDTO update(Long adminId, AdminDTO adminDTO);
 

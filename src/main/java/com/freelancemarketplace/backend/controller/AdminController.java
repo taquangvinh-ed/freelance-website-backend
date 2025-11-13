@@ -31,13 +31,13 @@ public class AdminController {
         this.adminMapper = adminMapper;
     }
 
-    @PostMapping("/admin")
-    public ResponseEntity<ResponseDTO> createAdmin(@RequestBody @Valid AdminDTO adminDTO) {
-        AdminModel createdAdmin = adminService.createAdmin(adminDTO);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new ResponseDTO(ResponseStatusCode.CREATED, ResponseMessage.CREATED, adminMapper.toDTO(createdAdmin)));
-    }
+//    @PostMapping("/admin")
+//    public ResponseEntity<ResponseDTO> createAdmin(@RequestBody @Valid AdminDTO adminDTO) {
+//        AdminModel createdAdmin = adminService.createAdmin(adminDTO);
+//        return ResponseEntity
+//                .status(HttpStatus.CREATED)
+//                .body(new ResponseDTO(ResponseStatusCode.CREATED, ResponseMessage.CREATED, adminMapper.toDTO(createdAdmin)));
+//    }
 
     @PutMapping("/admin/{adminId}")
     public ResponseEntity<ResponseDTO> updateAdmin(@PathVariable Long adminId,

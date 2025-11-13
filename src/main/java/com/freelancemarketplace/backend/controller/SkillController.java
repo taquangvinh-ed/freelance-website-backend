@@ -24,7 +24,7 @@ public class SkillController {
         this.skillSerivice = skillSerivice;
     }
 
-    @PostMapping("/")
+    @PostMapping("/new-skill")
     ResponseEntity<ResponseDTO>createSkill(@RequestBody SkillDTO skillDTO){
         SkillDTO newSkill = skillSerivice.createSkill(skillDTO);
         return ResponseEntity

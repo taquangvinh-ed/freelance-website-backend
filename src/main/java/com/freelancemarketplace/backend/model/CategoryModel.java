@@ -22,7 +22,7 @@ public class CategoryModel extends BaseEntity{
     private String image;
 
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "category_skill",
             joinColumns = @JoinColumn(name="categoryId"),

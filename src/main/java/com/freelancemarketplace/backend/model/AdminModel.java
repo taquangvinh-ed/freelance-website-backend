@@ -21,7 +21,6 @@ import java.util.Set;
 @Table(name = "Admin")
 public class AdminModel extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long adminId;
 
     @NotBlank(message = "First name must not be null")
@@ -30,17 +29,6 @@ public class AdminModel extends BaseEntity{
     @NotBlank(message = "Last name must not be null")
     private String lastName;
 
-    @NotBlank(message = "username must not be null")
-    @Column(unique = true)
-    private String username;
-
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email must be valid")
-    @Column(unique = true)
-    private String email;
-
-    private String passwordHash;
-    private String role = "ADMIN";
     @Column(unique = true)
     private String phoneNumber;
 
@@ -65,5 +53,8 @@ public class AdminModel extends BaseEntity{
     @JoinColumn(name = "locationId")
     private LocationModel location;
 
+    @OneToOne
+    @JoinColumn(name = "userId")
+    private UserModel user;
 
 }
