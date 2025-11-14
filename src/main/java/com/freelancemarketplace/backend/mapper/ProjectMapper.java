@@ -2,6 +2,7 @@ package com.freelancemarketplace.backend.mapper;
 
 import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.request.CreateProjectRequest;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,6 +24,10 @@ public interface ProjectMapper {
     CategoryModel toEntity(CategoryDTO categoryDTO);
     CategoryDTO toCategoryDTO(CategoryModel categoryModel);
 
+
+    ProjectScope toScopeEntity(ProjectScopeDTO projectScopeDTO);
+    ProjectScopeDTO toScopeDTP(ProjectScope projectScope);
+
     @Mapping(target = "clientId", source = "client.clientId")
     ProjectDTO toDto(ProjectModel projectModel);
 
@@ -36,5 +41,6 @@ public interface ProjectMapper {
         return new PageImpl<>(dtos, pageable, totalElements);
     }
 
+    ProjectModel toEntity(CreateProjectRequest request);
 
 }

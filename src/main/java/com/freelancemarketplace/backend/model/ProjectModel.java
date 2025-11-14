@@ -30,7 +30,9 @@ public class ProjectModel extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
 
-    private Integer durationDays;
+    @Embedded
+    private ProjectScope scope;
+
     private Integer connections;
     private Timestamp startDate;
     private Timestamp endDate;

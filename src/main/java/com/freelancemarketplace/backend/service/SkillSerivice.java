@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SkillSerivice {
 
-    SkillDTO createSkill(SkillDTO skillDTO);
+    SkillDTO        createSkill(SkillDTO skillDTO);
 
     SkillDTO updateSkill(Long skillId, SkillDTO skillDTO);
 

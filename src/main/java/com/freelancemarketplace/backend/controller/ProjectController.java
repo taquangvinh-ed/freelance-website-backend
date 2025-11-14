@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.controller;
 import com.freelancemarketplace.backend.auth.AppUser;
 import com.freelancemarketplace.backend.dto.ProjectDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.request.CreateProjectRequest;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.ProjectService;
@@ -29,11 +30,11 @@ public class ProjectController {
 
 
     @PostMapping("/")
-    public ResponseEntity<ResponseDTO>createProject(@AuthenticationPrincipal AppUser appUser, @RequestBody ProjectDTO projectDTO){
+    public ResponseEntity<ResponseDTO>createProject(@AuthenticationPrincipal AppUser appUser, @RequestBody CreateProjectRequest req){
 
         Long userId = appUser.getId();
 
-        ProjectDTO newProject = projectService.createProject(userId, projectDTO);
+        ProjectDTO newProject = projectService.createProject(userId, req);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDTO(

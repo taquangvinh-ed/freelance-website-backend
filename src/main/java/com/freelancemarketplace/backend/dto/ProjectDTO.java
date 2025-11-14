@@ -21,8 +21,6 @@ public class ProjectDTO {
 
     private ProjectStatus status;
 
-    private Integer durationDays;
-    private Integer connections;
     private Timestamp startDate;
     private Timestamp endDate;
 
@@ -32,6 +30,8 @@ public class ProjectDTO {
     private Set<SkillDTO> skills = new HashSet<>();
 
     private BudgetDTO budget;
+
+    private ProjectScopeDTO scope;
 
     private CategoryDTO category;
 

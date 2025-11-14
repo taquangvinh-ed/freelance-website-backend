@@ -10,6 +10,7 @@ import com.freelancemarketplace.backend.model.ProjectModel;
 import com.freelancemarketplace.backend.model.SkillModel;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.repository.*;
+import com.freelancemarketplace.backend.request.CreateProjectRequest;
 import com.freelancemarketplace.backend.service.ProjectService;
 import com.freelancemarketplace.backend.specification.ProjectSpecification;
 import jakarta.transaction.Transactional;
@@ -41,33 +42,33 @@ public class ProjectServiceImp implements ProjectService {
 
     @Override
     @Transactional
-    public ProjectDTO createProject(Long clientId, ProjectDTO projectDTO) {
+    public ProjectDTO createProject(Long clientId, CreateProjectRequest request) {
 
         ClientModel client = clientsRepository.findById(clientId).orElseThrow(
                 ()->new ResourceNotFoundException("Client with id: " + clientId + " not found")
         );
 
 
-        if (projectDTO.getBudget() == null) {
+        if (request.getBudget() == null) {
             throw new IllegalArgumentException("Budget is required for the project.");
         }
 
-        if (projectDTO.getCategory() == null)
+        if (request.getCategory() == null)
             throw new IllegalArgumentException("Category is required for the project.");
 
-        if (projectDTO.getSkills() == null)
+        if (request.getSkills() == null)
             throw new IllegalArgumentException("Skills is required for the project");
 
-        ProjectModel newProject = projectMapper.toEntity(projectDTO);
+        ProjectModel newProject = projectMapper.toEntity(request);
         BudgetModel budgetInsideNewProject = newProject.getBudget();
         budgetInsideNewProject.setProject(newProject);
         newProject.setStatus(ProjectStatus.IN_PROGRESS);
 
-        if (projectDTO.getTitle() != null)
-            newProject.setTitleEmbedding(embeddingService.generateEmbedding(projectDTO.getTitle()));
+        if (request.getTitle() != null)
+            newProject.setTitleEmbedding(embeddingService.generateEmbedding(request.getTitle()));
 
-        if (projectDTO.getDescription() != null)
-            newProject.setDescriptionEmbedding(embeddingService.generateEmbedding(projectDTO.getDescription()));
+        if (request.getDescription() != null)
+            newProject.setDescriptionEmbedding(embeddingService.generateEmbedding(request.getDescription()));
 
         newProject.setClient(client);
 
