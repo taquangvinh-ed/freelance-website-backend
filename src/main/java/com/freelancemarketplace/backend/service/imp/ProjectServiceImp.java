@@ -45,7 +45,7 @@ public class ProjectServiceImp implements ProjectService {
     public ProjectDTO createProject(Long clientId, CreateProjectRequest request) {
 
         ClientModel client = clientsRepository.findById(clientId).orElseThrow(
-                ()->new ResourceNotFoundException("Client with id: " + clientId + " not found")
+                () -> new ResourceNotFoundException("Client with id: " + clientId + " not found")
         );
 
 
@@ -154,11 +154,13 @@ public class ProjectServiceImp implements ProjectService {
 
     @Override
     public Page<ProjectDTO> filter(List<String> skillNames,
-                                   BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, Pageable pageable) {
+                                   BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, String duration,     // MỚI: "1 to 3 months"
+                                   String level,        // MỚI: "Intermediate"
+                                   String workload ,Pageable pageable) {
         try {
             // Tạo Specification cho truy vấn
             Specification<ProjectModel> spec = ProjectSpecification.filter(
-                     skillNames, minRate, maxRate, isHourly);
+                    skillNames, minRate, maxRate, isHourly, duration, level, workload);
 
             // Thực thi truy vấn với Specification và phân trang
             Page<ProjectModel> projectModels = projectsRepository.findAll(spec, pageable);

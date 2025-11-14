@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/api/projects", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -128,11 +130,14 @@ public class ProjectController {
             @RequestParam(required = false) BigDecimal minRate,
             @RequestParam(required = false) BigDecimal maxRate,
             @RequestParam(required = false) Boolean isHourly,
+            @RequestParam(required = false) String duration,
+            @RequestParam(required = false) String level,
+            @RequestParam(required = false) String workload,
+            @RequestParam(required = false) String keyword,
             Pageable pageable) {
 
-
         return projectService.filter(
-                skillNames, minRate, maxRate, isHourly, pageable);
+                skillNames, minRate, maxRate, isHourly,duration,level,workload, pageable);
     }
 
     @GetMapping("/autocomplete-search")

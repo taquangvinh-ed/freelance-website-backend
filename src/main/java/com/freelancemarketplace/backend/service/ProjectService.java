@@ -31,7 +31,9 @@ public interface ProjectService {
 
 
     Page<ProjectDTO> filter(List<String> skillNames,
-                            BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, Pageable pageable);
+                            BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, String duration,
+                            String level,
+                            String workload, Pageable pageable);
 
     Page<ProjectDTO> autocompleteSearch(String keyword, int limit, Pageable pageable);
 }

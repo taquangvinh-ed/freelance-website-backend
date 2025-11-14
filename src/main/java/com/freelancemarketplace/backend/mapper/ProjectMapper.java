@@ -26,9 +26,10 @@ public interface ProjectMapper {
 
 
     ProjectScope toScopeEntity(ProjectScopeDTO projectScopeDTO);
-    ProjectScopeDTO toScopeDTP(ProjectScope projectScope);
+    ProjectScopeDTO toScopeDTO(ProjectScope projectScope);
 
     @Mapping(target = "clientId", source = "client.clientId")
+    @Mapping(target = "scope", source = "scope", qualifiedByName = "mapScope")
     ProjectDTO toDto(ProjectModel projectModel);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -42,5 +43,16 @@ public interface ProjectMapper {
     }
 
     ProjectModel toEntity(CreateProjectRequest request);
+
+    @Named("mapScope")
+    default ProjectScopeDTO mapScope(ProjectScope scope) {
+        if (scope == null) return null;
+        ProjectScopeDTO dto = new ProjectScopeDTO();
+        dto.setDuration(scope.getDuration());
+        dto.setLevel(scope.getLevel());
+        dto.setWorkload(scope.getWorkload());
+        return dto;
+    }
+
 
 }

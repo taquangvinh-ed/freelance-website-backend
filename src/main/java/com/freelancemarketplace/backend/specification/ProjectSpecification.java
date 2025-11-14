@@ -1,14 +1,8 @@
 package com.freelancemarketplace.backend.specification;
 
 import com.freelancemarketplace.backend.enums.BudgetTypes;
-import com.freelancemarketplace.backend.enums.ProjectStatus;
-import com.freelancemarketplace.backend.model.BudgetModel;
-import com.freelancemarketplace.backend.model.CategoryModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
-import com.freelancemarketplace.backend.model.SkillModel;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
+import com.freelancemarketplace.backend.model.*;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -17,28 +11,35 @@ import java.util.List;
 
 public class ProjectSpecification {
 
+    /**
+     * Lọc dự án theo: skills, budget, scope
+     */
     public static Specification<ProjectModel> filter(
             List<String> skillNames,
             BigDecimal minRate,
             BigDecimal maxRate,
-            Boolean isHourly) {
+            Boolean isHourly,
+            String duration,     // MỚI: "1 to 3 months"
+            String level,        // MỚI: "Intermediate"
+            String workload      // MỚI: "Part-time" (optional)
+    ) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // Lọc theo skillNames
+            // === 1. LỌC THEO SKILLS ===
             if (skillNames != null && !skillNames.isEmpty()) {
                 Join<ProjectModel, SkillModel> skillsJoin = root.join("skills", JoinType.LEFT);
                 predicates.add(skillsJoin.get("name").in(skillNames));
             }
 
-            // Lọc theo ngân sách (minRate, maxRate, isHourly)
+            // === 2. LỌC THEO BUDGET ===
             Join<ProjectModel, BudgetModel> budgetJoin = root.join("budget", JoinType.LEFT);
+
             if (isHourly != null) {
+                BudgetTypes type = isHourly ? BudgetTypes.HOURLY_RATE : BudgetTypes.FIXED_PRICE;
+                predicates.add(criteriaBuilder.equal(budgetJoin.get("type"), type));
+
                 if (isHourly) {
-                    predicates.add(criteriaBuilder.equal(budgetJoin.get("type"), BudgetTypes.HOURLY_RATE));
-                    if (minRate != null && maxRate != null && minRate.compareTo(maxRate) > 0) {
-                        throw new IllegalArgumentException("minRate must be less than or equal to maxRate for Hourly Rate");
-                    }
                     if (minRate != null) {
                         predicates.add(criteriaBuilder.greaterThanOrEqualTo(budgetJoin.get("minValue"), minRate));
                     }
@@ -46,10 +47,6 @@ public class ProjectSpecification {
                         predicates.add(criteriaBuilder.lessThanOrEqualTo(budgetJoin.get("maxValue"), maxRate));
                     }
                 } else {
-                    predicates.add(criteriaBuilder.equal(budgetJoin.get("type"), BudgetTypes.FIXED_PRICE));
-                    if (minRate != null && maxRate != null && minRate.compareTo(maxRate) > 0) {
-                        throw new IllegalArgumentException("minRate must be less than or equal to maxRate for Fixed Price");
-                    }
                     if (minRate != null) {
                         predicates.add(criteriaBuilder.greaterThanOrEqualTo(budgetJoin.get("fixedValue"), minRate));
                     }
@@ -58,63 +55,67 @@ public class ProjectSpecification {
                     }
                 }
             } else {
-                // Trường hợp "All" (isHourly = null)
+                // isHourly = null → tìm cả hai loại
                 if (minRate != null || maxRate != null) {
-                    // Xây dựng điều kiện cho Hourly Rate
-                    List<Predicate> hourlyPredicates = new ArrayList<>();
-                    hourlyPredicates.add(criteriaBuilder.equal(budgetJoin.get("type"), BudgetTypes.HOURLY_RATE));
-                    if (minRate != null) {
-                        hourlyPredicates.add(criteriaBuilder.greaterThanOrEqualTo(budgetJoin.get("minValue"), minRate));
-                    }
-                    if (maxRate != null) {
-                        hourlyPredicates.add(criteriaBuilder.lessThanOrEqualTo(budgetJoin.get("maxValue"), maxRate));
-                    }
-                    if (!hourlyPredicates.isEmpty()) {
-                        predicates.add(criteriaBuilder.and(hourlyPredicates.toArray(new Predicate[0])));
-                    }
+                    List<Predicate> hourly = new ArrayList<>();
+                    hourly.add(criteriaBuilder.equal(budgetJoin.get("type"), BudgetTypes.HOURLY_RATE));
+                    if (minRate != null) hourly.add(criteriaBuilder.greaterThanOrEqualTo(budgetJoin.get("minValue"), minRate));
+                    if (maxRate != null) hourly.add(criteriaBuilder.lessThanOrEqualTo(budgetJoin.get("maxValue"), maxRate));
+                    if (hourly.size() > 1) predicates.add(criteriaBuilder.and(hourly.toArray(new Predicate[0])));
 
-                    // Xây dựng điều kiện cho Fixed Price
-                    List<Predicate> fixedPredicates = new ArrayList<>();
-                    fixedPredicates.add(criteriaBuilder.equal(budgetJoin.get("type"), BudgetTypes.FIXED_PRICE));
-                    if (minRate != null) {
-                        fixedPredicates.add(criteriaBuilder.greaterThanOrEqualTo(budgetJoin.get("fixedValue"), minRate));
-                    }
-                    if (maxRate != null) {
-                        fixedPredicates.add(criteriaBuilder.lessThanOrEqualTo(budgetJoin.get("fixedValue"), maxRate));
-                    }
-                    if (!fixedPredicates.isEmpty()) {
-                        predicates.add(criteriaBuilder.and(fixedPredicates.toArray(new Predicate[0])));
-                    }
-
-                    // Nếu cả minRate và maxRate đều null, không thêm điều kiện ngân sách
+                    List<Predicate> fixed = new ArrayList<>();
+                    fixed.add(criteriaBuilder.equal(budgetJoin.get("type"), BudgetTypes.FIXED_PRICE));
+                    if (minRate != null) fixed.add(criteriaBuilder.greaterThanOrEqualTo(budgetJoin.get("fixedValue"), minRate));
+                    if (maxRate != null) fixed.add(criteriaBuilder.lessThanOrEqualTo(budgetJoin.get("fixedValue"), maxRate));
+                    if (fixed.size() > 1) predicates.add(criteriaBuilder.and(fixed.toArray(new Predicate[0])));
                 }
             }
 
-            // Kết hợp tất cả các điều kiện
-            return predicates.isEmpty() ? criteriaBuilder.conjunction() : criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            // === 3. LỌC THEO SCOPE (MỚI) ===
+            if (duration != null || level != null || workload != null) {
+                // Join vào @Embedded ProjectScope
+                // Vì là @Embedded → không cần Join, truy cập trực tiếp
+                if (duration != null && !duration.trim().isEmpty()) {
+                    predicates.add(criteriaBuilder.equal(
+                            criteriaBuilder.lower(root.get("scope").get("duration")),
+                            duration.trim().toLowerCase()
+                    ));
+                }
+                if (level != null && !level.trim().isEmpty()) {
+                    predicates.add(criteriaBuilder.equal(
+                            criteriaBuilder.lower(root.get("scope").get("level")),
+                            level.trim().toLowerCase()
+                    ));
+                }
+                if (workload != null && !workload.trim().isEmpty()) {
+                    predicates.add(criteriaBuilder.equal(
+                            criteriaBuilder.lower(root.get("scope").get("workload")),
+                            workload.trim().toLowerCase()
+                    ));
+                }
+            }
+
+            // === KẾT HỢP TẤT CẢ ===
+            return predicates.isEmpty()
+                    ? criteriaBuilder.conjunction()
+                    : criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
+    // === AUTOCOMPLETE (giữ nguyên) ===
     public static Specification<ProjectModel> autocompleteSearch(String keyword, int limit) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // Tìm kiếm theo keyword trong title và description
             if (keyword != null && !keyword.trim().isEmpty()) {
-                String likePattern = "%" + keyword.trim().toLowerCase() + "%";
-                Predicate titlePredicate = criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("title")), likePattern);
-                Predicate descriptionPredicate = criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("description")), likePattern);
-                predicates.add(criteriaBuilder.or(titlePredicate, descriptionPredicate));
+                String pattern = "%" + keyword.trim().toLowerCase() + "%";
+                Predicate title = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern);
+                Predicate desc = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), pattern);
+                predicates.add(criteriaBuilder.or(title, desc));
             }
 
-            // Sắp xếp theo title để đảm bảo kết quả nhất quán
             query.orderBy(criteriaBuilder.asc(root.get("title")));
-
-            // Kết hợp các điều kiện
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
-
 }
