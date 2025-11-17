@@ -30,7 +30,7 @@ public interface ProjectService {
     void removeSkillFromProject(Long projectId, Long skillId);
 
 
-    Page<ProjectDTO> filter(List<String> skillNames,
+    Page<ProjectDTO> filter(String keyword, List<String> skillNames,
                             BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, String duration,
                             String level,
                             String workload, Pageable pageable);

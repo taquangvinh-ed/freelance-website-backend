@@ -58,14 +58,11 @@ public class FreelancerModel extends BaseEntity {
             joinColumns = @JoinColumn(name = "freelancerId"),
             inverseJoinColumns = @JoinColumn(name = "languageId")
     )
-    private Set <LanguageModel> languages = new HashSet<>();
+    private Set<LanguageModel> languages = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "analyticId")
-    private AnalyticModel analytic;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="locationId")
+    @JoinColumn(name = "locationId")
     private LocationModel location;
 
     @OneToMany(mappedBy = "freelancer")

@@ -126,6 +126,7 @@ public class ProjectController {
 
     @GetMapping("/filter")
     public Page<ProjectDTO> advancedSearch(
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false) List<String> skillNames,
             @RequestParam(required = false) BigDecimal minRate,
             @RequestParam(required = false) BigDecimal maxRate,
@@ -133,10 +134,9 @@ public class ProjectController {
             @RequestParam(required = false) String duration,
             @RequestParam(required = false) String level,
             @RequestParam(required = false) String workload,
-            @RequestParam(required = false) String keyword,
             Pageable pageable) {
 
-        return projectService.filter(
+        return projectService.filter(keyword,
                 skillNames, minRate, maxRate, isHourly,duration,level,workload, pageable);
     }
 

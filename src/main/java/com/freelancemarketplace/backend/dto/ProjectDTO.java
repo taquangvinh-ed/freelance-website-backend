@@ -36,4 +36,7 @@ public class ProjectDTO {
     private CategoryDTO category;
 
     private Long clientId;
+
+    private AdvancedPreferencesDTO advancedPreferences;
+
 }

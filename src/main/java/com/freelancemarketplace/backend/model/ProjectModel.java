@@ -54,6 +54,10 @@ public class ProjectModel extends BaseEntity{
     @OneToOne( mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private BudgetModel budget;
 
+
+    @Embedded
+    private AdvancedPreferences advancedPreferences;
+
     @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name ="freelancerId")
     private FreelancerModel winningFreelancer;

@@ -50,9 +50,7 @@ public class ClientModel extends BaseEntity{
     )
     private Set<LanguageModel> languages;
 
-    @OneToOne
-    @JoinColumn(name = "analyticId")
-    private AnalyticModel analytic;
+
 
     @ManyToOne
     @JoinColumn(name="locationId")

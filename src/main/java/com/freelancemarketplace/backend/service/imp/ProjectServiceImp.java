@@ -153,7 +153,7 @@ public class ProjectServiceImp implements ProjectService {
     }
 
     @Override
-    public Page<ProjectDTO> filter(List<String> skillNames,
+    public Page<ProjectDTO> filter(String keyword, List<String> skillNames,
                                    BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, String duration,     // MỚI: "1 to 3 months"
                                    String level,        // MỚI: "Intermediate"
                                    String workload ,Pageable pageable) {
@@ -161,6 +161,12 @@ public class ProjectServiceImp implements ProjectService {
             // Tạo Specification cho truy vấn
             Specification<ProjectModel> spec = ProjectSpecification.filter(
                     skillNames, minRate, maxRate, isHourly, duration, level, workload);
+
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                Specification<ProjectModel> searchSpec = ProjectSpecification.autocompleteSearch(keyword, 100); // limit cao
+                spec = Specification.where(spec).and(searchSpec);
+            }
 
             // Thực thi truy vấn với Specification và phân trang
             Page<ProjectModel> projectModels = projectsRepository.findAll(spec, pageable);

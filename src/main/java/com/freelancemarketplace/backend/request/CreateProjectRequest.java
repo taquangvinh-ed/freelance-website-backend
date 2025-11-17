@@ -1,9 +1,6 @@
 package com.freelancemarketplace.backend.request;
 
-import com.freelancemarketplace.backend.dto.BudgetDTO;
-import com.freelancemarketplace.backend.dto.CategoryDTO;
-import com.freelancemarketplace.backend.dto.ProjectScopeDTO;
-import com.freelancemarketplace.backend.dto.SkillDTO;
+import com.freelancemarketplace.backend.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +21,6 @@ public class CreateProjectRequest {
     private Set<SkillDTO> skills = new HashSet<>();
     private BudgetDTO budget;
     private ProjectScopeDTO scope;
+    private AdvancedPreferencesDTO advancedPreferences;
 
 }
