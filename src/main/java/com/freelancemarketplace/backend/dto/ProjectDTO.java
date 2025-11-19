@@ -39,4 +39,5 @@ public class ProjectDTO {
 
     private AdvancedPreferencesDTO advancedPreferences;
 
+    private Timestamp createdAt;
 }

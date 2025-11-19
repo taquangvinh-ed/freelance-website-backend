@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.model;
 
 import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.enums.AccountStatus;
 import com.freelancemarketplace.backend.enums.UserRoles;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.hibernate.engine.internal.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class UserModel implements AppUser {
     @Column(unique = true)
     private String username;
 
+    private String fullName;
+
     @Column(unique = true)
     private String email;
 
@@ -37,9 +41,18 @@ public class UserModel implements AppUser {
     @Enumerated(EnumType.STRING)
     private UserRoles role; // e.g., "FREELANCER", "CLIENT", "ADMIN"
 
-    private Boolean isVerified;
-    private Boolean isBlocked;
 
+    @Enumerated(EnumType.STRING)
+    private AccountStatus accountStatus;
+
+    @Column(columnDefinition = "TEXT")
+    private String disableReason;
+
+    private Timestamp disableAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "adminId")
+    private AdminModel disableBy;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private FreelancerModel freelancer;
@@ -73,5 +86,15 @@ public class UserModel implements AppUser {
     @Override
     public String getEmail(){
         return this.email;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return accountStatus == AccountStatus.ACTIVE;
+    }
+
+    @Override
+    public boolean isAccountNonLocked(){
+        return accountStatus != AccountStatus.DISABLED && accountStatus != AccountStatus.BANNED;
     }
 }

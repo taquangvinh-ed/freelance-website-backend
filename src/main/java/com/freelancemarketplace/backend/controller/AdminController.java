@@ -1,24 +1,31 @@
 package com.freelancemarketplace.backend.controller;
 
+import com.freelancemarketplace.backend.auth.AppUser;
 import com.freelancemarketplace.backend.dto.AdminDTO;
 import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.dto.UserDTO;
 import com.freelancemarketplace.backend.mapper.AdminMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
+import com.freelancemarketplace.backend.request.DisableUserRequest;
+import com.freelancemarketplace.backend.request.UserRequest;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.AdminService;
 import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api/admin", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class AdminController {
 
     Logger logger = LoggerFactory.getLogger(AdminController.class);
@@ -39,7 +46,7 @@ public class AdminController {
 //                .body(new ResponseDTO(ResponseStatusCode.CREATED, ResponseMessage.CREATED, adminMapper.toDTO(createdAdmin)));
 //    }
 
-    @PutMapping("/admin/{adminId}")
+    @PutMapping("/{adminId}")
     public ResponseEntity<ResponseDTO> updateAdmin(@PathVariable Long adminId,
                                                    @RequestBody @Valid AdminDTO adminDTO) {
         logger.info("Receive request to update admin with username: " + adminDTO.getUsername());
@@ -87,6 +94,51 @@ public class AdminController {
                 .status(HttpStatus.OK)
                 .body(new ResponseDTO(ResponseStatusCode.SUCCESS, ResponseMessage.SUCCESS, adminDTOList));
 
+    }
+
+    @GetMapping("/users/getAllUser")
+    ResponseEntity<?> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam (required = false) String query,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String role) {
+
+        UserRequest request = UserRequest.builder()
+                .page(page)
+                .size(size)
+                .query(query)
+                .status(status)
+                .role(role)
+                .build();
+
+        Page<UserDTO> users = adminService.getAllUsers(request);
+        return ResponseEntity.ok(users);
+    }
+
+    @PatchMapping("/users/{userId}/activate")
+    ResponseEntity<UserDTO> activateUser(@PathVariable Long userId, @AuthenticationPrincipal AppUser appUser) throws BadRequestException {
+        Long adminId = appUser.getId();
+        UserDTO user = adminService.activateUser(userId, adminId);
+        return ResponseEntity.ok(user);
+    }
+
+    @PatchMapping("/users/{userId}/disable")
+    ResponseEntity<UserDTO> disableUser(@PathVariable Long userId,
+                                        @AuthenticationPrincipal AppUser appUser,
+                                        @RequestBody DisableUserRequest request) throws BadRequestException {
+        Long adminId = appUser.getId();
+        UserDTO user = adminService.disableUser(userId, adminId, request);
+        return ResponseEntity.ok(user);
+    }
+
+    @PatchMapping("/users/{userId}/ban")
+    ResponseEntity<UserDTO> banUser(@PathVariable Long userId,
+                                        @AuthenticationPrincipal AppUser appUser,
+                                        @RequestBody DisableUserRequest request) throws BadRequestException {
+        Long adminId = appUser.getId();
+        UserDTO user = adminService.banUser(userId, adminId, request);
+        return ResponseEntity.ok(user);
     }
 
 }

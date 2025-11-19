@@ -2,6 +2,7 @@ package com.freelancemarketplace.backend.config;
 
 import com.freelancemarketplace.backend.auth.CustomUsernamePasswordAuthenticationProvider;
 import com.freelancemarketplace.backend.filter.JwtAuthenticationFilter;
+import com.freelancemarketplace.backend.handler.JwtAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,10 +27,14 @@ public class SecurityConfig {
 
     private final CustomUsernamePasswordAuthenticationProvider customUsernamePasswordAuthenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(CustomUsernamePasswordAuthenticationProvider customUsernamePasswordAuthenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(CustomUsernamePasswordAuthenticationProvider customUsernamePasswordAuthenticationProvider,
+                          JwtAuthenticationFilter jwtAuthenticationFilter,
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.customUsernamePasswordAuthenticationProvider = customUsernamePasswordAuthenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
@@ -80,13 +85,14 @@ public class SecurityConfig {
 
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/", "/api/dashboard/client/**",  "/api/email/send-invitation").hasRole("CLIENT")
-                        .requestMatchers("/api/categories/new-category", "/api/skills/new-skill").hasRole("ADMIN")
+                        .requestMatchers("/api/categories/new-category", "/api/skills/new-skill", "/api/admin/**", "/api/skills/new-skill-or-add-to-category").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(  jwtAuthenticationEntryPoint))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

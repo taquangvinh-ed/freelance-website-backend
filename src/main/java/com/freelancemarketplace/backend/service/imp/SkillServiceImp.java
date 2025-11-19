@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.SkillDTO;
+import com.freelancemarketplace.backend.dto.SkillDTO2;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.exception.SkillAlreadyExisted;
 import com.freelancemarketplace.backend.mapper.SkillMapper;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,43 +35,107 @@ public class SkillServiceImp implements SkillSerivice {
     @Override
     @Transactional
     public SkillDTO createSkill(SkillDTO skillDTO) {
-        CategoryModel category = categoriesRepository.findById(skillDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+//        CategoryModel category = categoriesRepository.findById(skillDTO.getCategoryId())
+//                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+//
+//        Optional<SkillModel> existingSkillOpt = skillsRepository.findByNameIgnoreCase(skillDTO.getName());
+//
+//        SkillModel skill;
+//
+//        if (existingSkillOpt.isPresent()) {
+//            skill = existingSkillOpt.get();
+//
+//            boolean alreadyInCategory = category.getSkills().stream()
+//                    .anyMatch(s -> s.getSkillId().equals(skill.getSkillId()));
+//
+//            if (alreadyInCategory) {
+//                throw new SkillAlreadyExisted("Skill already exists in this category");
+//            }
+//
+//            skill.getCategories().add(category);
+//            category.getSkills().add(skill);
+//
+//        } else {
+//            skill = skillMapper.toEntity(skillDTO);
+//            skill.getCategories().add(category);
+//            category.getSkills().add(skill);
+//        }
+//
+//        // CHỈ LƯU CATEGORY → skill mới sẽ tự động được persist nhờ cascade
+//        CategoryModel savedCategory = categoriesRepository.save(category);
+//
+//        // Lấy skill đã được lưu (nếu là mới, nó đã có ID)
+//        SkillModel savedSkill = skill.getSkillId() != null ? skill :
+//                savedCategory.getSkills().stream()
+//                        .filter(s -> s.getName().equalsIgnoreCase(skillDTO.getName()))
+//                        .findFirst()
+//                        .orElse(skill);
+//
+//        return skillMapper.toDTO(savedSkill);
+        return null;
+    }
 
-        Optional<SkillModel> existingSkillOpt = skillsRepository.findByNameIgnoreCase(skillDTO.getName());
 
-        SkillModel skill;
+    @Override
+    public SkillDTO2 createSkillOrAddToCategories(SkillDTO2 skillDTO2) {
+        // 1. Lấy tất cả CategoryModels dựa trên IDs
+        List<CategoryModel> categories = categoriesRepository.findAllById(skillDTO2.getCategoryIds());
 
-        if (existingSkillOpt.isPresent()) {
-            skill = existingSkillOpt.get();
-
-            boolean alreadyInCategory = category.getSkills().stream()
-                    .anyMatch(s -> s.getSkillId().equals(skill.getSkillId()));
-
-            if (alreadyInCategory) {
-                throw new SkillAlreadyExisted("Skill already exists in this category");
-            }
-
-            skill.getCategories().add(category);
-            category.getSkills().add(skill);
-
-        } else {
-            skill = skillMapper.toEntity(skillDTO);
-            skill.getCategories().add(category);
-            category.getSkills().add(skill);
+        if (categories.isEmpty()) {
+            throw new ResourceNotFoundException("No categories found with the provided IDs.");
         }
 
-        // CHỈ LƯU CATEGORY → skill mới sẽ tự động được persist nhờ cascade
-        CategoryModel savedCategory = categoriesRepository.save(category);
+        // 2. Tìm kiếm Skill hiện có (chỉ dựa trên tên)
+        Optional<SkillModel> existingSkillOpt = skillsRepository.findByNameIgnoreCase(skillDTO2.getName());
+        SkillModel skill;
+        boolean isNewSkill = !existingSkillOpt.isPresent();
 
-        // Lấy skill đã được lưu (nếu là mới, nó đã có ID)
-        SkillModel savedSkill = skill.getSkillId() != null ? skill :
-                savedCategory.getSkills().stream()
-                        .filter(s -> s.getName().equalsIgnoreCase(skillDTO.getName()))
-                        .findFirst()
-                        .orElse(skill);
+        if (isNewSkill) {
+            // Tạo Skill mới nếu chưa tồn tại
+            skill = skillMapper.toEntity2(skillDTO2);
+            // Quan trọng: Khởi tạo Set<CategoryModel> nếu nó có trong SkillModel để tránh NPE
+            skill.setCategories(new HashSet<>());
+        } else {
+            skill = existingSkillOpt.get();
+        }
 
-        return skillMapper.toDTO(savedSkill);
+        // 3. Xử lý liên kết Skill với từng Category (Cập nhật Owning Side)
+        for (CategoryModel category : categories) {
+
+            // 3a. Kiểm tra xem Skill đã tồn tại trong Category này chưa (Kiểm tra Owning Side)
+            SkillModel finalSkill = skill;
+            boolean alreadyInCategory = category.getSkills().stream()
+                    .anyMatch(s -> s.getSkillId() != null && s.getSkillId().equals(finalSkill.getSkillId()));
+
+            if (alreadyInCategory) {
+                continue; // Bỏ qua nếu đã liên kết
+            }
+
+            // 3b. Thiết lập mối quan hệ từ cả hai phía để đồng bộ trạng thái Java
+            // Owning Side (Category) thực hiện thay đổi CSDL:
+            category.getSkills().add(skill);
+
+            // Phía ngược lại (Skill) chỉ thay đổi trong bộ nhớ:
+            skill.getCategories().add(category);
+        }
+
+        // 4. LƯU (PERSIST) CÁC THAY ĐỔI
+
+        // Nếu là Skill mới, bạn phải lưu nó trước để có ID
+        if (isNewSkill) {
+            skill = skillsRepository.save(skill);
+            // Sau khi lưu Skill mới, mối quan hệ vẫn chưa được cập nhật trong CSDL vì Category là owning side.
+            // Tiếp tục lưu Category để Hibernate update join table.
+        }
+
+        // Lưu tất cả các Category đã được cập nhật
+        List<CategoryModel> savedCategories = categoriesRepository.saveAll(categories);
+
+        // Nếu bạn muốn lấy lại Skill đã được liên kết với các Category,
+        // bạn cần tải lại Category hoặc Skill, nhưng cách đơn giản nhất là dùng skill đã có.
+
+        // 5. Trả về DTO (Sử dụng SkillModel đã được lưu)
+        return skillMapper.toDTO2(skill);
     }
 
     @Override

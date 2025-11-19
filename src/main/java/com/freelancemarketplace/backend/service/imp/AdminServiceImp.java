@@ -1,16 +1,30 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.AdminDTO;
+import com.freelancemarketplace.backend.dto.UserDTO;
+import com.freelancemarketplace.backend.enums.AccountStatus;
 import com.freelancemarketplace.backend.exception.AdminException;
+import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.AdminMapper;
+import com.freelancemarketplace.backend.mapper.UserMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
+import com.freelancemarketplace.backend.model.UserModel;
 import com.freelancemarketplace.backend.repository.AdminsRepository;
+import com.freelancemarketplace.backend.repository.UserRepository;
+import com.freelancemarketplace.backend.request.DisableUserRequest;
+import com.freelancemarketplace.backend.request.UserRequest;
 import com.freelancemarketplace.backend.service.AdminService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -18,49 +32,107 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AdminServiceImp implements AdminService {
 
-    private AdminMapper adminMapper;
-    private AdminsRepository adminsRepository;
+    private final AdminMapper adminMapper;
+    private final AdminsRepository adminsRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
 
-    public AdminServiceImp(AdminsRepository adminsRepository,
-                           AdminMapper adminMapper) {
-        this.adminsRepository = adminsRepository;
-        this.adminMapper = adminMapper;
+    @Override
+    public Page<UserDTO> getAllUsers(UserRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Direction.DESC, "userId"));
+
+        Specification<UserModel> spec = Specification.allOf();
+
+        if (StringUtils.hasText(request.getQuery())) {
+            String likePattern = "%" + request.getQuery().toLowerCase() + "%";
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder
+                    .or(
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), likePattern),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("username")), likePattern),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")), likePattern)
+
+                    ));
+
+        }
+
+        if (request.getStatus() != null) {
+            spec = spec.and(((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("accountStatus"), request.getStatus())));
+        }
+
+        if (request.getRole() != null) {
+            spec = spec.and(((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("role"), request.getRole())));
+        }
+
+        Page<UserModel> users = userRepository.findAll(spec, pageable);
+        return userMapper.toDtoPage(users);
     }
 
-    Logger logger = LoggerFactory.getLogger(AdminServiceImp.class.getName());
+
+    @Override
+    public UserDTO activateUser(Long userId, Long currentAdminId) throws BadRequestException {
+        UserModel user = getUserAndCheckPermission(userId, currentAdminId);
+        user.setAccountStatus(AccountStatus.ACTIVE);
+        user.setDisableReason(null);
+        user.setDisableAt(null);
+        user.setDisableBy(null);
+        UserModel savedUser = userRepository.save(user);
+        log.info("Admin {} đã kích hoạt tài khoản userId={}", currentAdminId, userId);
+        return userMapper.toDto(user);
+    }
 
 
-//    @Override
-//    @Transactional
-//    public AdminModel createAdmin(AdminDTO adminDTO) {
-//
-//        if (adminsRepository.existsByEmail(adminDTO.getEmail())) {
-//            throw new AdminException("Admin with email:  " + adminDTO.getEmail()
-//                    + " already exist");
-//        }
-//
-//        if (adminsRepository.existsByUsername(adminDTO.getUsername())) {
-//            throw new AdminException("Admin with username:  " + adminDTO.getUsername()
-//                    + " already exist");
-//        }
-//
-//        if (adminsRepository.existsByPhoneNumber(adminDTO.getPhoneNumber())) {
-//            throw new AdminException("Admin with email:  " + adminDTO.getPhoneNumber()
-//                    + " already exist");
-//        }
-//
-//
-//        AdminModel adminEntity = adminMapper.toEntity(adminDTO);
-//        adminEntity.setCreatedAt(Timestamp.from(Instant.now()));
-//        AdminModel savedAdmin = adminsRepository.save(adminEntity);
-//        logger.info("Successfully created admin with ID:" + savedAdmin.getAdminId());
-//        return savedAdmin;
-//
-//
-//    }
+    @Override
+    public UserDTO updateUserStatus(Long userId, Long currentAdminId, AccountStatus status, String reason) throws BadRequestException {
+        if (!StringUtils.hasText(reason) || reason.trim().length() < 10) {
+            throw new BadRequestException("Lý do khóa tài khoản phải từ 10 ký tự trở lên");
+        }
+
+        UserModel user = getUserAndCheckPermission(userId, currentAdminId);
+        AdminModel admin = getCurrentAdmin(currentAdminId);
+
+        user.setAccountStatus(status);
+        user.setDisableReason(reason);
+        user.setDisableAt(Timestamp.from(Instant.now()));
+        user.setDisableBy(admin);
+        UserModel savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
+    }
+
+    @Override
+    public UserDTO disableUser(Long userId, Long currentAdminId, DisableUserRequest request) throws BadRequestException {
+        return updateUserStatus(userId, currentAdminId, AccountStatus.DISABLED, request.getReason());
+    }
+
+    // 4. Cấm vĩnh viễn (Ban)
+    @Override
+    public UserDTO banUser(Long userId, Long currentAdminId, DisableUserRequest request) throws BadRequestException {
+        return updateUserStatus(userId, currentAdminId, AccountStatus.BANNED, request.getReason());
+    }
+
+
+    private UserModel getUserAndCheckPermission(Long userId, Long currentAdminId) throws BadRequestException {
+        UserModel user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy userId: " + userId));
+
+        if (user.getUserId().equals(currentAdminId)) {
+            throw new BadRequestException("Bạn không thể thực hiện hành động này lên chính mình");
+        }
+        return user;
+    }
+
+
+    private AdminModel getCurrentAdmin(Long currentAdminId) {
+        AdminModel admin = adminsRepository.findById(currentAdminId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy admin với userId: " + currentAdminId));
+        return admin;
+    }
+
 
     @Transactional
     @Override
@@ -90,9 +162,8 @@ public class AdminServiceImp implements AdminService {
 
 
         AdminModel savedAdmin = adminsRepository.save(existedAdmin);
-        logger.info("Admin account has been updated successfully");
+        log.info("Admin account has been updated successfully");
         return adminMapper.toDTO(savedAdmin);
-
 
     }
 
@@ -101,7 +172,7 @@ public class AdminServiceImp implements AdminService {
     public Boolean delete(Long adminId) {
         if (adminsRepository.existsById(adminId)) {
             adminsRepository.deleteById(adminId);
-            logger.info("admin account with id: {} is deleted successfully", adminId);
+            log.info("admin account with id: {} is deleted successfully", adminId);
             return true;
         }
         return false;
@@ -120,5 +191,6 @@ public class AdminServiceImp implements AdminService {
         List<AdminDTO> adminDTOList = adminMapper.toDTOs(adminModelList);
         return adminDTOList;
     }
+
 
 }

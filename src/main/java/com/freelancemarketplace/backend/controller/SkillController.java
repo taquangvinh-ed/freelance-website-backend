@@ -2,6 +2,7 @@ package com.freelancemarketplace.backend.controller;
 
 import com.freelancemarketplace.backend.dto.ResponseDTO;
 import com.freelancemarketplace.backend.dto.SkillDTO;
+import com.freelancemarketplace.backend.dto.SkillDTO2;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
@@ -34,6 +35,12 @@ public class SkillController {
                         ResponseMessage.CREATED,
                         newSkill
                 ));
+    }
+
+    @PostMapping("/new-skill-or-add-to-category")
+    ResponseEntity<SkillDTO2>createSkillOrAddToCategories(@RequestBody SkillDTO2 skillDTO){
+        SkillDTO2 newSkill = skillSerivice.createSkillOrAddToCategories(skillDTO);
+        return ResponseEntity.ok(newSkill);
     }
 
     @PutMapping("/{skillId}")

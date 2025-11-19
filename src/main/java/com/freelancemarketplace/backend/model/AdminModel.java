@@ -12,6 +12,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -56,5 +57,8 @@ public class AdminModel extends BaseEntity{
     @OneToOne
     @JoinColumn(name = "userId")
     private UserModel user;
+
+    @OneToMany(mappedBy = "disableBy")
+    private List<UserModel> userModel;
 
 }

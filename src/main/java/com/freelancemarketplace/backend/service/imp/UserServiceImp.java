@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.RegistrationtDTO;
+import com.freelancemarketplace.backend.enums.AccountStatus;
 import com.freelancemarketplace.backend.enums.UserRoles;
 import com.freelancemarketplace.backend.mapper.UserMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
@@ -39,6 +40,8 @@ public class UserServiceImp implements UserService {
         UserModel newUser = userMapper.registraionDtoToUserEntity(registrationtDTO);
         String hashPwd = passwordEncoder.encode(registrationtDTO.getPassword());
         newUser.setPasswordHash(hashPwd);
+        newUser.setAccountStatus(AccountStatus.ACTIVE);
+        newUser.setFullName(registrationtDTO.getFirstName() + " " + registrationtDTO.getLastName());
         UserModel savedUser = userRepository.save(newUser);
 
         if (registrationtDTO.getRole().equals(UserRoles.FREELANCER.toString())) {
