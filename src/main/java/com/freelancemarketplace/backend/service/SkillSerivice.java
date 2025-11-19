@@ -12,7 +12,7 @@ public interface SkillSerivice {
 
     SkillDTO2 createSkillOrAddToCategories(SkillDTO2 skillDTO2);
 
-    SkillDTO updateSkill(Long skillId, SkillDTO skillDTO);
+    SkillDTO updateSkill(Long skillId, SkillDTO2 skillDTO);
 
     void deleteSkill(Long skillId);
 

@@ -22,5 +22,5 @@ public class SkillDTO {
 
     private String description;
 
-    private Set<String> categoryNames = new HashSet<>();
+    private Set<CategoryResponse> categories = new HashSet<>();
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -140,25 +141,76 @@ public class SkillServiceImp implements SkillSerivice {
 
     @Override
     @Transactional
-    public SkillDTO updateSkill(Long skillId, SkillDTO skillDTO) {
+    public SkillDTO updateSkill(Long skillId, SkillDTO2 skillDTO) {
+        // 1. Tải Skill hiện tại
         SkillModel skillModel = skillsRepository.findById(skillId).orElseThrow(
                 () -> new ResourceNotFoundException("Skill with id: " + skillId + " not found")
         );
 
-        if (skillDTO.getName() != null)
+        // 2. Cập nhật các trường đơn giản (Name, Description)
+        if (skillDTO.getName() != null) {
             skillModel.setName(skillDTO.getName());
-        if (skillDTO.getDescription() != null)
+        }
+        if (skillDTO.getDescription() != null) {
             skillModel.setDescription(skillDTO.getDescription());
+        }
 
+        // 3. Xử lý CẬP NHẬT MỐI QUAN HỆ (Many-to-Many)
+        // Nếu có danh sách ID Category mới được gửi đến
+        if (skillDTO.getCategoryIds() != null) {
+            // Lấy danh sách ID mới
+            List<Long> newCategoryIds = skillDTO.getCategoryIds();
+
+            // 3a. Tải tất cả Category Models mới
+            List<CategoryModel> newCategories = categoriesRepository.findAllById(newCategoryIds);
+
+            // 3b. Lấy danh sách CategoryModels cũ
+            Set<CategoryModel> oldCategories = new HashSet<>(skillModel.getCategories());
+
+            // Gỡ bỏ liên kết cũ (Xóa Skill khỏi Category cũ)
+            for (CategoryModel category : oldCategories) {
+                // Nếu Category cũ KHÔNG nằm trong danh sách mới, ta gỡ bỏ liên kết.
+                // Điều này cần thiết vì CategoryModel là Owning Side (giả định)
+                if (!newCategories.contains(category)) {
+                    category.getSkills().remove(skillModel);
+                    // Lưu lại Category để xóa liên kết khỏi bảng trung gian
+                    categoriesRepository.save(category);
+                }
+            }
+
+            // Thêm liên kết mới (Thêm Skill vào Category mới)
+            for (CategoryModel category : newCategories) {
+                // Nếu Category mới CHƯA có Skill này, ta thêm vào
+                if (!category.getSkills().contains(skillModel)) {
+                    category.getSkills().add(skillModel);
+                    // Lưu lại Category để thêm liên kết vào bảng trung gian
+                    categoriesRepository.save(category);
+                }
+            }
+
+            // Cập nhật Set Categories trong SkillModel để đồng bộ trạng thái in-memory
+            skillModel.setCategories(new HashSet<>(newCategories));
+        }
+
+
+        // 4. Lưu Skill (chỉ lưu các trường đơn giản)
         SkillModel savedSkill = skillsRepository.save(skillModel);
+
+        // 5. Trả về DTO đã ánh xạ
         return skillMapper.toDTO(savedSkill);
     }
 
     @Override
     @Transactional
     public void deleteSkill(Long skillId) {
-        if (!skillsRepository.existsById(skillId))
-            throw new ResourceNotFoundException("Skill with id: " + skillId + " not found");
+
+        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
+                ()->new ResourceNotFoundException("Skill with id: " + skillId + " not found")
+        );
+        for(CategoryModel cat:skill.getCategories()){
+            cat.getSkills().remove(skill);
+            categoriesRepository.save(cat);
+        }
         skillsRepository.deleteById(skillId);
     }
 

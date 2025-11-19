@@ -43,9 +43,9 @@ public class SkillController {
         return ResponseEntity.ok(newSkill);
     }
 
-    @PutMapping("/{skillId}")
+    @PatchMapping("/{skillId}")
     public ResponseEntity<ResponseDTO>updateSkill(@PathVariable Long skillId,
-                                                  @RequestBody SkillDTO skillDTO){
+                                                  @RequestBody SkillDTO2 skillDTO){
         SkillDTO updatedSkill = skillSerivice.updateSkill(skillId, skillDTO);
         return ResponseEntity
                 .status(HttpStatus.OK)

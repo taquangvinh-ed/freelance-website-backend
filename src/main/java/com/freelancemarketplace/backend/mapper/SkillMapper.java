@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.mapper;
 
 import com.freelancemarketplace.backend.dto.CategoryDTO;
+import com.freelancemarketplace.backend.dto.CategoryResponse;
 import com.freelancemarketplace.backend.dto.SkillDTO;
 import com.freelancemarketplace.backend.dto.SkillDTO2;
 import com.freelancemarketplace.backend.model.CategoryModel;
@@ -19,7 +20,7 @@ public interface SkillMapper {
 
     CategoryDTO toCategoryDTO(CategoryModel categoryModel);
 
-    @Mapping(target = "categoryNames", source = "categories", qualifiedByName = "mapCategoriesToCategoryName")
+    @Mapping(target = "categories", source = "categories", qualifiedByName = "mapCategoriesToCategoryResponses")
     SkillDTO toDTO(SkillModel skillModel);
 
     SkillModel toEntity(SkillDTO skillDTO);
@@ -30,11 +31,17 @@ public interface SkillMapper {
 
     SkillModel toEntity2(SkillDTO2 skillDTO);
 
-    @Named("mapCategoriesToCategoryName")
-    default Set<String>mapCategoriesToCategoryName(Set<CategoryModel> categories){
-        if(categories != null)
-            return categories.stream().map(CategoryModel::getName).collect(Collectors.toSet());
-        return new HashSet<>();
+    @Named("mapCategoriesToCategoryResponses")
+    default Set<CategoryResponse>mapCategoriesToCategoryName(Set<CategoryModel> categories){
+        if(categories == null)
+            return null;
+            Set<CategoryResponse> categorySet = categories.stream().map(categoryModel-> {
+                CategoryResponse category = new CategoryResponse();
+                category.setCategoryId(categoryModel.getCategoryId());
+                category.setName(categoryModel.getName());
+                return category;
+            }).collect(Collectors.toSet());
+        return categorySet;
     }
 
 }
