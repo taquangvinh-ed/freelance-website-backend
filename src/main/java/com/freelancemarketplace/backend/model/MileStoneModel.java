@@ -37,6 +37,9 @@ public class MileStoneModel extends BaseEntity{
 
     private Timestamp completedAt;
 
+    private String fileUrl;
+    private String fileName;
+
     @Enumerated(EnumType.STRING)
     private MileStoneStatus status;
 

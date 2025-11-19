@@ -34,6 +34,9 @@ public class MileStoneDTO {
 
     private Long proposalId;
 
+    private String fileUrl;
+    private String fileName;
+
     private String clientSecret;
     private Timestamp completedAt;
 

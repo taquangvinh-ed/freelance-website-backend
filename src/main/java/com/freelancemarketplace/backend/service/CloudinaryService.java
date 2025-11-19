@@ -9,4 +9,6 @@ public interface CloudinaryService {
     String uploadImageFile(MultipartFile file) throws IOException;
 
     String uploadFile(MultipartFile file) throws IOException;
+
+    String uploadFileMilestone(MultipartFile file) throws IOException;
 }

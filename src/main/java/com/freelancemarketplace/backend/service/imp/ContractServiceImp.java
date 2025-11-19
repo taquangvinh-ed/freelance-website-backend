@@ -10,17 +10,24 @@ import com.freelancemarketplace.backend.mapper.MileStoneMapper;
 import com.freelancemarketplace.backend.mapper.WeeklyReportMapper;
 import com.freelancemarketplace.backend.model.*;
 import com.freelancemarketplace.backend.repository.*;
+import com.freelancemarketplace.backend.service.CloudinaryService;
 import com.freelancemarketplace.backend.service.ContractLifeCycleService;
 import com.freelancemarketplace.backend.service.ContractService;
 import com.freelancemarketplace.backend.service.PaymentService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -37,7 +44,9 @@ public class ContractServiceImp implements ContractService {
     private ClientsRepository clientsRepository;
     private ContractLifeCycleService contractLifeCycleService;
     private WeeklyReportModelRepository weeklyReportModelRepository;
-private WeeklyReportMapper weeklyReportMapper;
+    private WeeklyReportMapper weeklyReportMapper;
+    private CloudinaryService cloudinaryService;
+
     @Override
     public ContractDTO updateContract(Long contractId, ContractDTO contractDTO) {
 
@@ -111,7 +120,7 @@ private WeeklyReportMapper weeklyReportMapper;
 
         ClientModel client = contractModel.getClient();
         System.out.println("ClientId: " + client.getClientId());
-        if(client.getStripeCustomerId() == null){
+        if (client.getStripeCustomerId() == null) {
             String clientName = client.getFirstName() + client.getLastName();
             String stripeCustomerId = paymentService.createStripeCustomer(client.getUser().getEmail(), clientName);
             client.setStripeCustomerId(stripeCustomerId);
@@ -133,14 +142,14 @@ private WeeklyReportMapper weeklyReportMapper;
 
 
     @Override
-    public Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId) throws Exception {
+    public Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId, MultipartFile file) throws Exception {
         ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
                 () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );
 
         FreelancerModel freelancer = contract.getFreelancer();
-        if(freelancer.getStripeCustomerId() == null){
-            String freelancerName = freelancer.getFirstName()+freelancer.getLastName();
+        if (freelancer.getStripeCustomerId() == null) {
+            String freelancerName = freelancer.getFirstName() + freelancer.getLastName();
             String stripeCustomerId = paymentService.createStripeCustomer(freelancer.getUser().getEmail(), freelancerName);
             freelancer.setStripeCustomerId(stripeCustomerId);
             freelancersRepository.save(freelancer);
@@ -151,24 +160,41 @@ private WeeklyReportMapper weeklyReportMapper;
                 .orElseThrow(() -> new ResourceNotFoundException("Milestone with id: " + milestoneId + " not found"));
         milestone.setStatus(MileStoneStatus.COMPLETED);
         milestone.setCompletedAt(Timestamp.from(Instant.now()));
+        String fileUrl = null;
+        String fileName = null;
+        if (file != null && !file.isEmpty()) {
+
+            try {
+                fileUrl = cloudinaryService.uploadFileMilestone(file); // dùng InputStream → an toàn
+                fileName = file.getOriginalFilename();
+
+            } catch (IOException e) {
+                throw new FileUploadException("Upload file đính kèm thất bại: " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new RuntimeException("Lỗi không xác định khi upload file milestone", e);
+            }
+        }
+        milestone.setFileUrl(fileUrl);
+        milestone.setFileName(fileName);
         contractsRepository.save(contract);
         return milestone.getCompletedAt();
     }
 
 
     @Override
-    public void doneContractract(Long contractId){
+    public void doneContractract(Long contractId) {
         ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
                 () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );
-        if(contract.getStatus() != ContractStatus.ACTIVE){
-            throw new IllegalStateException("Cannot complete contract. This contract is not currently ACTIVE.");        }
+        if (contract.getStatus() != ContractStatus.ACTIVE) {
+            throw new IllegalStateException("Cannot complete contract. This contract is not currently ACTIVE.");
+        }
         contract.setStatus(ContractStatus.DONE);
         contractLifeCycleService.stopWeeklyReporting(contract.getContractId());
     }
 
     @Override
-    public List<WeeklyReportDTO> getAllWeeklyReports(Long contractId){
+    public List<WeeklyReportDTO> getAllWeeklyReports(Long contractId) {
         ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
                 () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );

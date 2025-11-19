@@ -5,6 +5,7 @@ import com.freelancemarketplace.backend.dto.ContractResponseDTO;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.WeeklyReportDTO;
 import jakarta.transaction.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface ContractService {
     @Transactional
     MileStoneDTO processMilestonePayment(Long contractId, Long milestoneId) throws Exception;
 
-    Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId) throws Exception;
+    Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId, MultipartFile file) throws Exception;
 
     void doneContractract(Long contractId);
 

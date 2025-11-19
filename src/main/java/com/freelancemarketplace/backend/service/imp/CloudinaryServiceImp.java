@@ -83,4 +83,38 @@ public class CloudinaryServiceImp implements CloudinaryService {
         cleanDisk(convert(file));
         return uploadResult.get("secure_url").toString();
     }
+
+
+    @Override
+    public String uploadFileMilestone(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File không được để trống");
+        }
+
+        // Đặt giới hạn kích thước (ví dụ: 50MB)
+        if (file.getSize() > 50 * 1024 * 1024) {
+            throw new IllegalArgumentException("File quá lớn, tối đa 50MB");
+        }
+
+        try {
+            Map<String, Object> uploadOptions = Map.of(
+                    "folder", "milestones_attachments",
+                    "resource_type", "auto",
+                    "use_filename", true,
+                    "unique_filename", false,
+                    "overwrite", true
+            );
+
+            // Cách đúng: Dùng InputStream để Cloudinary tự stream, không load vào RAM
+            Map uploadResult = cloudinary.uploader().uploadLarge(
+                    file.getInputStream(), // ← Không dùng getBytes()
+                    uploadOptions
+            );
+
+            return uploadResult.get("secure_url").toString();
+
+        } catch (Exception e) {
+            throw new IOException("Upload file lên Cloudinary thất bại: " + e.getMessage(), e);
+        }
+    }
 }

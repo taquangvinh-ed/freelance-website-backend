@@ -65,7 +65,7 @@ public class SecurityConfig {
                                 "/onboarding/**" ).permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/{contractId}/milestones/{milestoneId}/pay").hasRole("CLIENT")
-                        .requestMatchers(HttpMethod.POST, "/api/contracts/*/milestones/*/complete").hasRole("FREELANCER")
+                        .requestMatchers(HttpMethod.POST, "/api/contracts/*/milestones/*/complete", "/api/contracts/milestone-attachment").hasRole("FREELANCER")
                         .requestMatchers("/api/upload/image", "/api/projects/recommend/freelancer/**", "/api/projects/recommend/client/**",
                                  "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
                                 "/api/projects/findProject/{projectId}",
