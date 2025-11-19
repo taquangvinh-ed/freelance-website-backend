@@ -23,6 +23,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -156,7 +159,7 @@ public class ProjectServiceImp implements ProjectService {
     public Page<ProjectDTO> filter(String keyword, List<String> skillNames,
                                    BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, String duration,     // MỚI: "1 to 3 months"
                                    String level,        // MỚI: "Intermediate"
-                                   String workload ,Pageable pageable) {
+                                   String workload, Pageable pageable) {
         try {
             // Tạo Specification cho truy vấn
             Specification<ProjectModel> spec = ProjectSpecification.filter(
@@ -205,5 +208,48 @@ public class ProjectServiceImp implements ProjectService {
         }
     }
 
+
+    @Override
+    public long countAllProjects() {
+        return projectsRepository.count();
+    }
+
+
+    @Override
+    public long getNewProjectCountToday() {
+        LocalDateTime today = LocalDateTime.now()
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0);
+
+        return projectsRepository.countByCreatedAtAfter(today);
+    }
+
+    @Override
+    public long getNewProjectCountWeekly() {
+        LocalDateTime startOfWeek = LocalDateTime.now()
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        return projectsRepository.countByCreatedAtAfter(startOfWeek);
+    }
+
+
+    @Override
+    public long getActiveProjectCount() {
+        long inProgressCount = projectsRepository.countByStatus(ProjectStatus.IN_PROGRESS);
+        // Tùy theo logic của bạn, có thể thêm PENDING_REVIEW, v.v.
+        return inProgressCount;
+    }
+
+    @Override
+    public long getCompletedProjectCount() {
+        long completedCount = projectsRepository.countByStatus(ProjectStatus.COMPLETED);
+        // Tùy theo logic của bạn, có thể thêm PENDING_REVIEW, v.v.
+        return completedCount;
+    }
 
 }

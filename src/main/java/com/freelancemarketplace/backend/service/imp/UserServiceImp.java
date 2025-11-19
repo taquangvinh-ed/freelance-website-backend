@@ -20,6 +20,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService {
@@ -94,6 +98,54 @@ public class UserServiceImp implements UserService {
             registrationtResponseDTO.setRole(UserRoles.ADMIN.toString());
         }
         return registrationtResponseDTO;
+    }
+
+
+    @Override
+    public long countAllUserByRole(UserRoles role){
+        return userRepository.countByRole(role);
+    }
+
+    @Override
+    public long getNewFreelancerCountWeekly(){
+        LocalDateTime startOfWeek = LocalDateTime.now()
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        return userRepository.countByRoleAndCreatedAtAfter(UserRoles.FREELANCER, startOfWeek);
+    }
+
+    @Override
+    public long getNewFreelancerCountMonthly() {
+        // Lấy ngày đầu tiên của tháng hiện tại
+        LocalDateTime startOfMonth = LocalDateTime.now()
+                .withDayOfMonth(1)
+                .withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        return userRepository.countByRoleAndCreatedAtAfter(UserRoles.FREELANCER, startOfMonth);
+    }
+
+    @Override
+    public long getNewClientCountWeekly(){
+        LocalDateTime startOfWeek = LocalDateTime.now()
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        return userRepository.countByRoleAndCreatedAtAfter(UserRoles.CLIENT, startOfWeek);
+    }
+
+    @Override
+    public long getNewClientCountMonthly() {
+        // Lấy ngày đầu tiên của tháng hiện tại
+        LocalDateTime startOfMonth = LocalDateTime.now()
+                .withDayOfMonth(1)
+                .withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        return userRepository.countByRoleAndCreatedAtAfter(UserRoles.CLIENT, startOfMonth);
     }
 
 }

@@ -23,7 +23,7 @@ import java.util.List;
         @Index(name = "idx_user_username", columnList = "username"),
         @Index(name = "idx_user_email", columnList = "email")
 })
-public class UserModel implements AppUser {
+public class UserModel extends BaseEntity implements AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

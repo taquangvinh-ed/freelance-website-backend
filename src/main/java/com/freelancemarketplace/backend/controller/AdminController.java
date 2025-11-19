@@ -11,7 +11,9 @@ import com.freelancemarketplace.backend.request.UserRequest;
 import com.freelancemarketplace.backend.response.ResponseMessage;
 import com.freelancemarketplace.backend.response.ResponseStatusCode;
 import com.freelancemarketplace.backend.service.AdminService;
+import com.freelancemarketplace.backend.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,17 +28,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/admin", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequiredArgsConstructor
 public class AdminController {
 
     Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     private final AdminService adminService;
     private final AdminMapper adminMapper;
+    private final UserService userService;
 
-    public AdminController(AdminService adminService, AdminMapper adminMapper) {
-        this.adminService = adminService;
-        this.adminMapper = adminMapper;
-    }
 
 //    @PostMapping("/admin")
 //    public ResponseEntity<ResponseDTO> createAdmin(@RequestBody @Valid AdminDTO adminDTO) {
@@ -140,5 +140,8 @@ public class AdminController {
         UserDTO user = adminService.banUser(userId, adminId, request);
         return ResponseEntity.ok(user);
     }
+
+
+
 
 }

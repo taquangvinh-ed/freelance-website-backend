@@ -66,7 +66,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/{contractId}/milestones/{milestoneId}/pay").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/*/milestones/*/complete").hasRole("FREELANCER")
-                        .requestMatchers("/api/upload/image, /api/projects/recommend/freelancer/**", "/api/projects/recommend/client/**",
+                        .requestMatchers("/api/upload/image", "/api/projects/recommend/freelancer/**", "/api/projects/recommend/client/**",
                                  "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
                                 "/api/projects/findProject/{projectId}",
                                  "/app/**", "/topic/chat/**", "/api/proposals/project/**",
@@ -85,7 +85,8 @@ public class SecurityConfig {
 
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/", "/api/dashboard/client/**",  "/api/email/send-invitation").hasRole("CLIENT")
-                        .requestMatchers("/api/categories/new-category", "/api/skills/new-skill", "/api/admin/**", "/api/skills/new-skill-or-add-to-category").hasRole("ADMIN")
+                        .requestMatchers("/api/categories/new-category", "/api/skills/new-skill", "/api/admin/**",
+                                "/api/skills/new-skill-or-add-to-category").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

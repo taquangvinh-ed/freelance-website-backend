@@ -36,4 +36,14 @@ public interface ProjectService {
                             String workload, Pageable pageable);
 
     Page<ProjectDTO> autocompleteSearch(String keyword, int limit, Pageable pageable);
+
+    long countAllProjects();
+
+    long getNewProjectCountToday();
+
+    long getNewProjectCountWeekly();
+
+    long getActiveProjectCount();
+
+    long getCompletedProjectCount();
 }

@@ -1,9 +1,11 @@
 package com.freelancemarketplace.backend.repository;
 
+import com.freelancemarketplace.backend.enums.UserRoles;
 import com.freelancemarketplace.backend.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserModel, Long>, JpaSpecificationExecutor<UserModel> {
@@ -12,4 +14,6 @@ public interface UserRepository extends JpaRepository<UserModel, Long>, JpaSpeci
   Boolean existsByUsername(String username);
   Boolean existsByEmail(String email);
 
+  long countByRoleAndCreatedAtAfter(UserRoles role, LocalDateTime afterDate);
+  long countByRole(UserRoles role);
 }
