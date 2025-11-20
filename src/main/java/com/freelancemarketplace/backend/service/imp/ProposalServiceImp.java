@@ -189,6 +189,10 @@ public class ProposalServiceImp implements ProposalService {
                 savedProposal.getProposalId()
         );
 
+        ProjectModel project = proposal.getProject();
+        project.setStatus(ProjectStatus.IN_PROGRESS);
+        projectsRepository.save(project);
+
         ContractModel newContract = createContractFromProposal(proposal);
 
         ContractModel savedContract = contractsRepository.save(newContract);

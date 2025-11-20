@@ -65,7 +65,7 @@ public class ProjectServiceImp implements ProjectService {
         ProjectModel newProject = projectMapper.toEntity(request);
         BudgetModel budgetInsideNewProject = newProject.getBudget();
         budgetInsideNewProject.setProject(newProject);
-        newProject.setStatus(ProjectStatus.IN_PROGRESS);
+        newProject.setStatus(ProjectStatus.OPEN);
 
         if (request.getTitle() != null)
             newProject.setTitleEmbedding(embeddingService.generateEmbedding(request.getTitle()));

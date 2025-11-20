@@ -3,6 +3,7 @@ package com.freelancemarketplace.backend.recommandation.imp;
 import com.freelancemarketplace.backend.dto.ProjectDTO;
 import com.freelancemarketplace.backend.dto.RecommendFreelancerDTO;
 import com.freelancemarketplace.backend.enums.InvitationStatus;
+import com.freelancemarketplace.backend.enums.ProjectStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.mapper.ProjectMapper;
 import com.freelancemarketplace.backend.model.*;
@@ -53,7 +54,7 @@ public class RecommendationServiceImp implements RecommendationService {
         );
 
 
-        List<ProjectModel> projects = projectsRepository.findAll();
+        List<ProjectModel> projects = projectsRepository.findByStatus(ProjectStatus.OPEN);
 
 
         // 1. CONTENT-BASED MATCHING (Tính điểm và Sắp xếp)
@@ -70,8 +71,12 @@ public class RecommendationServiceImp implements RecommendationService {
         // 2. COLLABORATIVE FILTERING
         List<ProjectModel> cfRecommendations = getCFRecommendations(freelancerId);
 
+        List<ProjectModel> cfRecommendationsOpen = cfRecommendations.stream()
+                .filter(p -> p.getStatus() == ProjectStatus.OPEN)
+                .toList();
+
         // 3. HYBRID (KẾT HỢP VÀ BỎ TRÙNG LẶP)
-        List<ProjectModel> hybrid = combineRecommendations(contentRecommendations, cfRecommendations);
+        List<ProjectModel> hybrid = combineRecommendations(contentRecommendations, cfRecommendationsOpen);
 
         // 4. PHÂN TRANG
         int start = (int) pageable.getOffset();
