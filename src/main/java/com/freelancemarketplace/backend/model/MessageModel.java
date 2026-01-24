@@ -12,7 +12,11 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "Messages")
+@Table(name = "Messages",
+indexes ={
+        @Index(name = "idx_room_sentAt", columnList = "roomId, sentAt DESC"),
+        @Index(name = "idx_receiver_isRead", columnList = "receiverId, isRead" )
+        })
 public class MessageModel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

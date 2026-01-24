@@ -29,7 +29,6 @@ public class ChatController {
     @MessageMapping("/chat.private")
     public void sendPrivateMessage(@Payload MessageDTO messageDTO){
 
-
         String roomId = chatService.createRoomId(messageDTO.getSenderId(), messageDTO.getReceiverId());
 
         MessageDTO response = chatService.saveMessageToDatabase(roomId, messageDTO);
