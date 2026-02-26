@@ -62,7 +62,7 @@ public class SecurityConfig {
                                 "/api/stripe/**",
                                 "/api/stripe/webhook",
                                 "/api/projects/autocomplete-search",
-                                "/onboarding/**" ).permitAll()
+                                "/onboarding/**","/topic/notifications/**" ).permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/{contractId}/milestones/{milestoneId}/pay").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/*/milestones/*/complete", "/api/contracts/milestone-attachment").hasRole("FREELANCER")

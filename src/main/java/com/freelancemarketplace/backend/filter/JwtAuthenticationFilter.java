@@ -44,7 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/skills/search", "/ws/**",
             "/api/projects/autocomplete-search",
             "/api/stripe/**",
-            "/onboarding/**"
+            "/onboarding/**",
+            "/topic/notifications/**"
     );
 
     @Override

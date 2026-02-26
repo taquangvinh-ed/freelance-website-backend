@@ -79,9 +79,8 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
         notification.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         ClarificationiProjectQANotificationModel savedNotification = projectClarificationNotificationRepository.save(notification);
         ClarificationiProjectQANotificationDTO notificationDTO = clarificationProjectNotificationMapper.toDto(savedNotification);
-        messagingTemplate.convertAndSendToUser(
-                project.getClient().getClientId().toString(),
-                "/queue/notifications",
+        messagingTemplate.convertAndSend(
+                "/topic/notifications/" + project.getClient().getClientId(),
                 notificationDTO
         );
         return dto;
@@ -145,9 +144,8 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
         notification.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         ClarificationiProjectQANotificationModel savedNotification = projectClarificationNotificationRepository.save(notification);
         ClarificationiProjectQANotificationDTO notificationDTO = clarificationProjectNotificationMapper.toDto(savedNotification);
-        messagingTemplate.convertAndSendToUser(
-                question.getAskedBy().getUserId().toString(),
-                "/queue/notifications",
+        messagingTemplate.convertAndSend(
+                "/topic/notifications/" + question.getAskedBy().getUserId(),
                 notificationDTO
         );
         return dto;
