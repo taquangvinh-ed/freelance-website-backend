@@ -1,19 +1,19 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.AnswerQuestionRequest;
+import com.freelancemarketplace.backend.dto.ClarificationiProjectQANotificationDTO;
 import com.freelancemarketplace.backend.dto.CreateQuestionRequest;
 import com.freelancemarketplace.backend.dto.ProjectQuestionDTO;
 import com.freelancemarketplace.backend.enums.QuestionStatus;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.mapper.ClarificationProjectNotificationMapper;
 import com.freelancemarketplace.backend.mapper.ProjectQuestionMapper;
 import com.freelancemarketplace.backend.model.*;
-import com.freelancemarketplace.backend.repository.FreelancersRepository;
-import com.freelancemarketplace.backend.repository.ProjectQuestionsRepository;
-import com.freelancemarketplace.backend.repository.ProjectsRepository;
-import com.freelancemarketplace.backend.repository.UserRepository;
+import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ProjectQuestionService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,9 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
     private final UserRepository userRepository;
     private final ProjectQuestionMapper projectQuestionMapper;
     private final FreelancersRepository freelancersRepository;
-
+    private final ProjectClarificationNotificationRepository projectClarificationNotificationRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final ClarificationProjectNotificationMapper clarificationProjectNotificationMapper;
     @Override
     @Transactional
     public ProjectQuestionDTO createQuestion(Long userId, Long projectId, CreateQuestionRequest request) {
@@ -63,6 +65,25 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
             dto.setAskedByLastName(freelancerModel.get().getLastName());
             dto.setAskedByAvatar(freelancerModel.get().getAvatar());
         }
+        ClarificationiProjectQANotificationModel notification = new ClarificationiProjectQANotificationModel();
+        notification.setQuestionId(saved.getQuestionId());
+        notification.setProjectId(project.getProjectId());
+        notification.setRecipientUserId(project.getClient() != null && project.getClient().getUser() != null ? project.getClient().getUser().getUserId() : null);
+        notification.setProjectTitle(project.getTitle());
+        notification.setQuestionText(saved.getQuestionText());
+        notification.setSenderFirstName(freelancerModel.isPresent() ? freelancerModel.get().getFirstName() : "Unknown");
+        notification.setSenderLastName(freelancerModel.isPresent() ? freelancerModel.get().getLastName() : "User");
+        notification.setSenderAvatar(freelancerModel.isPresent() ? freelancerModel.get().getAvatar() : null);
+        notification.setType(ClarificationiProjectQANotificationModel.NotificationType.NEW_QUESTION);
+        notification.setRead(Boolean.FALSE);
+        notification.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        ClarificationiProjectQANotificationModel savedNotification = projectClarificationNotificationRepository.save(notification);
+        ClarificationiProjectQANotificationDTO notificationDTO = clarificationProjectNotificationMapper.toDto(savedNotification);
+        messagingTemplate.convertAndSendToUser(
+                project.getClient().getClientId().toString(),
+                "/queue/notifications",
+                notificationDTO
+        );
         return dto;
     }
 
@@ -109,6 +130,26 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
         dto.setAnsweredByFirstName(client.getFirstName());
         dto.setAnsweredByLastName(client.getLastName());
         dto.setAnsweredByAvatar(client.getAvatar());
+        ClarificationiProjectQANotificationModel notification = new ClarificationiProjectQANotificationModel();
+        notification.setQuestionId(saved.getQuestionId());
+        notification.setProjectId(project.getProjectId());
+        notification.setRecipientUserId(question.getAskedBy().getUserId());
+        notification.setProjectTitle(project.getTitle());
+        notification.setQuestionText(question.getQuestionText());
+        notification.setAnswerText(question.getAnswerText());
+        notification.setSenderFirstName(client.getFirstName());
+        notification.setSenderLastName(client.getLastName());
+        notification.setSenderAvatar(client.getAvatar());
+        notification.setType(ClarificationiProjectQANotificationModel.NotificationType.NEW_ANSWER);
+        notification.setRead(Boolean.FALSE);
+        notification.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        ClarificationiProjectQANotificationModel savedNotification = projectClarificationNotificationRepository.save(notification);
+        ClarificationiProjectQANotificationDTO notificationDTO = clarificationProjectNotificationMapper.toDto(savedNotification);
+        messagingTemplate.convertAndSendToUser(
+                question.getAskedBy().getUserId().toString(),
+                "/queue/notifications",
+                notificationDTO
+        );
         return dto;
     }
 

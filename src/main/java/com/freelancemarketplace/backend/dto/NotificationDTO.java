@@ -21,4 +21,6 @@ public class NotificationDTO {
     private String imageUrl;
 
     private Long adminId;
+
+
 }
