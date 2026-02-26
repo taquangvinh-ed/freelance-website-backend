@@ -42,7 +42,6 @@ spring:
 logging:
   level:
     org.springframework.type: TRACE
-    org.hibernate.SQL: TRACE
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.mapstruct: DEBUG
   pattern:

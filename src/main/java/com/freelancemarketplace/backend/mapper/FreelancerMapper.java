@@ -22,6 +22,7 @@ public interface FreelancerMapper {
 
     List<FreelancerDTO>toDTOs(List<FreelancerModel> freelancerModelList);
 
+    @Mapping(target="description", source="bio.summary")
     FreelancerInfoDTO toInfoDTO(FreelancerModel freelancerModel);
 
     SkillDTO toSkillDTO(SkillModel skill);

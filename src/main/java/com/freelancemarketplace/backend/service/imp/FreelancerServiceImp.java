@@ -11,12 +11,15 @@ import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
 import com.freelancemarketplace.backend.repository.TestimonialsRepository;
+import com.freelancemarketplace.backend.service.CloudinaryService;
 import com.freelancemarketplace.backend.service.FreelancerService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -29,6 +32,7 @@ public class FreelancerServiceImp implements FreelancerService {
     private final SkillsRepository skillsRepository;
     private final EmbeddingService embeddingService;
     private final TestimonialsRepository testimonialsRepository;
+    private final CloudinaryService cloudinaryService;
 
 
 
@@ -206,5 +210,22 @@ public class FreelancerServiceImp implements FreelancerService {
             freelancersRepository.save(freelancer);
             log.info("Mark onboarding completed successfully");
         }
+    }
+
+    @Override
+    @Transactional
+    public String uploadAvatar(Long freelancerId, MultipartFile file) throws IOException {
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found"));
+
+        // Upload avatar to Cloudinary
+        String avatarUrl = cloudinaryService.uploadAvatar(file);
+
+        // Update freelancer's avatar field
+        freelancer.setAvatar(avatarUrl);
+        freelancersRepository.save(freelancer);
+
+        log.info("Avatar uploaded successfully for freelancer: {}", freelancerId);
+        return avatarUrl;
     }
 }

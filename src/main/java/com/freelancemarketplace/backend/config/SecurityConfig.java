@@ -73,7 +73,8 @@ public class SecurityConfig {
                                 "/api/messages/history/senderId/*/receiverId/*", "/api/chat/currentUserProfile",
                                 "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**",
                                     "/api/proposals/{proposalId}", "/api/contracts/get-contract/{contractId}", "/api/testimonials/**", "/api/experiences/**"
-                               ,"/api/freelancers/profile/{freelancerId}", "/api/contracts/*/hourly-contract-logs", "/api/freelancers/info/*" ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
+                               ,"/api/freelancers/profile/{freelancerId}", "/api/contracts/*/hourly-contract-logs", "/api/freelancers/info/*",
+                                "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar" ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",
@@ -82,7 +83,7 @@ public class SecurityConfig {
                                 "/api/dashboard/freelancer/projects/**", "/api/freelancers/getById/", "/api/certificate/**",
                                 "/api/freelancers/me/status","/api/stripe/create-onboarding-link",
                                 "/api/tracker/**"
-
+                                
                         ).hasRole("FREELANCER")
                         .requestMatchers("/api/projects/", "/api/dashboard/client/**",  "/api/email/send-invitation").hasRole("CLIENT")
                         .requestMatchers("/api/categories/new-category", "/api/skills/new-skill", "/api/admin/**",

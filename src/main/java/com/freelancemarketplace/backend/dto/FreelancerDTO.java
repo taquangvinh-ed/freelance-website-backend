@@ -27,6 +27,7 @@ public class FreelancerDTO {
     private String lastName;
     private String title;
     private String profilePicture;
+    private String avatar;
     private String phoneNumber;
     private String passwordHash;
     private Double hourlyRate;

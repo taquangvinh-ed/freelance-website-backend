@@ -3,7 +3,9 @@ package com.freelancemarketplace.backend.service;
 import com.freelancemarketplace.backend.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.dto.FreelancerInfoDTO;
 import com.freelancemarketplace.backend.model.FreelancerModel;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface FreelancerService {
@@ -27,4 +29,6 @@ public interface FreelancerService {
     FreelancerDTO removeSkillFromFreelancer(Long freelancerId, Long skillId);
 
     void markOnboardingCompleted(String stripeAccountId);
+
+    String uploadAvatar(Long freelancerId, MultipartFile file) throws IOException;
 }

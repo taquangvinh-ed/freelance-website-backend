@@ -18,4 +18,5 @@ public interface ProjectsRepository extends JpaRepository<ProjectModel, Long>, J
     long countByCreatedAtAfter(LocalDateTime afterDate);
     long countByStatus(ProjectStatus status);
     List<ProjectModel>findByStatus(ProjectStatus status);
+    List<ProjectModel> findAllByClientAndStatus(ClientModel clientModel, ProjectStatus status);
 }

@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -146,5 +148,35 @@ public class FreelancerController {
     public ResponseEntity<FreelancerInfoDTO> getInfo(@PathVariable Long freelancerId){
         FreelancerInfoDTO info = freelancerService.getInfo(freelancerId);
         return ResponseEntity.ok(info);
+    }
+
+    @PostMapping("/upload-avatar")
+    public ResponseEntity<ResponseDTO> uploadAvatar(
+            @AuthenticationPrincipal AppUser appUser,
+            @RequestParam MultipartFile file) throws IOException {
+        Long freelancerId = appUser.getId();
+        String avatarUrl = freelancerService.uploadAvatar(freelancerId, file);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        Map.of("avatarUrl", avatarUrl)
+                ));
+    }
+
+    @PostMapping("/me/upload-avatar")
+    public ResponseEntity<ResponseDTO> uploadMyAvatar(
+            @AuthenticationPrincipal AppUser appUser,
+            @RequestParam MultipartFile file) throws IOException {
+        Long freelancerId = appUser.getId();
+        String avatarUrl = freelancerService.uploadAvatar(freelancerId, file);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        Map.of("avatarUrl", avatarUrl)
+                ));
     }
 }

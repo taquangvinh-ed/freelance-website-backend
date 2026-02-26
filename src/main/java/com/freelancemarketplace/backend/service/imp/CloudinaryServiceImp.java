@@ -117,4 +117,43 @@ public class CloudinaryServiceImp implements CloudinaryService {
             throw new IOException("Upload file lên Cloudinary thất bại: " + e.getMessage(), e);
         }
     }
+
+    @Override
+    public String uploadAvatar(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File không được để trống");
+        }
+
+        // Validate file size (max 10MB for avatars)
+        if (file.getSize() > 10 * 1024 * 1024) {
+            throw new IllegalArgumentException("File quá lớn, tối đa 10MB");
+        }
+
+        // Validate file type
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("File phải là hình ảnh (JPEG, PNG, GIF, WebP)");
+        }
+
+        try {
+            Map<String, Object> uploadOptions = Map.of(
+                    "folder", "avatars",
+                    "resource_type", "image",
+                    "quality", "auto",
+                    "fetch_format", "auto",
+                    "width", 500,
+                    "height", 500,
+                    "crop", "fill",
+                    "gravity", "face",
+                    "use_filename", true,
+                    "unique_filename", true
+            );
+
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadOptions);
+            return uploadResult.get("secure_url").toString();
+
+        } catch (Exception e) {
+            throw new IOException("Upload avatar lên Cloudinary thất bại: " + e.getMessage(), e);
+        }
+    }
 }

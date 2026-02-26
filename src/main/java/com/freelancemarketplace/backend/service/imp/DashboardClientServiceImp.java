@@ -17,6 +17,7 @@ import com.freelancemarketplace.backend.repository.ProjectsRepository;
 import com.freelancemarketplace.backend.service.DashboardClientService;
 import com.freelancemarketplace.backend.service.ProgressCalculationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DashboardClientServiceImp implements DashboardClientService {
@@ -42,15 +44,17 @@ public class DashboardClientServiceImp implements DashboardClientService {
         );
 
         List<ContractModel> contracts = contractsRepository.findAllByClient(client);
-
-
-
-        if(contracts.isEmpty())
-            return new ClientDashboardStatsDTO();
-
         ClientDashboardStatsDTO result = new ClientDashboardStatsDTO();
 
+        // Set total projects
         long totalProjects = projectsRepository.findAllByClient(client).size();
+        log.info("Total projects for client {}: {}", clientId, totalProjects);
+        result.setTotalProjects((int)totalProjects);
+
+        // If no contracts, return stats with only total projects
+        if(contracts.isEmpty()) {
+            return result;
+        }
 
         long activeProjects = contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.ACTIVE).count();
         result.setActiveProjects((int)activeProjects);
@@ -144,7 +148,7 @@ public class DashboardClientServiceImp implements DashboardClientService {
         );
         List<ProjectModel> projects = projectsRepository.findAllByClient(client);
 
-       return  projects.stream().filter(projectModel -> projectModel.getStatus() == ProjectStatus.IN_PROGRESS).map(
+       return  projects.stream().filter(projectModel -> projectModel.getStatus() == ProjectStatus.OPEN).map(
                 projectModel -> {
                     PostedProject postedProject = new PostedProject();
                     postedProject.setProjectId(projectModel.getProjectId());

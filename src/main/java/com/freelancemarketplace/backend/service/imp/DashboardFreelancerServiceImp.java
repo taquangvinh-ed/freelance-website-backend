@@ -9,21 +9,27 @@ import com.freelancemarketplace.backend.repository.ContractsRepository;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.TestimonialsRepository;
 import com.freelancemarketplace.backend.service.DashboardFreelancerService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.YearMonth;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DashboardFreelancerServiceImp implements DashboardFreelancerService {
 
     private final ContractsRepository contractsRepository;
     private final FreelancersRepository freelancersRepository;
     private final TestimonialsRepository testimonialsRepository;
+
+
 
     @Override
     public List<MonthlyEarningsDTO> getMonthlyEarnings(Long freelancerId, int months) {
@@ -71,28 +77,52 @@ public class DashboardFreelancerServiceImp implements DashboardFreelancerService
     }
 
     @Override
+    @Transactional
     public OverallStatsDTO getOverallStats(Long freelancerId) {
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
                 () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
+        log.info("Total contracts for freelancer {}: {}", freelancerId, contracts.size());
 
         double totalEarnings = contracts.stream()
-                .flatMap(contract -> contract.getMileStones().stream())
+                .flatMap(contract -> {
+                    // Null safety check for milestones
+                    Set<MileStoneModel> milestones = contract.getMileStones();
+                    if (milestones == null) {
+                        log.warn("Contract {} has null milestones", contract.getContractId());
+                        return java.util.stream.Stream.empty();
+                    }
+                    return milestones.stream();
+                })
                 .filter(mileStone -> mileStone.getStatus() == MileStoneStatus.RELEASED)
-                .mapToDouble(milestone -> milestone.getAmount().doubleValue())
+                .mapToDouble(milestone -> {
+                    double amount = milestone.getAmount() != null ? milestone.getAmount().doubleValue() : 0.0;
+                    log.debug("Found RELEASED milestone: {} with amount: {}", milestone.getMileStoneId(), amount);
+                    return amount;
+                })
                 .sum();
+
+        log.info("Total earnings for freelancer {}: {}", freelancerId, totalEarnings);
 
         int activeProject = (int) contracts.stream()
                 .filter(contract -> contract.getStatus() == ContractStatus.ACTIVE)
                 .count();
 
+        log.info("Active projects for freelancer {}: {}", freelancerId, activeProject);
+
         int pendingReview = (int) testimonialsRepository.countByFreelancer(freelancer);
+        log.info("Pending reviews for freelancer {}: {}", freelancerId, pendingReview);
 
         double hourlyRate = freelancer.getHourlyRate() != null ? freelancer.getHourlyRate() : 0.0;
+        log.info("Hourly rate for freelancer {}: {}", freelancerId, hourlyRate);
 
-        return new OverallStatsDTO(totalEarnings, activeProject, pendingReview, hourlyRate);
+        OverallStatsDTO result = new OverallStatsDTO(totalEarnings, activeProject, pendingReview, hourlyRate);
+        log.info("Overall stats: earnings={}, activeProjects={}, pendingReview={}, hourlyRate={}",
+                totalEarnings, activeProject, pendingReview, hourlyRate);
+
+        return result;
     }
 
 
@@ -190,58 +220,145 @@ public class DashboardFreelancerServiceImp implements DashboardFreelancerService
     }
 
     @Override
+    @Transactional
     public List<DashboardProjectResponse> getAllActivedProjects(Long freelancerId){
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
                 () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
-        return contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.ACTIVE)
+        log.info("Total contracts for freelancer {}: {}", freelancerId, contracts.size());
+
+        List<ContractModel> activeContracts = contracts.stream()
+                .filter(contract -> contract.getStatus() == ContractStatus.ACTIVE)
+                .toList();
+
+        log.info("Active contracts for freelancer {}: {}", freelancerId, activeContracts.size());
+
+        return activeContracts.stream()
                 .map(contractModel -> {
+                    // Null safety checks for lazy-loaded relationships
+                    if (contractModel.getContractProject() == null) {
+                        log.warn("Contract {} has no associated project", contractModel.getContractId());
+                        return null;
+                    }
+                    if (contractModel.getClient() == null) {
+                        log.warn("Contract {} has no associated client", contractModel.getContractId());
+                        return null;
+                    }
+
                     DashboardProjectResponse activedProject = new DashboardProjectResponse();
                     activedProject.setProjectId(contractModel.getContractProject().getProjectId());
                     activedProject.setContractId(contractModel.getContractId());
                     activedProject.setProjectName(contractModel.getContractProject().getTitle());
-                    activedProject.setClientName(contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName());
-                    activedProject.setDeadline(contractModel.getEndDate().toString());
+
+                    String clientName = "Unknown Client";
+                    if (contractModel.getClient().getFirstName() != null && contractModel.getClient().getLastName() != null) {
+                        clientName = contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName();
+                    } else if (contractModel.getClient().getFirstName() != null) {
+                        clientName = contractModel.getClient().getFirstName();
+                    }
+                    activedProject.setClientName(clientName);
+
+                    if (contractModel.getEndDate() != null) {
+                        activedProject.setDeadline(contractModel.getEndDate().toString());
+                    }
                     return activedProject;
-                }).toList();
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Override
+    @Transactional
     public List<DashboardProjectResponse> getAllCancelledProjects(Long freelancerId){
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
                 () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
-        return contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.CANCELLED)
+        log.info("Total contracts for freelancer {}: {}", freelancerId, contracts.size());
+
+        List<ContractModel> cancelledContracts = contracts.stream()
+                .filter(contract -> contract.getStatus() == ContractStatus.CANCELLED)
+                .toList();
+
+        log.info("Cancelled contracts for freelancer {}: {}", freelancerId, cancelledContracts.size());
+
+        return cancelledContracts.stream()
                 .map(contractModel -> {
+                    // Null safety checks
+                    if (contractModel.getContractProject() == null) {
+                        log.warn("Cancelled Contract {} has no associated project", contractModel.getContractId());
+                        return null;
+                    }
+                    if (contractModel.getClient() == null) {
+                        log.warn("Cancelled Contract {} has no associated client", contractModel.getContractId());
+                        return null;
+                    }
+
                     DashboardProjectResponse cancelledProject = new DashboardProjectResponse();
                     cancelledProject.setProjectId(contractModel.getContractProject().getProjectId());
                     cancelledProject.setContractId(contractModel.getContractId());
                     cancelledProject.setProjectName(contractModel.getContractProject().getTitle());
-                    cancelledProject.setClientName(contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName());
+
+                    String clientName = "Unknown Client";
+                    if (contractModel.getClient().getFirstName() != null && contractModel.getClient().getLastName() != null) {
+                        clientName = contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName();
+                    } else if (contractModel.getClient().getFirstName() != null) {
+                        clientName = contractModel.getClient().getFirstName();
+                    }
+                    cancelledProject.setClientName(clientName);
                     return cancelledProject;
-                }).toList();
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Override
+    @Transactional
     public List<DashboardProjectResponse> getAllCompletedProjects(Long freelancerId){
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
                 () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
         List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
-        return contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.COMPLETED)
+        log.info("Total contracts for freelancer {}: {}", freelancerId, contracts.size());
+
+        List<ContractModel> completedContracts = contracts.stream()
+                .filter(contract -> contract.getStatus() == ContractStatus.COMPLETED)
+                .toList();
+
+        log.info("Completed contracts for freelancer {}: {}", freelancerId, completedContracts.size());
+
+        return completedContracts.stream()
                 .map(contractModel -> {
+                    // Null safety checks
+                    if (contractModel.getContractProject() == null) {
+                        log.warn("Completed Contract {} has no associated project", contractModel.getContractId());
+                        return null;
+                    }
+                    if (contractModel.getClient() == null) {
+                        log.warn("Completed Contract {} has no associated client", contractModel.getContractId());
+                        return null;
+                    }
+
                     DashboardProjectResponse completedProject = new DashboardProjectResponse();
                     completedProject.setProjectId(contractModel.getContractProject().getProjectId());
                     completedProject.setContractId(contractModel.getContractId());
                     completedProject.setProjectName(contractModel.getContractProject().getTitle());
-                    completedProject.setClientName(contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName());
+
+                    String clientName = "Unknown Client";
+                    if (contractModel.getClient().getFirstName() != null && contractModel.getClient().getLastName() != null) {
+                        clientName = contractModel.getClient().getFirstName() + " " + contractModel.getClient().getLastName();
+                    } else if (contractModel.getClient().getFirstName() != null) {
+                        clientName = contractModel.getClient().getFirstName();
+                    }
+                    completedProject.setClientName(clientName);
                     return completedProject;
-                }).toList();
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
 
