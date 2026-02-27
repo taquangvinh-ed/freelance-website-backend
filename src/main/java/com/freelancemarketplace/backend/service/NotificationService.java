@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.service;
 
+import com.freelancemarketplace.backend.dto.ClarificationiProjectQANotificationDTO;
 import com.freelancemarketplace.backend.dto.NotificationDTO;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface NotificationService {
     Boolean deleteNotification(Long notificationId);
 
     List<NotificationDTO>getAllNotification();
+
+    void markClarificationPrjectQANotificationAsRead(Long projectClarificationNotificationId);
+
+    List<ClarificationiProjectQANotificationDTO> getClarificationProjectQANotificationsByUserId(Long userId);
 }

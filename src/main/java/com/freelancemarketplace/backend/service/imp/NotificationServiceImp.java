@@ -1,38 +1,43 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.dto.ClarificationiProjectQANotificationDTO;
 import com.freelancemarketplace.backend.dto.NotificationDTO;
 import com.freelancemarketplace.backend.exception.AdminException;
 import com.freelancemarketplace.backend.exception.NotificationException;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.mapper.ClarificationProjectNotificationMapper;
 import com.freelancemarketplace.backend.mapper.NotificationMapper;
 import com.freelancemarketplace.backend.model.AdminModel;
+import com.freelancemarketplace.backend.model.ClarificationProjectQANotificationModel;
 import com.freelancemarketplace.backend.model.NotificationModel;
 import com.freelancemarketplace.backend.repository.AdminsRepository;
 import com.freelancemarketplace.backend.repository.NotificationsRepository;
+import com.freelancemarketplace.backend.repository.ProjectClarificationNotificationRepository;
 import com.freelancemarketplace.backend.service.NotificationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class NotificationServiceImp implements NotificationService {
     private final AdminsRepository adminsRepository;
+    private final ProjectClarificationNotificationRepository projectClarificationNotificationRepository;
+    private final ClarificationProjectNotificationMapper clarificationProjectNotificationMapper;
 
     Logger logger = LoggerFactory.getLogger(NotificationServiceImp.class);
 
     private final NotificationsRepository notificationsRepository;
     private final NotificationMapper notificationMapper;
 
-    public NotificationServiceImp(NotificationsRepository notificationsRepository, NotificationMapper notificationMapper,
-                                  AdminsRepository adminsRepository) {
-        this.notificationsRepository = notificationsRepository;
-        this.notificationMapper = notificationMapper;
-        this.adminsRepository = adminsRepository;
-    }
+
 
     @Override
     public NotificationDTO createNotification(NotificationDTO notificationDTO) {
@@ -93,5 +98,28 @@ public class NotificationServiceImp implements NotificationService {
         return notificationDTOs;
 
 
+    }
+
+    @Override
+    public void markClarificationPrjectQANotificationAsRead(Long projectClarificationNotificationId) {
+        ClarificationProjectQANotificationModel notification = projectClarificationNotificationRepository.findById(projectClarificationNotificationId).orElseThrow(()->
+                new ResourceNotFoundException("Clarification project QA notification with id: " + projectClarificationNotificationId + " not found"));
+
+        if(notification.isRead())
+            logger.info("Clarification project QA notification with id: {} is already marked as read", projectClarificationNotificationId);
+        else {
+            notification.setRead(true);
+            notification.setReadAt(Timestamp.from(Instant.now()));
+            projectClarificationNotificationRepository.save(notification);
+            logger.info("Clarification project QA notification with id: {} has already marked as read", projectClarificationNotificationId);
+        }
+    }
+
+    @Override
+    public List<ClarificationiProjectQANotificationDTO> getClarificationProjectQANotificationsByUserId(Long userId) {
+
+        List<ClarificationProjectQANotificationModel> notifications = projectClarificationNotificationRepository.findTop10ByRecipientUserIdOrderByCreatedAtDesc(userId);
+
+        return clarificationProjectNotificationMapper.toDTOs(notifications);
     }
 }

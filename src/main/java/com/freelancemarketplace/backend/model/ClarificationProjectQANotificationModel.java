@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ClarificationiProjectQANotificationModel {
+public class ClarificationProjectQANotificationModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

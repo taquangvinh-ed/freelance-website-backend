@@ -1,6 +1,5 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.model.ClarificationiProjectQANotificationModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

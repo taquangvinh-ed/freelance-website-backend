@@ -65,7 +65,7 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
             dto.setAskedByLastName(freelancerModel.get().getLastName());
             dto.setAskedByAvatar(freelancerModel.get().getAvatar());
         }
-        ClarificationiProjectQANotificationModel notification = new ClarificationiProjectQANotificationModel();
+        ClarificationProjectQANotificationModel notification = new ClarificationProjectQANotificationModel();
         notification.setQuestionId(saved.getQuestionId());
         notification.setProjectId(project.getProjectId());
         notification.setRecipientUserId(project.getClient() != null && project.getClient().getUser() != null ? project.getClient().getUser().getUserId() : null);
@@ -74,10 +74,10 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
         notification.setSenderFirstName(freelancerModel.isPresent() ? freelancerModel.get().getFirstName() : "Unknown");
         notification.setSenderLastName(freelancerModel.isPresent() ? freelancerModel.get().getLastName() : "User");
         notification.setSenderAvatar(freelancerModel.isPresent() ? freelancerModel.get().getAvatar() : null);
-        notification.setType(ClarificationiProjectQANotificationModel.NotificationType.NEW_QUESTION);
+        notification.setType(ClarificationProjectQANotificationModel.NotificationType.NEW_QUESTION);
         notification.setRead(Boolean.FALSE);
         notification.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        ClarificationiProjectQANotificationModel savedNotification = projectClarificationNotificationRepository.save(notification);
+        ClarificationProjectQANotificationModel savedNotification = projectClarificationNotificationRepository.save(notification);
         ClarificationiProjectQANotificationDTO notificationDTO = clarificationProjectNotificationMapper.toDto(savedNotification);
         messagingTemplate.convertAndSend(
                 "/topic/notifications/" + project.getClient().getClientId(),
@@ -129,7 +129,7 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
         dto.setAnsweredByFirstName(client.getFirstName());
         dto.setAnsweredByLastName(client.getLastName());
         dto.setAnsweredByAvatar(client.getAvatar());
-        ClarificationiProjectQANotificationModel notification = new ClarificationiProjectQANotificationModel();
+        ClarificationProjectQANotificationModel notification = new ClarificationProjectQANotificationModel();
         notification.setQuestionId(saved.getQuestionId());
         notification.setProjectId(project.getProjectId());
         notification.setRecipientUserId(question.getAskedBy().getUserId());
@@ -139,10 +139,10 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
         notification.setSenderFirstName(client.getFirstName());
         notification.setSenderLastName(client.getLastName());
         notification.setSenderAvatar(client.getAvatar());
-        notification.setType(ClarificationiProjectQANotificationModel.NotificationType.NEW_ANSWER);
+        notification.setType(ClarificationProjectQANotificationModel.NotificationType.NEW_ANSWER);
         notification.setRead(Boolean.FALSE);
         notification.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        ClarificationiProjectQANotificationModel savedNotification = projectClarificationNotificationRepository.save(notification);
+        ClarificationProjectQANotificationModel savedNotification = projectClarificationNotificationRepository.save(notification);
         ClarificationiProjectQANotificationDTO notificationDTO = clarificationProjectNotificationMapper.toDto(savedNotification);
         messagingTemplate.convertAndSend(
                 "/topic/notifications/" + question.getAskedBy().getUserId(),
