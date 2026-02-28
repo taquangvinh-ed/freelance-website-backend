@@ -87,24 +87,37 @@ public class EmailServiceImp implements EmailService {
 
     @Override
     public void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {
-//        MimeMessage message = mailSender.createMimeMessage();
-//        try {
-//            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-//            helper.setTo(to);
-//            helper.setSubject(subject);
-//
-//            // Tham số thứ hai (true) chỉ ra rằng nội dung là HTML
-//            helper.setText(htmlContent, true);
-//
-//            mailSender.send(message);
-//            log.info("HTML Email sent successfully to: {}", to);
-//        } catch (MessagingException e) {
-//            log.error("Failed to send HTML email to {}: {}", to, e.getMessage());
-//            throw e;
-//        }
+        jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
+        try {
+            log.debug("Starting to send HTML email to: {}", to);
+            log.debug("Subject: {}", subject);
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom("taquangvinh.study@gmail.com");
+            helper.setTo(to);
+            helper.setSubject(subject);
+
+            // Tham số thứ hai (true) chỉ ra rằng nội dung là HTML
+            helper.setText(htmlContent, true);
+
+            log.debug("Message prepared, attempting to send...");
+            mailSender.send(message);
+            log.info("HTML Email sent successfully to: {} with subject: {}", to, subject);
+        } catch (jakarta.mail.MessagingException e) {
+            log.error("Failed to send HTML email to {}: {} - Cause: {}", to, e.getMessage(), e.getCause(), e);
+            throw new MessagingException(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error while sending HTML email to {}: {}", to, e.getMessage(), e);
+            throw new RuntimeException("Failed to send email: " + e.getMessage(), e);
+        }
     }
 
     private boolean isValidEmail(String email) {
-        return email != null && email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+        String emailRegex = "^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})$";
+        boolean isValid = email != null && email.matches(emailRegex);
+        if (!isValid) {
+            log.warn("Email validation failed for: {}", email);
+        }
+        return isValid;
     }
 }
