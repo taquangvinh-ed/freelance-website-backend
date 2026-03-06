@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 @Configuration
@@ -63,7 +62,8 @@ public class SecurityConfig {
                                 "/api/stripe/webhook",
                                 "/api/projects/autocomplete-search",
                                 "/onboarding/**","/topic/notifications/**",
-                                "/api/notifications/clarification-qa/**").permitAll()
+                                "/api/notifications/clarification-qa/**",
+                                "/api/ai/project-assistant/health").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/{contractId}/milestones/{milestoneId}/pay").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/*/milestones/*/complete", "/api/contracts/milestone-attachment").hasRole("FREELANCER")
@@ -75,7 +75,12 @@ public class SecurityConfig {
                                 "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**",
                                     "/api/proposals/{proposalId}", "/api/contracts/get-contract/{contractId}", "/api/testimonials/**", "/api/experiences/**"
                                ,"/api/freelancers/profile/{freelancerId}", "/api/contracts/*/hourly-contract-logs", "/api/freelancers/info/*",
-                                "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar" ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
+                                "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar",
+                                "/api/ai/project-assistant/suggest",
+                                "/api/ai/project-assistant/improve/**",
+                                "/api/ai/project-assistant/feedback/**",
+                                "/api/ai/project-assistant/history",
+                                "/api/ai/project-assistant/stats").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",
