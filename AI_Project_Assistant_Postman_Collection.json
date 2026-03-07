@@ -1,0 +1,506 @@
+{
+  "info": {
+    "name": "AI Project Assistant - Complete Test Suite",
+    "description": "Complete Postman collection for testing AI Project Assistant endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "ai-project-assistant-tests",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Health Check (Public)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Service is UP', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql('UP');",
+              "    pm.expect(jsonData.service).to.eql('AI Project Assistant');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ai/project-assistant/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["ai", "project-assistant", "health"]
+        },
+        "description": "Check if AI Project Assistant service is running. No authentication required."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Token is present', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.body).to.be.a('string');",
+              "    pm.expect(jsonData.body).to.have.lengthOf.above(100);",
+              "    ",
+              "    // Save token to environment",
+              "    pm.environment.set('token', jsonData.body);",
+              "    console.log('✅ Token saved:', jsonData.body.substring(0, 20) + '...');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["login"]
+        },
+        "description": "Login to get JWT token. Token will be automatically saved to environment."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Generate AI Suggestions",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has AI suggestions', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.true;",
+              "    pm.expect(jsonData.body).to.have.property('projectDraft');",
+              "    pm.expect(jsonData.body).to.have.property('budgetSuggestion');",
+              "    pm.expect(jsonData.body).to.have.property('advancedPreferencesSuggestion');",
+              "    ",
+              "    // Save recommendationId",
+              "    if (jsonData.body.requestId) {",
+              "        pm.environment.set('recommendationId', jsonData.body.requestId);",
+              "        console.log('✅ Recommendation ID saved:', jsonData.body.requestId);",
+              "    }",
+              "});",
+              "",
+              "pm.test('Budget suggestions are present', function () {",
+              "    var budget = pm.response.json().body.budgetSuggestion;",
+              "    pm.expect(budget).to.have.property('min');",
+              "    pm.expect(budget).to.have.property('recommended');",
+              "    pm.expect(budget).to.have.property('max');",
+              "    pm.expect(budget.min).to.be.below(budget.recommended);",
+              "    pm.expect(budget.recommended).to.be.below(budget.max);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"brief\": \"Tôi cần xây dựng website thương mại điện tử bán quần áo online, có tích hợp thanh toán Stripe, quản lý kho hàng, và dashboard admin để quản lý đơn hàng và sản phẩm\",\n  \"categoryId\": 1,\n  \"scope\": \"MEDIUM\",\n  \"timeline\": \"1 to 3 months\",\n  \"experienceLevel\": \"INTERMEDIATE\",\n  \"preferredSkills\": [\"React\", \"Node.js\", \"PostgreSQL\", \"Stripe\", \"Redux\"]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ai/project-assistant/suggest",
+          "host": ["{{baseUrl}}"],
+          "path": ["ai", "project-assistant", "suggest"]
+        },
+        "description": "Generate AI-powered project suggestions based on user brief."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Improve Suggestion",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Improved suggestions returned', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.true;",
+              "    pm.expect(jsonData.body).to.have.property('projectDraft');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Check if recommendationId exists",
+              "if (!pm.environment.get('recommendationId')) {",
+              "    console.log('⚠️ No recommendationId found. Please run Test 3 first.');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"feedback\": \"Tôi muốn thêm tính năng chat real-time với khách hàng sử dụng Socket.io, và hệ thống đánh giá sản phẩm 5 sao với khả năng upload hình ảnh\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ai/project-assistant/improve/{{recommendationId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["ai", "project-assistant", "improve", "{{recommendationId}}"]
+        },
+        "description": "Improve AI suggestion based on additional feedback."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Submit Feedback",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Feedback recorded', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.statusCode).to.eql('200');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userFeedback\": \"ACCEPTED\",\n  \"feedbackNotes\": \"Gợi ý rất hữu ích và chính xác, tôi sẽ sử dụng để đăng dự án thực tế\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ai/project-assistant/feedback/{{recommendationId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["ai", "project-assistant", "feedback", "{{recommendationId}}"]
+        },
+        "description": "Submit user feedback on AI suggestion. Values: ACCEPTED, REJECTED, PARTIAL, NOT_PROVIDED"
+      },
+      "response": []
+    },
+    {
+      "name": "6. Get Recommendation History",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('History list returned', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.statusCode).to.eql('200');",
+              "    pm.expect(jsonData.body).to.be.an('array');",
+              "    console.log('📜 History count:', jsonData.body.length);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ai/project-assistant/history?page=0&size=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["ai", "project-assistant", "history"],
+          "query": [
+            {
+              "key": "page",
+              "value": "0",
+              "description": "Page number (0-based)"
+            },
+            {
+              "key": "size",
+              "value": "10",
+              "description": "Items per page"
+            }
+          ]
+        },
+        "description": "Get paginated list of user's AI recommendation history."
+      },
+      "response": []
+    },
+    {
+      "name": "7. Get Usage Statistics",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Stats data present', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.statusCode).to.eql('200');",
+              "    pm.expect(jsonData.body).to.have.property('totalRecommendations');",
+              "    pm.expect(jsonData.body).to.have.property('remainingRequestsThisHour');",
+              "    console.log('📊 Total recommendations:', jsonData.body.totalRecommendations);",
+              "    console.log('⏱️ Remaining requests:', jsonData.body.remainingRequestsThisHour);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ai/project-assistant/stats",
+          "host": ["{{baseUrl}}"],
+          "path": ["ai", "project-assistant", "stats"]
+        },
+        "description": "Get user's AI usage statistics including rate limit info."
+      },
+      "response": []
+    },
+    {
+      "name": "Error: 401 - No Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "pm.test('Unauthorized error message', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.false;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"brief\": \"Test without token\",\n  \"categoryId\": 1,\n  \"scope\": \"SMALL\",\n  \"timeline\": \"less than 1 month\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ai/project-assistant/suggest",
+          "host": ["{{baseUrl}}"],
+          "path": ["ai", "project-assistant", "suggest"]
+        },
+        "description": "Test error case: Request without authentication token should return 401."
+      },
+      "response": []
+    },
+    {
+      "name": "Error: 400 - Invalid Data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Validation error message', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.false;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"brief\": \"\",\n  \"categoryId\": null,\n  \"scope\": \"INVALID_SCOPE\",\n  \"timeline\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ai/project-assistant/suggest",
+          "host": ["{{baseUrl}}"],
+          "path": ["ai", "project-assistant", "suggest"]
+        },
+        "description": "Test error case: Request with invalid data should return 400."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "console.log('🚀 Running request to:', pm.request.url.toString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "console.log('✅ Response status:', pm.response.code, pm.response.status);",
+          "console.log('⏱️ Response time:', pm.response.responseTime + 'ms');"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "recommendationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userEmail",
+      "value": "user@example.com",
+      "type": "string"
+    },
+    {
+      "key": "userPassword",
+      "value": "password",
+      "type": "string"
+    }
+  ]
+}
+

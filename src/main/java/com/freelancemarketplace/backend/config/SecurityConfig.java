@@ -75,7 +75,7 @@ public class SecurityConfig {
                                 "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**",
                                     "/api/proposals/{proposalId}", "/api/contracts/get-contract/{contractId}", "/api/testimonials/**", "/api/experiences/**"
                                ,"/api/freelancers/profile/{freelancerId}", "/api/contracts/*/hourly-contract-logs", "/api/freelancers/info/*",
-                                "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar" ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
+                                "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar", "/api/projects/ai-suggest" ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",
