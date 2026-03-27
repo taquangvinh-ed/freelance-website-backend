@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.exception;
 
-public class LanguageException extends RuntimeException {
+public class LanguageException extends BaseApplicationException {
     public LanguageException(String message) {
-        super(message);
+        super(ErrorCode.LANGUAGE_ERROR, message);
     }
 }

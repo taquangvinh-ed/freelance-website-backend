@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.exception;
 
-public class ProposalException extends RuntimeException {
+public class ProposalException extends BaseApplicationException {
     public ProposalException(String message) {
-        super(message);
+        super(ErrorCode.PROPOSAL_ERROR, message);
     }
 }

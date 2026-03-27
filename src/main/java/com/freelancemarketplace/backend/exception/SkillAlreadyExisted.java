@@ -1,7 +1,9 @@
 package com.freelancemarketplace.backend.exception;
 
-public class SkillAlreadyExisted extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class SkillAlreadyExisted extends BaseApplicationException {
     public SkillAlreadyExisted(String message) {
-        super(message);
+        super(ErrorCode.SKILL_ALREADY_EXISTS, HttpStatus.CONFLICT, message);
     }
 }

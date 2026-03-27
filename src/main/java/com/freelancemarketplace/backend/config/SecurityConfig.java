@@ -2,6 +2,7 @@ package com.freelancemarketplace.backend.config;
 
 import com.freelancemarketplace.backend.auth.CustomUsernamePasswordAuthenticationProvider;
 import com.freelancemarketplace.backend.filter.JwtAuthenticationFilter;
+import com.freelancemarketplace.backend.handler.ApiAccessDeniedHandler;
 import com.freelancemarketplace.backend.handler.JwtAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,13 +29,16 @@ public class SecurityConfig {
     private final CustomUsernamePasswordAuthenticationProvider customUsernamePasswordAuthenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final ApiAccessDeniedHandler apiAccessDeniedHandler;
 
     public SecurityConfig(CustomUsernamePasswordAuthenticationProvider customUsernamePasswordAuthenticationProvider,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
-                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                          ApiAccessDeniedHandler apiAccessDeniedHandler) {
         this.customUsernamePasswordAuthenticationProvider = customUsernamePasswordAuthenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.apiAccessDeniedHandler = apiAccessDeniedHandler;
     }
 
     @Bean
@@ -95,7 +99,10 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(  jwtAuthenticationEntryPoint))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(apiAccessDeniedHandler)
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

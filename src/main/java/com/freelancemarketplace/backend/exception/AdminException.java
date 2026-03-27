@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.exception;
 
-public class AdminException extends RuntimeException {
+public class AdminException extends BaseApplicationException {
     public AdminException(String message) {
-        super(message);
+        super(ErrorCode.ADMIN_ERROR, message);
     }
 }

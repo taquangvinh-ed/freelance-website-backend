@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.exception;
 
-public class EmailSendException extends RuntimeException {
+public class EmailSendException extends BaseApplicationException {
     public EmailSendException(String message) {
-        super(message);
+        super(ErrorCode.EMAIL_SEND_FAILED, message);
     }
 }

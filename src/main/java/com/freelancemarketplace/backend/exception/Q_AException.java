@@ -1,11 +1,11 @@
 package com.freelancemarketplace.backend.exception;
 
-public class Q_AException extends RuntimeException {
+public class Q_AException extends BaseApplicationException {
     public Q_AException(String message) {
-        super(message);
+        super(ErrorCode.QA_ERROR, message);
     }
 
     public Q_AException(String message, Throwable cause){
-        super(message, cause);
+        super(ErrorCode.QA_ERROR, org.springframework.http.HttpStatus.BAD_REQUEST, message, cause);
     }
 }

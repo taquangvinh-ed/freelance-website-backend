@@ -1,5 +1,8 @@
 package com.freelancemarketplace.backend.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freelancemarketplace.backend.dto.ApiResponse;
+import com.freelancemarketplace.backend.exception.ErrorCode;
 import com.freelancemarketplace.backend.model.UserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,54 +16,56 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.Instant;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private final ObjectMapper objectMapper;
+
+    public JwtAuthenticationEntryPoint(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         String message;
-        int status = HttpStatus.UNAUTHORIZED.value();
+        ErrorCode errorCode;
 
         if (authException instanceof DisabledException) {
-            message = "Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email để xác thực.";
+            message = "Tai khoan cua ban chua duoc kich hoat. Vui long kiem tra email de xac thuc.";
+            errorCode = ErrorCode.UNAUTHORIZED;
         }
         else if (authException instanceof LockedException) {
             // Lấy lý do từ UserDetails nếu có
             String reason = extractDisableReason(request);
             message = reason != null
-                    ? "Tài khoản của bạn đã bị khóa. Lý do: " + reason
-                    : "Tài khoản của bạn đã bị khóa hoặc bị cấm vĩnh viễn. Vui lòng liên hệ hỗ trợ.";
+                    ? "Tai khoan cua ban da bi khoa. Ly do: " + reason
+                    : "Tai khoan cua ban da bi khoa hoac bi cam vinh vien. Vui long lien he ho tro.";
+            errorCode = ErrorCode.UNAUTHORIZED;
         }
         else if (authException instanceof CredentialsExpiredException) {
-            message = "Mật khẩu đã hết hạn. Vui lòng đổi mật khẩu.";
+            message = "Mat khau da het han. Vui long doi mat khau.";
+            errorCode = ErrorCode.UNAUTHORIZED;
         }
         else if (authException instanceof AccountExpiredException) {
-            message = "Tài khoản đã hết hạn.";
+            message = "Tai khoan da het han.";
+            errorCode = ErrorCode.UNAUTHORIZED;
         }
         else {
-            message = "Tên đăng nhập hoặc mật khẩu không đúng.";
+            message = ErrorCode.INVALID_CREDENTIALS.getMessage();
+            errorCode = ErrorCode.INVALID_CREDENTIALS;
         }
 
-        response.setStatus(status);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        String json = """
-            {
-                "success": false,
-                "message": "%s",
-                "timestamp": "%s"
-            }
-            """.formatted(message, Instant.now());
-
-        response.getWriter().write(json);
+        ApiResponse<?> apiResponse = ApiResponse.error(errorCode.getCode(), message, null);
+        response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
     }
 
     private String extractDisableReason(HttpServletRequest request) {
