@@ -18,7 +18,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -161,14 +164,20 @@ public class ProjectServiceImp implements ProjectService {
                                    String level,        // MỚI: "Intermediate"
                                    String workload, Pageable pageable) {
         try {
+            List<String> normalizedSkillNames = skillNames == null ? null : skillNames.stream()
+                    .filter(Objects::nonNull)
+                    .map(String::trim)
+                    .filter(name -> !name.isEmpty())
+                    .collect(Collectors.toList());
+
             // Tạo Specification cho truy vấn
             Specification<ProjectModel> spec = ProjectSpecification.filter(
-                    skillNames, minRate, maxRate, isHourly, duration, level, workload);
+                    normalizedSkillNames, minRate, maxRate, isHourly, duration, level, workload);
 
 
             if (keyword != null && !keyword.trim().isEmpty()) {
-                Specification<ProjectModel> searchSpec = ProjectSpecification.autocompleteSearch(keyword, 100); // limit cao
-                spec = Specification.where(spec).and(searchSpec);
+                Specification<ProjectModel> searchSpec = ProjectSpecification.autocompleteSearch(keyword);
+                spec = spec.and(searchSpec);
             }
 
             // Thực thi truy vấn với Specification và phân trang
@@ -190,18 +199,30 @@ public class ProjectServiceImp implements ProjectService {
     @Override
     public Page<ProjectDTO> autocompleteSearch(String keyword, int limit, Pageable pageable) {
         try {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                return Page.empty(pageable);
+            }
+
+            int safeLimit = limit > 0 ? limit : 10;
+            int targetPageSize = Math.min(Math.max(pageable.getPageSize(), 1), safeLimit);
+            Pageable effectivePageable = PageRequest.of(
+                    pageable.getPageNumber(),
+                    targetPageSize,
+                    pageable.getSort().isSorted() ? pageable.getSort() : Sort.by(Sort.Direction.ASC, "title")
+            );
+
             // Tạo Specification cho tìm kiếm autocomplete
-            Specification<ProjectModel> spec = ProjectSpecification.autocompleteSearch(keyword, limit);
+            Specification<ProjectModel> spec = ProjectSpecification.autocompleteSearch(keyword);
 
             // Thực thi truy vấn với giới hạn số lượng kết quả
-            Page<ProjectModel> projectPage = projectsRepository.findAll(spec, pageable);
+            Page<ProjectModel> projectPage = projectsRepository.findAll(spec, effectivePageable);
 
             // Chuyển đổi sang DTO
             List<ProjectDTO> projects = projectPage.getContent().stream()
                     .map(projectMapper::toDto)
                     .collect(Collectors.toList());
 
-            return new PageImpl<>(projects, pageable, projectPage.getTotalElements());
+            return new PageImpl<>(projects, effectivePageable, projectPage.getTotalElements());
         } catch (Exception e) {
             log.error("Error executing autocomplete search: {}", e.getMessage(), e);
             throw new RuntimeException("Error executing autocomplete search", e);
