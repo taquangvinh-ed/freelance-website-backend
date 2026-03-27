@@ -8,6 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class ProjectSpecification {
 
@@ -29,7 +31,15 @@ public class ProjectSpecification {
             // === 1. LỌC THEO SKILLS ===
             if (skillNames != null && !skillNames.isEmpty()) {
                 Join<ProjectModel, SkillModel> skillsJoin = root.join("skills", JoinType.LEFT);
-                predicates.add(skillsJoin.get("name").in(skillNames));
+                List<String> normalizedSkillNames = skillNames.stream()
+                        .filter(name -> name != null && !name.trim().isEmpty())
+                        .map(name -> name.trim().toLowerCase(Locale.ROOT))
+                        .collect(Collectors.toList());
+
+                if (!normalizedSkillNames.isEmpty()) {
+                    predicates.add(criteriaBuilder.lower(skillsJoin.get("name")).in(normalizedSkillNames));
+                    query.distinct(true);
+                }
             }
 
             // === 2. LỌC THEO BUDGET ===
@@ -61,13 +71,15 @@ public class ProjectSpecification {
                     hourly.add(criteriaBuilder.equal(budgetJoin.get("type"), BudgetTypes.HOURLY_RATE));
                     if (minRate != null) hourly.add(criteriaBuilder.greaterThanOrEqualTo(budgetJoin.get("minValue"), minRate));
                     if (maxRate != null) hourly.add(criteriaBuilder.lessThanOrEqualTo(budgetJoin.get("maxValue"), maxRate));
-                    if (hourly.size() > 1) predicates.add(criteriaBuilder.and(hourly.toArray(new Predicate[0])));
 
                     List<Predicate> fixed = new ArrayList<>();
                     fixed.add(criteriaBuilder.equal(budgetJoin.get("type"), BudgetTypes.FIXED_PRICE));
                     if (minRate != null) fixed.add(criteriaBuilder.greaterThanOrEqualTo(budgetJoin.get("fixedValue"), minRate));
                     if (maxRate != null) fixed.add(criteriaBuilder.lessThanOrEqualTo(budgetJoin.get("fixedValue"), maxRate));
-                    if (fixed.size() > 1) predicates.add(criteriaBuilder.and(fixed.toArray(new Predicate[0])));
+
+                    Predicate hourlyPredicate = criteriaBuilder.and(hourly.toArray(new Predicate[0]));
+                    Predicate fixedPredicate = criteriaBuilder.and(fixed.toArray(new Predicate[0]));
+                    predicates.add(criteriaBuilder.or(hourlyPredicate, fixedPredicate));
                 }
             }
 
@@ -103,19 +115,17 @@ public class ProjectSpecification {
     }
 
     // === AUTOCOMPLETE (giữ nguyên) ===
-    public static Specification<ProjectModel> autocompleteSearch(String keyword, int limit) {
+    public static Specification<ProjectModel> autocompleteSearch(String keyword) {
         return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                String pattern = "%" + keyword.trim().toLowerCase() + "%";
-                Predicate title = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern);
-                Predicate desc = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), pattern);
-                predicates.add(criteriaBuilder.or(title, desc));
+            if (keyword == null || keyword.trim().isEmpty()) {
+                return criteriaBuilder.disjunction();
             }
 
-            query.orderBy(criteriaBuilder.asc(root.get("title")));
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            String pattern = "%" + keyword.trim().toLowerCase(Locale.ROOT) + "%";
+            Predicate title = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern);
+            Predicate desc = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), pattern);
+
+            return criteriaBuilder.or(title, desc);
         };
     }
 }
