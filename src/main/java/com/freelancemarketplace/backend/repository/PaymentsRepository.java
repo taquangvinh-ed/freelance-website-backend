@@ -10,4 +10,5 @@ import java.util.List;
 public interface PaymentsRepository extends JpaRepository<PaymentModel, Long> {
   PaymentModel findByTransactionId(String transactionId);
   List<PaymentModel> findTop5ByContractClientClientIdOrderByPaidAtDesc(Long clientId);
+  List<PaymentModel> findByContractContractIdOrderByPaidAtDesc(Long contractId);
   }

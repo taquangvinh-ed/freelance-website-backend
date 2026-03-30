@@ -70,6 +70,7 @@ public class SecurityConfig {
                                 "/api/notifications/clarification-qa/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/proposals/{proposalId}/approve").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/{contractId}/milestones/{milestoneId}/pay").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.PATCH, "/api/hourly-payments/*/approve", "/api/hourly-payments/*/dispute").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/contracts/*/milestones/*/complete", "/api/contracts/milestone-attachment").hasRole("FREELANCER")
                         .requestMatchers("/api/upload/image", "/api/projects/recommend/freelancer/**", "/api/projects/recommend/client/**",
                                  "/api/chat/getContactInfo/**","/api/chat/getRecentConversation/",
@@ -79,7 +80,8 @@ public class SecurityConfig {
                                 "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**",
                                     "/api/proposals/{proposalId}", "/api/contracts/get-contract/{contractId}", "/api/testimonials/**", "/api/experiences/**"
                                ,"/api/freelancers/profile/{freelancerId}", "/api/contracts/*/hourly-contract-logs", "/api/freelancers/info/*",
-                                "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar", "/api/projects/ai-suggest" ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
+                                "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar", "/api/projects/ai-suggest",
+                                "/api/contracts/*/hourly-payments", "/api/hourly-payments/*" ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",

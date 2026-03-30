@@ -84,6 +84,30 @@ This implementation adds an MVP hourly-payment pipeline on top of your existing 
   - Add Stripe off-session charge + transfer payout flow for these hourly records.
   - Add client review/dispute window before capture (Upwork-like behavior).
 
+## Frontend endpoints added
+
+Base URL: `/api`
+
+1. `GET /contracts/{contractId}/hourly-payments`
+   - Description: Get hourly payment records of a contract (newest first).
+   - Roles: `CLIENT`, `FREELANCER`, `ADMIN` (must belong to contract by service check).
+
+2. `GET /hourly-payments/{paymentId}`
+   - Description: Get detail of one hourly payment record.
+   - Roles: `CLIENT`, `FREELANCER`, `ADMIN` (must belong to contract by service check).
+
+3. `PATCH /hourly-payments/{paymentId}/approve`
+   - Description: Client approves weekly hourly payment.
+   - Roles: `CLIENT`
+   - Body (optional): `{ "note": "Approved" }`
+   - Status transition: `PENDING -> COMPLETED`
+
+4. `PATCH /hourly-payments/{paymentId}/dispute`
+   - Description: Client disputes weekly hourly payment.
+   - Roles: `CLIENT`
+   - Body (optional): `{ "note": "Dispute reason" }`
+   - Status transition: `PENDING -> FAILED`
+
 ## Files changed
 
 - `src/main/java/com/freelancemarketplace/backend/service/PaymentService.java`
