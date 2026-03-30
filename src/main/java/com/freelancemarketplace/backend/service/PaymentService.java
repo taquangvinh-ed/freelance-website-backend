@@ -3,6 +3,9 @@ package com.freelancemarketplace.backend.service;
 import com.freelancemarketplace.backend.dto.ClientDTO;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.PaymentIntentResponse;
+import com.freelancemarketplace.backend.model.ContractModel;
+import com.freelancemarketplace.backend.model.PaymentModel;
+import com.freelancemarketplace.backend.model.WeeklyReportModel;
 import com.stripe.exception.StripeException;
 
 public interface PaymentService {
@@ -18,4 +21,6 @@ public interface PaymentService {
     String createStripeConnectAccount(String email, String countryCode, Long freelancerId) throws StripeException;
 
     String createFreelancerOnboardingLink(String stripeAccountId, String returnUrl, String refreshUrl) throws Exception;
+
+    PaymentModel createHourlyPaymentFromWeeklyReport(ContractModel contract, WeeklyReportModel weeklyReport);
 }

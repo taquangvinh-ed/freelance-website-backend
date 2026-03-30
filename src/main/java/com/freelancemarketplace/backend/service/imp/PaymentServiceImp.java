@@ -4,10 +4,12 @@ import com.freelancemarketplace.backend.dto.ClientDTO;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.PaymentIntentResponse;
 import com.freelancemarketplace.backend.enums.PaymentStatus;
+import com.freelancemarketplace.backend.enums.PaymentTypes;
 import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.model.ClientModel;
 import com.freelancemarketplace.backend.model.ContractModel;
 import com.freelancemarketplace.backend.model.PaymentModel;
+import com.freelancemarketplace.backend.model.WeeklyReportModel;
 import com.freelancemarketplace.backend.repository.ClientsRepository;
 import com.freelancemarketplace.backend.repository.ContractsRepository;
 import com.freelancemarketplace.backend.repository.PaymentsRepository;
@@ -151,6 +153,48 @@ public String createFreelancerOnboardingLink(String stripeAccountId, String retu
 
         AccountLink accountLink = AccountLink.create(params);
         return accountLink.getUrl();
+    }
+
+    @Override
+    public PaymentModel createHourlyPaymentFromWeeklyReport(ContractModel contract, WeeklyReportModel weeklyReport) {
+        if (contract == null || weeklyReport == null) {
+            throw new IllegalArgumentException("Contract and weeklyReport must not be null");
+        }
+
+        if (weeklyReport.getWeeklyReportId() == null) {
+            throw new IllegalArgumentException("Weekly report must be persisted before creating payment");
+        }
+
+        String transactionId = String.format("HOURLY-%d-%d", contract.getContractId(), weeklyReport.getWeeklyReportId());
+        PaymentModel existingPayment = paymentsRepository.findByTransactionId(transactionId);
+        if (existingPayment != null) {
+            return existingPayment;
+        }
+
+        BigDecimal hourlyRate = BigDecimal.valueOf(contract.getAmount());
+        BigDecimal totalHours = BigDecimal.valueOf(weeklyReport.getTotalHours());
+        BigDecimal grossAmount = hourlyRate.multiply(totalHours).setScale(2, java.math.RoundingMode.HALF_UP);
+
+        if (grossAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            log.info("Skip hourly payment creation because amount is 0. contractId={}, weeklyReportId={}",
+                    contract.getContractId(), weeklyReport.getWeeklyReportId());
+            return null;
+        }
+
+        PaymentModel paymentModel = new PaymentModel();
+        paymentModel.setContract(contract);
+        paymentModel.setClient(contract.getClient());
+        paymentModel.setFreelancer(contract.getFreelancer());
+        paymentModel.setAmount(grossAmount);
+        paymentModel.setType(PaymentTypes.CREDIT_CARD);
+        paymentModel.setStatus(PaymentStatus.PENDING);
+        paymentModel.setTransactionId(transactionId);
+        paymentModel.setPaidAt(Timestamp.from(Instant.now()));
+
+        PaymentModel savedPayment = paymentsRepository.save(paymentModel);
+        log.info("Created hourly payment record. paymentId={}, contractId={}, weeklyReportId={}, amount={}",
+                savedPayment.getPaymentId(), contract.getContractId(), weeklyReport.getWeeklyReportId(), grossAmount);
+        return savedPayment;
     }
 
 }
