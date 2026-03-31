@@ -1,10 +1,10 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.domain.model.*;
 import com.freelancemarketplace.backend.dto.*;
-import com.freelancemarketplace.backend.enums.ContractStatus;
-import com.freelancemarketplace.backend.enums.MileStoneStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.domain.enums.ContractStatus;
+import com.freelancemarketplace.backend.domain.enums.MileStoneStatus;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
 import com.freelancemarketplace.backend.repository.ContractsRepository;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.TestimonialsRepository;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.YearMonth;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service

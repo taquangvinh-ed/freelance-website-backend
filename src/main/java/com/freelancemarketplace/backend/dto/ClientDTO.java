@@ -1,11 +1,9 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.model.Bio;
+import com.freelancemarketplace.backend.domain.model.Bio;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Set;
 
 
 @Getter

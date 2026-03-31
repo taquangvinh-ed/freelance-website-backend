@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.MessageModel;
+import com.freelancemarketplace.backend.domain.model.MessageModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

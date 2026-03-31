@@ -1,19 +1,12 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.model.Bio;
-import com.freelancemarketplace.backend.model.SkillModel;
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
-import jakarta.persistence.Column;
+import com.freelancemarketplace.backend.domain.model.Bio;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
-import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter

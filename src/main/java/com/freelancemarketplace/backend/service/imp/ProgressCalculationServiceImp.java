@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.service.imp;
 
-import com.freelancemarketplace.backend.enums.ContractStatus;
-import com.freelancemarketplace.backend.enums.ContractTypes;
-import com.freelancemarketplace.backend.enums.MileStoneStatus;
-import com.freelancemarketplace.backend.model.ContractModel;
+import com.freelancemarketplace.backend.domain.enums.ContractStatus;
+import com.freelancemarketplace.backend.domain.enums.ContractTypes;
+import com.freelancemarketplace.backend.domain.enums.MileStoneStatus;
+import com.freelancemarketplace.backend.domain.model.ContractModel;
 import com.freelancemarketplace.backend.service.ProgressCalculationService;
 import org.springframework.stereotype.Service;
 

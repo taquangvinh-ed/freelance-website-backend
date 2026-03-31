@@ -1,8 +1,7 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.CategoryModel;
-import com.freelancemarketplace.backend.model.SkillModel;
-import org.springframework.data.jpa.domain.Specification;
+import com.freelancemarketplace.backend.domain.model.CategoryModel;
+import com.freelancemarketplace.backend.domain.model.SkillModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

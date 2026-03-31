@@ -1,14 +1,14 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.domain.model.*;
 import com.freelancemarketplace.backend.dto.*;
-import com.freelancemarketplace.backend.enums.ContractStatus;
-import com.freelancemarketplace.backend.enums.MileStoneStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ClientMapper;
-import com.freelancemarketplace.backend.mapper.ContractMapper;
-import com.freelancemarketplace.backend.mapper.MileStoneMapper;
-import com.freelancemarketplace.backend.mapper.WeeklyReportMapper;
-import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.domain.enums.ContractStatus;
+import com.freelancemarketplace.backend.domain.enums.MileStoneStatus;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.ClientMapper;
+import com.freelancemarketplace.backend.infrastructure.mapper.ContractMapper;
+import com.freelancemarketplace.backend.infrastructure.mapper.MileStoneMapper;
+import com.freelancemarketplace.backend.infrastructure.mapper.WeeklyReportMapper;
 import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.CloudinaryService;
 import com.freelancemarketplace.backend.service.ContractLifeCycleService;
@@ -17,8 +17,6 @@ import com.freelancemarketplace.backend.service.PaymentService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +25,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @AllArgsConstructor

@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.recommandation;
 
-import com.freelancemarketplace.backend.enums.InteractionType;
+import com.freelancemarketplace.backend.domain.enums.InteractionType;
 
 public interface InteractionService {
 

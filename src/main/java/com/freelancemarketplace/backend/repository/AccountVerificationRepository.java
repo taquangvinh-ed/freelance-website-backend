@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.enums.VerificationStatus;
-import com.freelancemarketplace.backend.model.AccountVerificationModel;
+import com.freelancemarketplace.backend.domain.enums.VerificationStatus;
+import com.freelancemarketplace.backend.domain.model.AccountVerificationModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.request.CreateProjectRequest;
+import com.freelancemarketplace.backend.api.request.CreateProjectRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

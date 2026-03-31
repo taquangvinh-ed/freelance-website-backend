@@ -2,10 +2,10 @@ package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.HourlyPaymentDetailDTO;
 import com.freelancemarketplace.backend.dto.HourlyPaymentSummaryDTO;
-import com.freelancemarketplace.backend.enums.PaymentStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.model.ContractModel;
-import com.freelancemarketplace.backend.model.PaymentModel;
+import com.freelancemarketplace.backend.domain.enums.PaymentStatus;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.domain.model.ContractModel;
+import com.freelancemarketplace.backend.domain.model.PaymentModel;
 import com.freelancemarketplace.backend.repository.ContractsRepository;
 import com.freelancemarketplace.backend.repository.PaymentsRepository;
 import com.freelancemarketplace.backend.service.HourlyPaymentService;

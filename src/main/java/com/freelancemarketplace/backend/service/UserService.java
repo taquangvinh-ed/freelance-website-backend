@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.RegistrationtDTO;
-import com.freelancemarketplace.backend.enums.UserRoles;
+import com.freelancemarketplace.backend.domain.enums.UserRoles;
 import com.stripe.exception.StripeException;
 
 public interface UserService {

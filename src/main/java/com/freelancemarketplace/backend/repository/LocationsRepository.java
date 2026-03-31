@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.LocationModel;
+import com.freelancemarketplace.backend.domain.model.LocationModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

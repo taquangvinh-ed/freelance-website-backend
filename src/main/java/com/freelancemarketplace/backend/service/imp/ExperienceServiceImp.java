@@ -1,10 +1,10 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.ExperienceDTO;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ExperienceMapper;
-import com.freelancemarketplace.backend.model.ExperienceModel;
-import com.freelancemarketplace.backend.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.ExperienceMapper;
+import com.freelancemarketplace.backend.domain.model.ExperienceModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.repository.ExperiencesRepository;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.service.ExperienceService;

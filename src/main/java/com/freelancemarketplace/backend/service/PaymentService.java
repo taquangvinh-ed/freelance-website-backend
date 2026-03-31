@@ -3,9 +3,9 @@ package com.freelancemarketplace.backend.service;
 import com.freelancemarketplace.backend.dto.ClientDTO;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.PaymentIntentResponse;
-import com.freelancemarketplace.backend.model.ContractModel;
-import com.freelancemarketplace.backend.model.PaymentModel;
-import com.freelancemarketplace.backend.model.WeeklyReportModel;
+import com.freelancemarketplace.backend.domain.model.ContractModel;
+import com.freelancemarketplace.backend.domain.model.PaymentModel;
+import com.freelancemarketplace.backend.domain.model.WeeklyReportModel;
 import com.stripe.exception.StripeException;
 
 public interface PaymentService {

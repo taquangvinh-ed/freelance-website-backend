@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.MessageDTO;
-import com.freelancemarketplace.backend.mapper.MessageMapper;
-import com.freelancemarketplace.backend.model.MessageModel;
+import com.freelancemarketplace.backend.infrastructure.mapper.MessageMapper;
+import com.freelancemarketplace.backend.domain.model.MessageModel;
 import com.freelancemarketplace.backend.repository.MessagesRepository;
 import com.freelancemarketplace.backend.service.MessageService;
 import lombok.AllArgsConstructor;

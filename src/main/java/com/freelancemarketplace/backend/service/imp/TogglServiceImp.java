@@ -1,15 +1,15 @@
 package com.freelancemarketplace.backend.service.imp;
 
-import com.freelancemarketplace.backend.config.TogglConfig;
+import com.freelancemarketplace.backend.infrastructure.config.TogglConfig;
 import com.freelancemarketplace.backend.dto.TogglStartRequestDTO;
 import com.freelancemarketplace.backend.dto.TogglTimeEntryResponseDTO;
 import com.freelancemarketplace.backend.dto.TogglUserRequestDTO;
 import com.freelancemarketplace.backend.dto.TogglUserResponseDTO;
-import com.freelancemarketplace.backend.enums.TimeLogStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.model.ContractModel;
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.TimeLog;
+import com.freelancemarketplace.backend.domain.enums.TimeLogStatus;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.domain.model.ContractModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.model.TimeLog;
 import com.freelancemarketplace.backend.repository.ContractsRepository;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.TimeLogRepository;
@@ -18,7 +18,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -27,7 +26,6 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.ChronoField;
 import java.util.*;
 
 @Slf4j

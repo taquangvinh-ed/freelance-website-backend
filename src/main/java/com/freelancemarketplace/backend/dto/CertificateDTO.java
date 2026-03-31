@@ -1,8 +1,5 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

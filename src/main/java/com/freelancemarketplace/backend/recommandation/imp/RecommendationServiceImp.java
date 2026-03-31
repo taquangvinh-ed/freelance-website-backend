@@ -1,12 +1,12 @@
 package com.freelancemarketplace.backend.recommandation.imp;
 
+import com.freelancemarketplace.backend.domain.model.*;
 import com.freelancemarketplace.backend.dto.ProjectDTO;
 import com.freelancemarketplace.backend.dto.RecommendFreelancerDTO;
-import com.freelancemarketplace.backend.enums.InvitationStatus;
-import com.freelancemarketplace.backend.enums.ProjectStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ProjectMapper;
-import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.domain.enums.InvitationStatus;
+import com.freelancemarketplace.backend.domain.enums.ProjectStatus;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.ProjectMapper;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.recommandation.RecommendationService;
 import com.freelancemarketplace.backend.recommandation.ScoredFreelancer;

@@ -1,10 +1,9 @@
 package com.freelancemarketplace.backend.recommandation.imp;
 
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
-import com.freelancemarketplace.backend.model.SkillModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.domain.model.SkillModel;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;

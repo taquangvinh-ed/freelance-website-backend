@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.ClientDTO;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ClientMapper;
-import com.freelancemarketplace.backend.model.ClientModel;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.ClientMapper;
+import com.freelancemarketplace.backend.domain.model.ClientModel;
 import com.freelancemarketplace.backend.repository.ClientsRepository;
 import com.freelancemarketplace.backend.service.ClientService;
 import org.springframework.stereotype.Service;

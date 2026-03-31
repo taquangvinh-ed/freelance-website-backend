@@ -1,13 +1,13 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.RegistrationtDTO;
-import com.freelancemarketplace.backend.enums.AccountStatus;
-import com.freelancemarketplace.backend.enums.UserRoles;
-import com.freelancemarketplace.backend.mapper.UserMapper;
-import com.freelancemarketplace.backend.model.AdminModel;
-import com.freelancemarketplace.backend.model.ClientModel;
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.UserModel;
+import com.freelancemarketplace.backend.domain.enums.AccountStatus;
+import com.freelancemarketplace.backend.domain.enums.UserRoles;
+import com.freelancemarketplace.backend.infrastructure.mapper.UserMapper;
+import com.freelancemarketplace.backend.domain.model.AdminModel;
+import com.freelancemarketplace.backend.domain.model.ClientModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.model.UserModel;
 import com.freelancemarketplace.backend.repository.AdminsRepository;
 import com.freelancemarketplace.backend.repository.ClientsRepository;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;

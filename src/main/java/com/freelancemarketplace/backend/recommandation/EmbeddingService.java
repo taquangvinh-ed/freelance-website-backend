@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.recommandation;
 
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.model.ProjectModel;
 
 public interface EmbeddingService {
 

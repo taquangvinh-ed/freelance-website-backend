@@ -1,10 +1,5 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.enums.AccountStatus;
-import com.freelancemarketplace.backend.enums.UserRoles;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

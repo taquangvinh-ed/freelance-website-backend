@@ -1,12 +1,12 @@
 package com.freelancemarketplace.backend.service.imp;
 
-import com.freelancemarketplace.backend.enums.InvitationStatus;
-import com.freelancemarketplace.backend.exception.EmailSendException;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.model.ClientModel;
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.InvitationModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
+import com.freelancemarketplace.backend.domain.enums.InvitationStatus;
+import com.freelancemarketplace.backend.domain.exception.EmailSendException;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.domain.model.ClientModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.model.InvitationModel;
+import com.freelancemarketplace.backend.domain.model.ProjectModel;
 import com.freelancemarketplace.backend.repository.ClientsRepository;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.repository.InvitationRepository;
@@ -14,7 +14,6 @@ import com.freelancemarketplace.backend.repository.ProjectsRepository;
 import com.freelancemarketplace.backend.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

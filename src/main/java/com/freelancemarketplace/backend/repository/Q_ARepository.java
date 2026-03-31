@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.AdminModel;
-import com.freelancemarketplace.backend.model.Q_AModel;
+import com.freelancemarketplace.backend.domain.model.AdminModel;
+import com.freelancemarketplace.backend.domain.model.Q_AModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

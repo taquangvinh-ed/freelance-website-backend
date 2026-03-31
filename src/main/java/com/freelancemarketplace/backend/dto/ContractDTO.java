@@ -1,9 +1,5 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.enums.ContractStatus;
-import com.freelancemarketplace.backend.enums.ContractTypes;
-import com.freelancemarketplace.backend.model.*;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

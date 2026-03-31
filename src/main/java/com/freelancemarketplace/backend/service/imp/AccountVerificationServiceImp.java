@@ -1,16 +1,16 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.AccountVerificationDTO;
-import com.freelancemarketplace.backend.enums.AccountStatus;
-import com.freelancemarketplace.backend.enums.VerificationStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.model.AccountVerificationModel;
-import com.freelancemarketplace.backend.model.AdminModel;
-import com.freelancemarketplace.backend.model.UserModel;
+import com.freelancemarketplace.backend.domain.enums.AccountStatus;
+import com.freelancemarketplace.backend.domain.enums.VerificationStatus;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.domain.model.AccountVerificationModel;
+import com.freelancemarketplace.backend.domain.model.AdminModel;
+import com.freelancemarketplace.backend.domain.model.UserModel;
 import com.freelancemarketplace.backend.repository.AccountVerificationRepository;
 import com.freelancemarketplace.backend.repository.AdminsRepository;
 import com.freelancemarketplace.backend.repository.UserRepository;
-import com.freelancemarketplace.backend.request.ReviewVerificationRequest;
+import com.freelancemarketplace.backend.api.request.ReviewVerificationRequest;
 import com.freelancemarketplace.backend.service.AccountVerificationService;
 import com.freelancemarketplace.backend.service.CloudinaryService;
 import com.freelancemarketplace.backend.service.EmailService;

@@ -1,16 +1,10 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.enums.ConversationType;
-import com.freelancemarketplace.backend.model.ConversationParticipantModel;
-import com.freelancemarketplace.backend.model.TeamModel;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

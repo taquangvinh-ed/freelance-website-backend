@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.dto.FreelancerInfoDTO;
-import com.freelancemarketplace.backend.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

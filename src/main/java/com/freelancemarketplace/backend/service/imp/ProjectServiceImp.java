@@ -1,18 +1,18 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.enums.ProjectStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ProjectMapper;
-import com.freelancemarketplace.backend.model.BudgetModel;
-import com.freelancemarketplace.backend.model.ClientModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
-import com.freelancemarketplace.backend.model.SkillModel;
+import com.freelancemarketplace.backend.domain.enums.ProjectStatus;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.ProjectMapper;
+import com.freelancemarketplace.backend.domain.model.BudgetModel;
+import com.freelancemarketplace.backend.domain.model.ClientModel;
+import com.freelancemarketplace.backend.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.domain.model.SkillModel;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.repository.*;
-import com.freelancemarketplace.backend.request.CreateProjectRequest;
+import com.freelancemarketplace.backend.api.request.CreateProjectRequest;
 import com.freelancemarketplace.backend.service.ProjectService;
-import com.freelancemarketplace.backend.specification.ProjectSpecification;
+import com.freelancemarketplace.backend.domain.specification.ProjectSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

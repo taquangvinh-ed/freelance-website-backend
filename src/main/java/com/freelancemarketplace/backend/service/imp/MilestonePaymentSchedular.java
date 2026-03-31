@@ -1,16 +1,15 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
-import com.freelancemarketplace.backend.enums.MileStoneStatus;
-import com.freelancemarketplace.backend.mapper.MileStoneMapper;
-import com.freelancemarketplace.backend.model.ContractModel;
-import com.freelancemarketplace.backend.model.MileStoneModel;
+import com.freelancemarketplace.backend.domain.enums.MileStoneStatus;
+import com.freelancemarketplace.backend.infrastructure.mapper.MileStoneMapper;
+import com.freelancemarketplace.backend.domain.model.ContractModel;
+import com.freelancemarketplace.backend.domain.model.MileStoneModel;
 import com.freelancemarketplace.backend.repository.ContractsRepository;
 import com.freelancemarketplace.backend.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Calendar;
 import java.util.Date;

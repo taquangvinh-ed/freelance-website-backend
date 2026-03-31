@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.dto;
 
-import com.freelancemarketplace.backend.enums.ProjectStatus;
+import com.freelancemarketplace.backend.domain.enums.ProjectStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

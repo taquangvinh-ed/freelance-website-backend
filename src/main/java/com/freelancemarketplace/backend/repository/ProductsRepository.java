@@ -1,8 +1,6 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.ProductModel;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.freelancemarketplace.backend.domain.model.ProductModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

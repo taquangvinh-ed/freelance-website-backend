@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.AccountVerificationDTO;
-import com.freelancemarketplace.backend.request.ReviewVerificationRequest;
+import com.freelancemarketplace.backend.api.request.ReviewVerificationRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

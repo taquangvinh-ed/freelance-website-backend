@@ -1,16 +1,15 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.LanguageDTO;
-import com.freelancemarketplace.backend.exception.LanguageException;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.LanguageMapper;
-import com.freelancemarketplace.backend.model.LanguageModel;
+import com.freelancemarketplace.backend.domain.exception.LanguageException;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.LanguageMapper;
+import com.freelancemarketplace.backend.domain.model.LanguageModel;
 import com.freelancemarketplace.backend.repository.LanguagesRepository;
 import com.freelancemarketplace.backend.service.LanguageService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

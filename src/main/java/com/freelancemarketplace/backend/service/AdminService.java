@@ -2,10 +2,9 @@ package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.AdminDTO;
 import com.freelancemarketplace.backend.dto.UserDTO;
-import com.freelancemarketplace.backend.enums.AccountStatus;
-import com.freelancemarketplace.backend.model.AdminModel;
-import com.freelancemarketplace.backend.request.DisableUserRequest;
-import com.freelancemarketplace.backend.request.UserRequest;
+import com.freelancemarketplace.backend.domain.enums.AccountStatus;
+import com.freelancemarketplace.backend.api.request.DisableUserRequest;
+import com.freelancemarketplace.backend.api.request.UserRequest;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 

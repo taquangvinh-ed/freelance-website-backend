@@ -1,0 +1,149 @@
+package com.freelancemarketplace.backend.api.controller;
+
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
+import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
+import com.freelancemarketplace.backend.dto.ProposalDTO;
+import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.api.response.ResponseMessage;
+import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
+import com.freelancemarketplace.backend.service.ProposalService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(path = "/api/proposals", produces = {MediaType.APPLICATION_JSON_VALUE})
+public class ProposalController {
+
+    private final ProposalService proposalService;
+
+    public ProposalController(ProposalService proposalService) {
+        this.proposalService = proposalService;
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<ResponseDTO>createProposal(@AuthenticationPrincipal AppUser appUser, @RequestBody ProposalDTO proposalDTO){
+
+    Long userId = appUser.getId();
+
+        ProposalDTO newProposal = proposalService.createProposal(userId, proposalDTO);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.CREATED,
+                        ResponseMessage.CREATED,
+                        newProposal
+                ));
+    }
+
+    @PatchMapping("/{proposalId}")
+    public ResponseEntity<ResponseDTO>updatedProposal(@PathVariable Long proposalId,
+                                                      @RequestBody ProposalDTO proposalDTO){
+        ProposalDTO updatedProposal = proposalService.updateProposal(proposalId, proposalDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        updatedProposal
+                ));
+    }
+
+
+    @DeleteMapping("/{proposalId}")
+    public ResponseEntity<ResponseDTO>deleteProposal(@PathVariable Long proposalId){
+        proposalService.deleteProposal(proposalId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.NO_CONTENT,
+                        ResponseMessage.NO_CONTENT
+                ));
+    }
+
+
+    @GetMapping("/{proposalId}")
+    public ResponseEntity<ProposalDTO>getProposalById(@PathVariable Long proposalId){
+       ProposalDTO proposal =  proposalService.getProposalById(proposalId);
+        return ResponseEntity.ok(proposal);
+    }
+
+    @GetMapping("/freelancer/{freelancerId}")
+    public ResponseEntity<ResponseDTO>getAllProposalByFreelancerId(@PathVariable Long freelancerId){
+
+        List<ProposalDTO> proposals = proposalService.getAllProposalByFreelancerId(freelancerId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        proposals
+                ));
+    }
+
+    @GetMapping("/team/{teaId}")
+    public ResponseEntity<ResponseDTO>updatedProposal(@PathVariable Long teamId){
+
+        List<ProposalDTO> proposals = proposalService.getAllProposalByTeamId(teamId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS,
+                        proposals
+                ));
+    }
+
+    @PatchMapping("/{proposalId}/approve")
+    public ResponseEntity<Long>acceptProposal(@PathVariable Long proposalId){
+        Long contractId = proposalService.approveProposal(proposalId);
+        return ResponseEntity.ok(contractId);
+    }
+
+    @PutMapping("/{proposalId}/reject")
+    public ResponseEntity<ResponseDTO>rejectProposal(@PathVariable Long proposalId){
+        proposalService.rejectProposal(proposalId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                ));
+    }
+
+    @PutMapping("/{proposalId}/withdraw")
+    public ResponseEntity<ResponseDTO>withdrawProposal(@PathVariable Long proposalId){
+        proposalService.withdrawProposal(proposalId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDTO(
+                        ResponseStatusCode.SUCCESS,
+                        ResponseMessage.SUCCESS
+                ));
+    }
+
+    @GetMapping("/project/{projectId}")
+    ResponseEntity<Page<ProjectProposalDTO>> getAllProposalByProject(@PathVariable Long projectId, Pageable pageable){
+        Page<ProjectProposalDTO> proposalPage = proposalService.getAllProposalByProject(projectId, pageable);
+        return ResponseEntity.ok(proposalPage);
+    }
+
+    @GetMapping("/find-by-freelancer-and-project/{projectId}")
+    ResponseEntity<ProposalDTO> findProposalByFreelancerAndProject(@AuthenticationPrincipal AppUser appUser,
+                                                                   @PathVariable Long projectId){
+        Long userId = appUser.getId();
+        ProposalDTO proposal = proposalService.getProposalByFreelancerAndProject(userId, projectId);
+        return ResponseEntity.ok(proposal);
+    }
+
+
+}

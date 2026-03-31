@@ -1,11 +1,11 @@
 package com.freelancemarketplace.backend.service.imp;
 
 import com.freelancemarketplace.backend.dto.LocationDTO;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.LocationMapper;
-import com.freelancemarketplace.backend.model.CityModel;
-import com.freelancemarketplace.backend.model.CountryModel;
-import com.freelancemarketplace.backend.model.LocationModel;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.LocationMapper;
+import com.freelancemarketplace.backend.domain.model.CityModel;
+import com.freelancemarketplace.backend.domain.model.CountryModel;
+import com.freelancemarketplace.backend.domain.model.LocationModel;
 import com.freelancemarketplace.backend.repository.CityRepository;
 import com.freelancemarketplace.backend.repository.CountryRepository;
 import com.freelancemarketplace.backend.repository.LocationsRepository;

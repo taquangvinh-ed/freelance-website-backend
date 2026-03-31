@@ -1,15 +1,15 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.domain.enums.*;
+import com.freelancemarketplace.backend.domain.model.*;
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.dto.ProposalDTO;
-import com.freelancemarketplace.backend.enums.*;
-import com.freelancemarketplace.backend.exception.ProposalException;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ContractMapper;
-import com.freelancemarketplace.backend.mapper.MileStoneMapper;
-import com.freelancemarketplace.backend.mapper.ProposalMapper;
-import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.domain.exception.ProposalException;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.ContractMapper;
+import com.freelancemarketplace.backend.infrastructure.mapper.MileStoneMapper;
+import com.freelancemarketplace.backend.infrastructure.mapper.ProposalMapper;
 import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ContractLifeCycleService;
 import com.freelancemarketplace.backend.service.ProposalService;

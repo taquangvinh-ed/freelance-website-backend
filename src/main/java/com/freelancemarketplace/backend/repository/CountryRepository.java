@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.CountryModel;
+import com.freelancemarketplace.backend.domain.model.CountryModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

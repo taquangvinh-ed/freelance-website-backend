@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.service;
 
-import com.freelancemarketplace.backend.model.ContractModel;
+import com.freelancemarketplace.backend.domain.model.ContractModel;
 
 public interface ProgressCalculationService {
     public double calculateProgress(ContractModel contract);

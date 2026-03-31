@@ -1,5 +1,5 @@
 package com.freelancemarketplace.backend.dto;
-import com.freelancemarketplace.backend.enums.VerificationStatus;
+import com.freelancemarketplace.backend.domain.enums.VerificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

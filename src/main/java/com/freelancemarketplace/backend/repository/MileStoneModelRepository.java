@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.ContractModel;
-import com.freelancemarketplace.backend.model.MileStoneModel;
+import com.freelancemarketplace.backend.domain.model.ContractModel;
+import com.freelancemarketplace.backend.domain.model.MileStoneModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

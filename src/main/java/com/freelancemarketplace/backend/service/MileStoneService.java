@@ -1,7 +1,6 @@
 package com.freelancemarketplace.backend.service;
 
 import com.freelancemarketplace.backend.dto.MileStoneDTO;
-import com.freelancemarketplace.backend.model.ContractModel;
 
 import java.util.List;
 

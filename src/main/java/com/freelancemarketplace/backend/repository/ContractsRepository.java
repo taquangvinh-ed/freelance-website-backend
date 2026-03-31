@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.ClientModel;
-import com.freelancemarketplace.backend.model.ContractModel;
-import com.freelancemarketplace.backend.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.model.ClientModel;
+import com.freelancemarketplace.backend.domain.model.ContractModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

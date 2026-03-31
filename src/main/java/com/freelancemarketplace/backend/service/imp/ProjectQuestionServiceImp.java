@@ -1,14 +1,14 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.domain.model.*;
 import com.freelancemarketplace.backend.dto.AnswerQuestionRequest;
 import com.freelancemarketplace.backend.dto.ClarificationiProjectQANotificationDTO;
 import com.freelancemarketplace.backend.dto.CreateQuestionRequest;
 import com.freelancemarketplace.backend.dto.ProjectQuestionDTO;
-import com.freelancemarketplace.backend.enums.QuestionStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ClarificationProjectNotificationMapper;
-import com.freelancemarketplace.backend.mapper.ProjectQuestionMapper;
-import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.domain.enums.QuestionStatus;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.ClarificationProjectNotificationMapper;
+import com.freelancemarketplace.backend.infrastructure.mapper.ProjectQuestionMapper;
 import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.ProjectQuestionService;
 import jakarta.transaction.Transactional;
@@ -47,7 +47,7 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
         Optional<FreelancerModel> freelancerModel = freelancersRepository.findById(userId);
 
         // Optional: restrict to freelancer role only
-        // if (user.getRole() != com.freelancemarketplace.backend.enums.UserRoles.FREELANCER) {
+        // if (user.getRole() != com.freelancemarketplace.backend.domain.enums.UserRoles.FREELANCER) {
         //     throw new AccessDeniedException("Only freelancers can ask clarification questions on projects.");
         // }
 

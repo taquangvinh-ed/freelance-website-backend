@@ -1,12 +1,12 @@
 package com.freelancemarketplace.backend.service.imp;
 
+import com.freelancemarketplace.backend.domain.model.*;
 import com.freelancemarketplace.backend.dto.ReviewDTO;
-import com.freelancemarketplace.backend.enums.ContractStatus;
-import com.freelancemarketplace.backend.enums.ReviewTypes;
-import com.freelancemarketplace.backend.enums.ReviewerRoles;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ReviewMapper;
-import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.domain.enums.ContractStatus;
+import com.freelancemarketplace.backend.domain.enums.ReviewTypes;
+import com.freelancemarketplace.backend.domain.enums.ReviewerRoles;
+import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.infrastructure.mapper.ReviewMapper;
 import com.freelancemarketplace.backend.repository.*;
 import com.freelancemarketplace.backend.service.TestomonialService;
 import lombok.RequiredArgsConstructor;

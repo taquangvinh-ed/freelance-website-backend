@@ -6,7 +6,7 @@ import com.freelancemarketplace.backend.dto.AiSuggestProjectResponseDTO;
 import com.freelancemarketplace.backend.dto.AiSuggestedProjectDTO;
 import com.freelancemarketplace.backend.repository.CategoriesRepository;
 import com.freelancemarketplace.backend.repository.SkillsRepository;
-import com.freelancemarketplace.backend.request.AiSuggestProjectRequest;
+import com.freelancemarketplace.backend.api.request.AiSuggestProjectRequest;
 import com.freelancemarketplace.backend.service.AIProjectSuggestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
