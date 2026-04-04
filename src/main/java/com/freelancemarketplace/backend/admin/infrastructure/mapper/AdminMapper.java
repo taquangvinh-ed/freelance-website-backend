@@ -4,7 +4,6 @@ import com.freelancemarketplace.backend.admin.dto.AdminDTO;
 import com.freelancemarketplace.backend.admin.domain.model.AdminModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 import java.util.List;
 

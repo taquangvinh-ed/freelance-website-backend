@@ -7,13 +7,9 @@ import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
-import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import com.freelancemarketplace.backend.certification.dto.CertificateDTO;
 import com.freelancemarketplace.backend.skill.dto.SkillDTO;

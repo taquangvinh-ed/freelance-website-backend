@@ -6,7 +6,6 @@ import com.freelancemarketplace.backend.freelancer.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.certification.application.service.CertificateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,29 +19,29 @@ public class CertificateController {
     private final CertificateService certificateService;
 
     @PostMapping
-    ResponseEntity<CertificateDTO> createCertificate(@AuthenticationPrincipal AppUser appUser, @RequestBody CertificateDTO certificateDTO){
+    public ApiResponse<?> createCertificate(@AuthenticationPrincipal AppUser appUser, @RequestBody CertificateDTO certificateDTO){
         Long freelancerId = appUser.getId();
         CertificateDTO newCertificate = certificateService.createCertificate(freelancerId, certificateDTO);
-        return ResponseEntity.ok(newCertificate);
+        return ApiResponse.created(newCertificate);
     }
 
 
     @PutMapping("/{certificateId}")
-    ResponseEntity<CertificateDTO> updateCertificate(@PathVariable Long certificateId, @RequestBody CertificateDTO certificateDTO){
+    public ApiResponse<?> updateCertificate(@PathVariable Long certificateId, @RequestBody CertificateDTO certificateDTO){
         CertificateDTO updateCertificate = certificateService.updateCertificate(certificateId, certificateDTO);
-        return ResponseEntity.ok(updateCertificate);
+        return ApiResponse.success(updateCertificate);
     }
 
     @DeleteMapping("/{certificateId}")
-    ResponseEntity<Void> delete(@PathVariable Long certificateId){
+    public ApiResponse<?> delete(@PathVariable Long certificateId){
          certificateService.deleteCertificate(certificateId);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.delete();
     }
 
     @GetMapping("/getAll")
-    ResponseEntity<List<CertificateDTO>> getAll(@AuthenticationPrincipal AppUser appUser){
+     public ApiResponse<?> getAll(@AuthenticationPrincipal AppUser appUser){
         Long freelancerId = appUser.getId();
         List<CertificateDTO> list = certificateService.getAllCertificateByFreelancer(freelancerId);
-        return ResponseEntity.ok(list);
+        return ApiResponse.success(list);
     }
 }

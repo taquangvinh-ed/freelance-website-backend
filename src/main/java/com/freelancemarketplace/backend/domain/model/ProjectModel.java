@@ -1,0 +1,117 @@
+package com.freelancemarketplace.backend.domain.model;
+
+import com.freelancemarketplace.backend.domain.enums.ProjectStatus;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import com.freelancemarketplace.backend.contract.domain.model.ContractModel;
+import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
+import com.freelancemarketplace.backend.category.domain.model.CategoryModel;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
+import com.freelancemarketplace.backend.client.domain.model.CompanyModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.AdvancedPreferences;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.InvitationModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.PortfolioModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.VideoModel;
+import com.freelancemarketplace.backend.proposal.domain.model.ProposalModel;
+import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "Projects")
+public class ProjectModel extends BaseEntity{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long projectId;
+
+    private String title;
+
+    @Column(length = 2000)
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status;
+
+    @Embedded
+    private ProjectScope scope;
+
+    private Integer connections;
+    private Timestamp startDate;
+    private Timestamp endDate;
+
+    // If the project is an internship
+    private Boolean isInternship;
+
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    private List<VideoModel> videos;
+
+    @OneToOne(mappedBy = "project" )
+    private PortfolioModel portfolio;
+
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name="categoryId")
+    private CategoryModel category;
+
+    @OneToOne( mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private BudgetModel budget;
+
+
+    @Embedded
+    private AdvancedPreferences advancedPreferences;
+
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name ="freelancerId")
+    private FreelancerModel winningFreelancer;
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    private Set<TestimonialModel> testimonials;
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    private Set<ProposalModel> proposals;
+
+    @OneToOne(mappedBy = "contractProject", fetch = FetchType.LAZY)
+    private ContractModel contract;
+
+
+    //The company that posts the project
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name = "companyId")
+    private CompanyModel company;
+
+    //The client that posts the project
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name = "clientId")
+    private ClientModel client;
+
+    @ManyToMany( fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "project_skills",
+            joinColumns = @JoinColumn(name = "projectId"),
+            inverseJoinColumns = @JoinColumn(name = "skillId")
+    )
+    private Set<SkillModel> skills = new HashSet<>();
+
+    @Column(name = "title_embedding", columnDefinition = "bytea")
+    private byte[] titleEmbedding;
+
+    @Column(name = "description_embedding", columnDefinition = "bytea")
+    private byte[] descriptionEmbedding;
+
+    @Column(name = "skill_vector", columnDefinition = "bytea")
+    private byte[] skillVector;
+
+    @OneToMany(mappedBy = "project")
+    private List<InvitationModel> invitation;
+}

@@ -3,7 +3,6 @@ package com.freelancemarketplace.backend.recommandation;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter

@@ -5,7 +5,6 @@ import com.freelancemarketplace.backend.project.application.service.ProjectServi
 import com.freelancemarketplace.backend.user.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,63 +20,62 @@ public class AdminDashboardController {
 
 
     @GetMapping("/count-user-by-role")
-    ResponseEntity<Long> countUserByRole(@RequestParam UserRoles role){
+    public ApiResponse<?> countUserByRole(@RequestParam UserRoles role){
         long count = userService.countAllUserByRole(role);
-        return ResponseEntity.ok(count);
+        return ApiResponse.success(count);
     }
 
     @GetMapping("/count-new-freelancer-weekly")
-    ResponseEntity<Long> getNewFreelancerCountWeekly(){
+    public ApiResponse<?> getNewFreelancerCountWeekly(){
         long count = userService.getNewFreelancerCountWeekly();
-        return ResponseEntity.ok(count);
+        return ApiResponse.success(count);
     }
 
     @GetMapping("/count-new-freelancer-monthly")
-    ResponseEntity<Long> getNewFreelancerCountMonthly(){
+    public ApiResponse<?> getNewFreelancerCountMonthly(){
         long count = userService.getNewFreelancerCountMonthly();
-        return ResponseEntity.ok(count);
+        return ApiResponse.success(count);
     }
 
     @GetMapping("/count-new-client-weekly")
-    ResponseEntity<Long> getNewClientCountWeekly(){
+    public ApiResponse<?> getNewClientCountWeekly(){
         long count = userService.getNewClientCountWeekly();
-        return ResponseEntity.ok(count);
+        return ApiResponse.success(count);
     }
 
     @GetMapping("/count-new-client-monthly")
-    ResponseEntity<Long> getNewClientCountMonthly(){
+    public ApiResponse<?> getNewClientCountMonthly(){
         long count = userService.getNewClientCountMonthly();
-        return ResponseEntity.ok(count);
+        return ApiResponse.success(count);
     }
 
     @GetMapping("/count-all-projects")
-    ResponseEntity<Long> countAllProjects(){
+    public ApiResponse<?> countAllProjects(){
         long countProject = projectService.countAllProjects();
-        return ResponseEntity.ok(countProject);
+        return ApiResponse.success(countProject);
     }
 
     @GetMapping("/count-all-projects-today")
-    ResponseEntity<Long> countAllProjectsToday(){
+    public ApiResponse<?> countAllProjectsToday(){
         long countProject = projectService.getNewProjectCountToday();
-        return ResponseEntity.ok(countProject);
+        return ApiResponse.success(countProject);
     }
 
     @GetMapping("/count-all-projects-this-week")
-    ResponseEntity<Long> countAllProjectsWeekly(){
+    public ApiResponse<?> countAllProjectsWeekly(){
         long countProject = projectService.getNewProjectCountWeekly();
-        return ResponseEntity.ok(countProject);
+        return ApiResponse.success(countProject);
     }
 
     @GetMapping("/count-all-projects-active")
-    ResponseEntity<Long> countAllProjectsInActive(){
+    public ApiResponse<?> countAllProjectsInActive(){
         long countProject = projectService.getActiveProjectCount();
-        return ResponseEntity.ok(countProject);
+        return ApiResponse.success(countProject);
     }
 
     @GetMapping("/count-all-projects-completed")
-    ResponseEntity<Long> countAllCompletedProjects(){
+    public ApiResponse<?> countAllCompletedProjects(){
         long countProject = projectService.getCompletedProjectCount();
-        return ResponseEntity.ok(countProject);
+        return ApiResponse.success(countProject);
     }
-
 }

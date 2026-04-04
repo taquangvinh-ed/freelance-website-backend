@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/api/projects", produces = {MediaType.APPLICATION_JSON_VALUE})

@@ -9,19 +9,13 @@ import com.freelancemarketplace.backend.freelancer.application.service.Freelance
 import com.freelancemarketplace.backend.payment.application.service.PaymentService;
 import com.freelancemarketplace.backend.payment.application.service.imp.StripeService;
 import com.stripe.exception.SignatureVerificationException;
-import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.Event;
 import com.stripe.net.Webhook;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/stripe")

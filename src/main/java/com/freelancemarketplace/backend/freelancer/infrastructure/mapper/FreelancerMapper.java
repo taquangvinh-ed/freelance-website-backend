@@ -6,7 +6,7 @@ import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 import java.util.Set;
@@ -33,10 +33,13 @@ public interface FreelancerMapper {
 
     ExperienceDTO toExperienceDTO(ExperienceModel experienceModel);
 
+    
 
     Set<SkillDTO> toSkillDTOs(Set<SkillModel> skills);
     CertificateDTO toCertificateDTO(CertificateModel certificateModel);
     Set<CertificateDTO> toCertificateDTOs(Set<CertificateModel> certificateModels);
     Set<ExperienceDTO> toExperienceDtos(Set<ExperienceModel> experienceModels);
+
+    FreelancerModel partialUpdate(FreelancerDTO profile, @MappingTarget FreelancerModel freelancer);
 //
 }

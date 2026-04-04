@@ -63,7 +63,7 @@ public class ProjectQuestionServiceImp implements ProjectQuestionService {
         Optional<FreelancerModel> freelancerModel = freelancersRepository.findById(userId);
 
         // Optional: restrict to freelancer role only
-        // if (user.getRole() != com.freelancemarketplace.backend.enums.UserRoles.FREELANCER) {
+        // if (user.getRole() != com.freelancemarketplace.backend.domain.enums.UserRoles.FREELANCER) {
         //     throw new AccessDeniedException("Only freelancers can ask clarification questions on projects.");
         // }
 

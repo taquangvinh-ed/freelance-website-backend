@@ -5,7 +5,6 @@ import com.freelancemarketplace.backend.report.application.service.DashboardClie
 import com.freelancemarketplace.backend.report.application.service.DashboardFreelancerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,87 +32,87 @@ public class DashboardController {
     private final DashboardClientService dashboardClientService;
 
     @GetMapping("/freelancer/monthly-earnings")
-    public ResponseEntity<List<MonthlyEarningsDTO>> getMonthlyEarnings(@AuthenticationPrincipal AppUser appUser,
+    public ApiResponse<?> getMonthlyEarnings(@AuthenticationPrincipal AppUser appUser,
                                                                        @RequestParam(value = "months", defaultValue = "6") int months) {
         Long userId = appUser.getId();
         List<MonthlyEarningsDTO> earnings = dashboardFreelancerService.getMonthlyEarnings(userId, months);
-        return ResponseEntity.ok(earnings);
+        return ApiResponse.success(earnings);
     }
 
     @GetMapping("/freelancer/stats")
-    public ResponseEntity<OverallStatsDTO> getOverallStats(
+    public ApiResponse<?> getOverallStats(
             @AuthenticationPrincipal AppUser appUser) {
         Long userId = appUser.getId();
         OverallStatsDTO stats = dashboardFreelancerService.getOverallStats(userId);
-        return ResponseEntity.ok(stats);
+        return ApiResponse.success(stats);
     }
 
     @GetMapping("/freelancer/skillDistribution")
-    public ResponseEntity<List<SkillDistributionDTO>> getSkillDistribution(
+    public ApiResponse<?> getSkillDistribution(
             @AuthenticationPrincipal AppUser appUser) {
         Long userId = appUser.getId();
         List<SkillDistributionDTO> skillDistributions = dashboardFreelancerService.getSkillDistribution(userId);
-        return ResponseEntity.ok(skillDistributions);
+        return ApiResponse.success(skillDistributions);
     }
 
 
     @GetMapping("/freelancer/recentClient")
-    public ResponseEntity<List<RecentClientDTO>> getRecentClients(
+    public ApiResponse<?> getRecentClients(
             @AuthenticationPrincipal AppUser appUser) {
         Long userId = appUser.getId();
         List<RecentClientDTO> recentClients = dashboardFreelancerService.getRencentClients(userId);
-        return ResponseEntity.ok(recentClients);
+        return ApiResponse.success(recentClients);
     }
 
     @GetMapping("/freelancer/projects/activatedProjects")
-    ResponseEntity<List<DashboardProjectResponse>> getALlActivatedProjects(@AuthenticationPrincipal AppUser appUser){
+    public ApiResponse<?> getALlActivatedProjects(@AuthenticationPrincipal AppUser appUser){
         Long userId = appUser.getId();
         List<DashboardProjectResponse> activatedProjects = dashboardFreelancerService.getAllActivedProjects(userId);
-        return ResponseEntity.ok(activatedProjects);
+        return ApiResponse.success(activatedProjects);
     }
 
     @GetMapping("/freelancer/projects/cancelledProjects")
-    ResponseEntity<List<DashboardProjectResponse>> getAllCancelledProjects(@AuthenticationPrincipal AppUser appUser){
+    public ApiResponse<?> getAllCancelledProjects(@AuthenticationPrincipal AppUser appUser){
         Long userId = appUser.getId();
         List<DashboardProjectResponse> cancelledProjects = dashboardFreelancerService.getAllCancelledProjects(userId);
-        return ResponseEntity.ok(cancelledProjects);
+        return ApiResponse.success(cancelledProjects);
     }
 
     @GetMapping("/freelancer/projects/completedProjects")
-    ResponseEntity<List<DashboardProjectResponse>> getAllCompletedProjects(@AuthenticationPrincipal AppUser appUser){
+    public ApiResponse<?> getAllCompletedProjects(@AuthenticationPrincipal AppUser appUser){
         Long userId = appUser.getId();
         List<DashboardProjectResponse> completedProjects = dashboardFreelancerService.getAllCompletedProjects(userId);
-        return ResponseEntity.ok(completedProjects);
+        return ApiResponse.success(completedProjects);
     }
 
 
     @GetMapping("/client/getStats")
-    ResponseEntity<ClientDashboardStatsDTO> getStats(@AuthenticationPrincipal AppUser appUser){
+    public ApiResponse<?> getStats(@AuthenticationPrincipal AppUser appUser){
         Long userId = appUser.getId();
         ClientDashboardStatsDTO result = dashboardClientService.getStats(userId);
-        return ResponseEntity.ok(result);
+        return ApiResponse.success(result);
     }
 
     @GetMapping("/client/trackingProjects")
-    ResponseEntity<List<ProjectTrackingDTO>>trackProjects(@AuthenticationPrincipal AppUser appUser){
+    public ApiResponse<?> trackProjects(@AuthenticationPrincipal AppUser appUser){
         Long userId = appUser.getId();
         List<ProjectTrackingDTO> list = dashboardClientService.getClientActiveProjects(userId);
-        return ResponseEntity.ok(list);
+        return ApiResponse.success(list);
     }
 
     @GetMapping("/client/recentPayment")
-    ResponseEntity<List<RecentPaymentDTO>> getRecentPayments(@AuthenticationPrincipal AppUser appUser){
+    public ApiResponse<?> getRecentPayments(@AuthenticationPrincipal AppUser appUser){
         Long userId = appUser.getId();
         List<RecentPaymentDTO> recentPayments = dashboardClientService.getRecentPayments(userId);
-        return ResponseEntity.ok(recentPayments);
+        return ApiResponse.success(recentPayments);
     }
 
 
     @GetMapping("/client/getAllPostedProjects")
-    ResponseEntity<List<PostedProject>>getAllPostedProject(@AuthenticationPrincipal AppUser appUser){
+    public ApiResponse<?> getAllPostedProject(@AuthenticationPrincipal AppUser appUser){
         Long userId = appUser.getId();
         List<PostedProject> list = dashboardClientService.getAllPostedProject(userId);
-        return ResponseEntity.ok(list);
+        return ApiResponse.success(list);
     }
 
 }

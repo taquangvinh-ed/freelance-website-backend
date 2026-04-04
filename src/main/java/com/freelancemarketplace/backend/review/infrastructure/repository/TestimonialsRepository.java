@@ -1,5 +1,9 @@
 package com.freelancemarketplace.backend.review.infrastructure.repository;
 
+import com.freelancemarketplace.backend.domain.model.ClientModel;
+import com.freelancemarketplace.backend.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.domain.model.TeamModel;
+import com.freelancemarketplace.backend.domain.model.TestimonialModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
