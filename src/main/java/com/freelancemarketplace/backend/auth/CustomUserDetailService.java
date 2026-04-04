@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.auth;
 
-import com.freelancemarketplace.backend.enums.AccountStatus;
-import com.freelancemarketplace.backend.model.UserModel;
-import com.freelancemarketplace.backend.repository.UserRepository;
+import com.freelancemarketplace.backend.user.domain.enums.AccountStatus;
+import com.freelancemarketplace.backend.user.domain.model.UserModel;
+import com.freelancemarketplace.backend.user.infrastructure.repository.UserRepository;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;

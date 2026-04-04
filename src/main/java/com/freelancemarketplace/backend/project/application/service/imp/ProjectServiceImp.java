@@ -1,0 +1,287 @@
+package com.freelancemarketplace.backend.project.application.service.imp;
+
+import com.freelancemarketplace.backend.category.infrastructure.repository.CategoriesRepository;
+import com.freelancemarketplace.backend.client.exception.ClientNotFoundException;
+import com.freelancemarketplace.backend.client.infrastructure.repository.ClientsRepository;
+import com.freelancemarketplace.backend.project.dto.ProjectDTO;
+import com.freelancemarketplace.backend.project.domain.enums.ProjectStatus;
+import com.freelancemarketplace.backend.exceptionHandling.ApiException;
+import com.freelancemarketplace.backend.exceptionHandling.ErrorCode;
+import com.freelancemarketplace.backend.project.exception.ProjectNotFoundException;
+import com.freelancemarketplace.backend.skill.exception.SkillNotFoundException;
+import com.freelancemarketplace.backend.project.infrastructure.mapper.ProjectMapper;
+import com.freelancemarketplace.backend.project.domain.model.BudgetModel;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
+import com.freelancemarketplace.backend.project.infrastructure.repository.BudgetsRepository;
+import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
+import com.freelancemarketplace.backend.recommandation.EmbeddingService;
+import com.freelancemarketplace.backend.project.api.request.CreateProjectRequest;
+import com.freelancemarketplace.backend.project.application.service.ProjectService;
+import com.freelancemarketplace.backend.project.domain.specification.ProjectSpecification;
+import com.freelancemarketplace.backend.skill.infrastructure.repository.SkillsRepository;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@Service
+@AllArgsConstructor
+@Slf4j
+public class ProjectServiceImp implements ProjectService {
+
+    private final ProjectsRepository projectsRepository;
+    private final ProjectMapper projectMapper;
+    private final SkillsRepository skillsRepository;
+    private final CategoriesRepository categoriesRepository;
+    private final BudgetsRepository budgetsRepository;
+    private final EmbeddingService embeddingService;
+    private final ClientsRepository clientsRepository;
+
+
+    @Override
+    @Transactional
+    public ProjectDTO createProject(Long clientId, CreateProjectRequest request) {
+
+        ClientModel client = clientsRepository.findById(clientId).orElseThrow(
+                () -> new ClientNotFoundException("Client with id: " + clientId + " not found")
+        );
+
+
+        if (request.getBudget() == null) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_REQUEST, "Budget is required for the project.");
+        }
+
+        if (request.getCategory() == null)
+            throw new ApiException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_REQUEST, "Category is required for the project.");
+
+        if (request.getSkills() == null)
+            throw new ApiException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_REQUEST, "Skills is required for the project");
+
+        ProjectModel newProject = projectMapper.toEntity(request);
+        BudgetModel budgetInsideNewProject = newProject.getBudget();
+        budgetInsideNewProject.setProject(newProject);
+        newProject.setStatus(ProjectStatus.OPEN);
+
+        if (request.getTitle() != null)
+            newProject.setTitleEmbedding(embeddingService.generateEmbedding(request.getTitle()));
+
+        if (request.getDescription() != null)
+            newProject.setDescriptionEmbedding(embeddingService.generateEmbedding(request.getDescription()));
+
+        newProject.setClient(client);
+
+        newProject.setSkillVector(embeddingService.generateProjectSkillVector(newProject));
+
+
+        ProjectModel savedProject = projectsRepository.save(newProject);
+        return projectMapper.toDto(savedProject);
+    }
+
+    @Override
+    @Transactional
+    public ProjectDTO updateProject(Long projectId, ProjectDTO projectDTO) {
+
+        ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
+                () -> new ProjectNotFoundException("Project with id: " + projectId + " not found.")
+        );
+
+        ProjectModel updatedProject = projectMapper.partialUpdate(projectDTO, project);
+
+        ProjectModel savedProject = projectsRepository.save(updatedProject);
+
+        return projectMapper.toDto(savedProject);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProject(Long projectId) {
+        Boolean isExisted = projectsRepository.existsById(projectId);
+        if (!isExisted) {
+            throw new ProjectNotFoundException("Project with id: " + projectId + " not found.");
+        }
+        projectsRepository.deleteById(projectId);
+    }
+
+    @Override
+    public List<ProjectDTO> getAllProject() {
+        List<ProjectModel> projectList = projectsRepository.findAll();
+        return projectMapper.toDTOs(projectList);
+    }
+
+    @Override
+    public ProjectDTO findProjectById(Long projectId) {
+        ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
+                () -> new ProjectNotFoundException("Project with id: " + projectId + " not found."));
+        return projectMapper.toDto(project);
+    }
+
+    @Override
+    public List<ProjectDTO> getProjectBySkill(Long skillId) {
+
+        return List.of();
+    }
+
+    @Override
+    @Transactional
+    public void assignSkillToProject(Long projectId, Long skillId) {
+        ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
+                () -> new ProjectNotFoundException("Project with id: " + projectId + " not found."));
+        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
+                () -> new SkillNotFoundException("Skill with id: " + skillId + " not found.")
+        );
+
+        project.getSkills().add(skill);
+        project.setSkillVector(embeddingService.generateProjectSkillVector(project));
+
+        projectsRepository.save(project);
+    }
+
+    @Transactional
+    @Override
+    public void removeSkillFromProject(Long projectId, Long skillId) {
+        ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
+                () -> new ProjectNotFoundException("Project with id: " + projectId + " not found."));
+        SkillModel skill = skillsRepository.findById(skillId).orElseThrow(
+                () -> new SkillNotFoundException("Skill with id: " + skillId + " not found.")
+        );
+
+        project.getSkills().remove(skill);
+        project.setSkillVector(embeddingService.generateProjectSkillVector(project));
+        projectsRepository.save(project);
+    }
+
+    @Override
+    public Page<ProjectDTO> filter(String keyword, List<String> skillNames,
+                                   BigDecimal minRate, BigDecimal maxRate, Boolean isHourly, String duration,     // MỚI: "1 to 3 months"
+                                   String level,        // MỚI: "Intermediate"
+                                   String workload, Pageable pageable) {
+        try {
+            List<String> normalizedSkillNames = skillNames == null ? null : skillNames.stream()
+                    .filter(Objects::nonNull)
+                    .map(String::trim)
+                    .filter(name -> !name.isEmpty())
+                    .collect(Collectors.toList());
+
+            // Tạo Specification cho truy vấn
+            Specification<ProjectModel> spec = ProjectSpecification.filter(
+                    normalizedSkillNames, minRate, maxRate, isHourly, duration, level, workload);
+
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                Specification<ProjectModel> searchSpec = ProjectSpecification.autocompleteSearch(keyword);
+                spec = spec.and(searchSpec);
+            }
+
+            // Thực thi truy vấn với Specification và phân trang
+            Page<ProjectModel> projectModels = projectsRepository.findAll(spec, pageable);
+
+            // Chuyển đổi sang DTO
+            List<ProjectDTO> dtoList = projectModels.getContent().stream()
+                    .map(projectMapper::toDto)
+                    .collect(Collectors.toList());
+
+            // Tạo đối tượng Page
+            return new PageImpl<>(dtoList, pageable, projectModels.getTotalElements());
+        } catch (Exception e) {
+            log.error("Error executing JPA Specification search: {}", e.getMessage(), e);
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_SERVER_ERROR,
+                    "Error executing JPA Specification search", e);
+        }
+    }
+
+    @Override
+    public Page<ProjectDTO> autocompleteSearch(String keyword, int limit, Pageable pageable) {
+        try {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                return Page.empty(pageable);
+            }
+
+            int safeLimit = limit > 0 ? limit : 10;
+            int targetPageSize = Math.min(Math.max(pageable.getPageSize(), 1), safeLimit);
+            Pageable effectivePageable = PageRequest.of(
+                    pageable.getPageNumber(),
+                    targetPageSize,
+                    pageable.getSort().isSorted() ? pageable.getSort() : Sort.by(Sort.Direction.ASC, "title")
+            );
+
+            // Tạo Specification cho tìm kiếm autocomplete
+            Specification<ProjectModel> spec = ProjectSpecification.autocompleteSearch(keyword);
+
+            // Thực thi truy vấn với giới hạn số lượng kết quả
+            Page<ProjectModel> projectPage = projectsRepository.findAll(spec, effectivePageable);
+
+            // Chuyển đổi sang DTO
+            List<ProjectDTO> projects = projectPage.getContent().stream()
+                    .map(projectMapper::toDto)
+                    .collect(Collectors.toList());
+
+            return new PageImpl<>(projects, effectivePageable, projectPage.getTotalElements());
+        } catch (Exception e) {
+            log.error("Error executing autocomplete search: {}", e.getMessage(), e);
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_SERVER_ERROR,
+                    "Error executing autocomplete search", e);
+        }
+    }
+
+
+    @Override
+    public long countAllProjects() {
+        return projectsRepository.count();
+    }
+
+
+    @Override
+    public long getNewProjectCountToday() {
+        LocalDateTime today = LocalDateTime.now()
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0);
+
+        return projectsRepository.countByCreatedAtAfter(today);
+    }
+
+    @Override
+    public long getNewProjectCountWeekly() {
+        LocalDateTime startOfWeek = LocalDateTime.now()
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        return projectsRepository.countByCreatedAtAfter(startOfWeek);
+    }
+
+
+    @Override
+    public long getActiveProjectCount() {
+        long inProgressCount = projectsRepository.countByStatus(ProjectStatus.IN_PROGRESS);
+        // Tùy theo logic của bạn, có thể thêm PENDING_REVIEW, v.v.
+        return inProgressCount;
+    }
+
+    @Override
+    public long getCompletedProjectCount() {
+        long completedCount = projectsRepository.countByStatus(ProjectStatus.COMPLETED);
+        // Tùy theo logic của bạn, có thể thêm PENDING_REVIEW, v.v.
+        return completedCount;
+    }
+
+}

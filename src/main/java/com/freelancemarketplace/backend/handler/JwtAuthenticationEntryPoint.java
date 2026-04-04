@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freelancemarketplace.backend.dto.ApiResponse;
-import com.freelancemarketplace.backend.exception.ErrorCode;
-import com.freelancemarketplace.backend.model.UserModel;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.exceptionHandling.ErrorCode;
+import com.freelancemarketplace.backend.user.domain.model.UserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,0 +1,55 @@
+package com.freelancemarketplace.backend.contract.application.service.imp;
+
+import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
+import com.freelancemarketplace.backend.contract.domain.enums.MileStoneStatus;
+import com.freelancemarketplace.backend.exceptionHandling.ApiException;
+import com.freelancemarketplace.backend.exceptionHandling.ErrorCode;
+import com.freelancemarketplace.backend.contract.infrastructure.mapper.MileStoneMapper;
+import com.freelancemarketplace.backend.contract.domain.model.ContractModel;
+import com.freelancemarketplace.backend.contract.domain.model.MileStoneModel;
+import com.freelancemarketplace.backend.contract.infrastructure.repository.ContractsRepository;
+import com.freelancemarketplace.backend.payment.application.service.PaymentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class MilestonePaymentSchedular {
+
+    private final ContractsRepository contractsRepository;
+    private final PaymentService paymentService;
+    private final MileStoneMapper mileStoneMapper;
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void releaseEscrowPayments() {
+        List<ContractModel> contracts = contractsRepository.findAll();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        Date sevenDaysAgo = calendar.getTime();
+
+        for (ContractModel contract : contracts) {
+            for (MileStoneModel milestone : contract.getMileStones()) {
+                if (milestone.getStatus().equals(MileStoneStatus.COMPLETED) && milestone.getCompletedAt() != null) {
+                    if (milestone.getCompletedAt().before(sevenDaysAgo)) {
+                        try {
+                            MileStoneDTO mileStoneDTO = mileStoneMapper.toDto(milestone);
+                            paymentService.releasePayment(milestone.getPaymentIntentId(), mileStoneDTO, contract.getFreelancer().getStripeAccountId());
+                            milestone.setStatus(MileStoneStatus.RELEASED);
+                            contractsRepository.save(contract);
+                        } catch (Exception e) {
+                            throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
+                                    "Failed to release payment for milestone with id: " + milestone.getMileStoneId(), e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
