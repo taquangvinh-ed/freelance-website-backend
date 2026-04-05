@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.application.service;
 
-import com.freelancemarketplace.backend.dto.ClientDTO;
+import com.freelancemarketplace.backend.client.dto.ClientDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

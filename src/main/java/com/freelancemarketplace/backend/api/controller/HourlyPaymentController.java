@@ -2,8 +2,8 @@ package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.*;
-import com.freelancemarketplace.backend.service.HourlyPaymentService;
+
+import com.freelancemarketplace.backend.contract.application.service.HourlyPaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

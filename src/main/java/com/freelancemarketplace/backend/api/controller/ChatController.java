@@ -1,12 +1,12 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.dto.ContactInfoDTO;
-import com.freelancemarketplace.backend.dto.ConversationDTO;
-import com.freelancemarketplace.backend.dto.CurrentUserProfileDTO;
-import com.freelancemarketplace.backend.dto.MessageDTO;
+import com.freelancemarketplace.backend.conversation.dto.ContactInfoDTO;
+import com.freelancemarketplace.backend.conversation.dto.ConversationDTO;
+import com.freelancemarketplace.backend.conversation.dto.CurrentUserProfileDTO;
+import com.freelancemarketplace.backend.conversation.dto.MessageDTO;
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.service.ChatService;
+import com.freelancemarketplace.backend.conversation.application.service.ChatService;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -35,7 +35,6 @@ public class ChatController {
 
         messagingTemplate.convertAndSend("/topic/chat/" + roomId,  response);
     }
-
 
     @GetMapping("/api/chat/getContactInfo/{userId}")
     public ApiResponse<?> getContactInfo(@PathVariable Long userId){

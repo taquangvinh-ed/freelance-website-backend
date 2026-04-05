@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.freelancer.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.freelancer.application.service.FreelancerService;
@@ -29,8 +29,6 @@ public class FreelancerController {
         this.freelancerService = freelancerService;
     }
 
-
-
     @PutMapping("/{freelancerId}")
     ApiResponse<?> updateFreelancer(@PathVariable Long freelancerId,
                                                 @RequestBody FreelancerDTO freelancerDTO){
@@ -56,7 +54,6 @@ public class FreelancerController {
         FreelancerDTO givenFreelancer = freelancerService.getFreelancerById(freelancerId);
         return ApiResponse.success(givenFreelancer);
     }
-
 
     @GetMapping("/profile/{freelancerId}") // 👈 Truyền ID qua URL
     public ApiResponse<?> getOtherFreelancerProfile(

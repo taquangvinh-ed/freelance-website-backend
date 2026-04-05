@@ -10,7 +10,7 @@ import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 
-@Entity
+@Entity(name = "LegacyCategoryModel")
 @Getter
 @Setter
 @NoArgsConstructor

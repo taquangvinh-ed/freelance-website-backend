@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 
-@Entity
+@Entity(name = "LegacyBudgetModel")
 @Getter
 @Setter
 @NoArgsConstructor

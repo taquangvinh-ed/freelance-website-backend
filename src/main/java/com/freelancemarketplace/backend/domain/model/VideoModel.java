@@ -9,7 +9,7 @@ import com.freelancemarketplace.backend.product.domain.model.ProductModel;
 import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 import com.freelancemarketplace.backend.team.domain.model.TeamModel;
 
-@Entity
+@Entity(name = "LegacyVideoModel")
 @Getter
 @Setter
 @NoArgsConstructor

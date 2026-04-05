@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.dto.CertificateDTO;
+import com.freelancemarketplace.backend.certification.dto.CertificateDTO;
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.service.CertificateService;
+import com.freelancemarketplace.backend.certification.application.service.CertificateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,7 +25,6 @@ public class CertificateController {
         return ApiResponse.created(newCertificate);
     }
 
-
     @PutMapping("/{certificateId}")
     public ApiResponse<?> updateCertificate(@PathVariable Long certificateId, @RequestBody CertificateDTO certificateDTO){
         CertificateDTO updateCertificate = certificateService.updateCertificate(certificateId, certificateDTO);
@@ -35,7 +34,7 @@ public class CertificateController {
     @DeleteMapping("/{certificateId}")
     public ApiResponse<?> delete(@PathVariable Long certificateId){
          certificateService.deleteCertificate(certificateId);
-        return ApiResponse.delete();
+        return ApiResponse.noContent();
     }
 
     @GetMapping("/getAll")

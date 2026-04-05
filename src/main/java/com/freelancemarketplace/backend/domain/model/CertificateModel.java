@@ -7,7 +7,7 @@ import lombok.Setter;
 import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 
-@Entity
+@Entity(name = "LegacyCertificateModel")
 @Getter
 @Setter
 @NoArgsConstructor

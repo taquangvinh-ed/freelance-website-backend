@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.recommendation.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.dto.ProjectDTO;
 import com.freelancemarketplace.backend.recommendation.dto.RecommendFreelancerDTO;
@@ -59,7 +59,6 @@ public class RecommendationController {
         Page<RecommendFreelancerDTO> freelancers = recommendationService.recommendFreelancers(projectId, pageable);
         return ApiResponse.success(freelancers);
     }
-
 
     @PostMapping("/train-cf")
     public ApiResponse<?> trainCF() {

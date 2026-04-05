@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.ProjectQuestionDTO;
+import com.freelancemarketplace.backend.project.dto.ProjectQuestionDTO;
 import com.freelancemarketplace.backend.domain.model.ProjectQuestionModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

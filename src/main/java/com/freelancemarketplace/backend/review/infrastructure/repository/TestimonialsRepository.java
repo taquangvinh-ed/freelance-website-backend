@@ -1,19 +1,16 @@
 package com.freelancemarketplace.backend.review.infrastructure.repository;
 
-import com.freelancemarketplace.backend.domain.model.ClientModel;
-import com.freelancemarketplace.backend.domain.model.FreelancerModel;
-import com.freelancemarketplace.backend.domain.model.TeamModel;
-import com.freelancemarketplace.backend.domain.model.TestimonialModel;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.team.domain.model.TeamModel;
+import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import com.freelancemarketplace.backend.client.domain.model.ClientModel;
-import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
-import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
-import com.freelancemarketplace.backend.team.domain.model.TeamModel;
+
 
 @Repository
 public interface TestimonialsRepository extends JpaRepository<TestimonialModel, Long> {

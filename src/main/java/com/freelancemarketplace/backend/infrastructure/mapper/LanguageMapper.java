@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.LanguageDTO;
+import com.freelancemarketplace.backend.language.dto.LanguageDTO;
 import com.freelancemarketplace.backend.domain.model.LanguageModel;
 import org.mapstruct.Mapper;
 
@@ -9,7 +9,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface LanguageMapper {
     LanguageDTO toDTO(LanguageModel language);
-
 
     LanguageModel toEntity(LanguageDTO languageDto);
 

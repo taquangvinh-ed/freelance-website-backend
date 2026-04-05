@@ -1,4 +1,5 @@
 package com.freelancemarketplace.backend.api.response;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.exceptionHandling.SuccessCode;
 import lombok.AllArgsConstructor;
@@ -31,8 +32,6 @@ public class ApiResponse<T> {
                 .body(body)
                 .build();
     }
-
-
     public static <T> ApiResponse<T> success(T body) {
         return ApiResponse.<T>builder()
                 .success(true)
@@ -52,7 +51,6 @@ public class ApiResponse<T> {
                 .body(body)
                 .build();
     }
-
 
     public static <T> ApiResponse<T> noContent() {
         return ApiResponse.<T>builder()

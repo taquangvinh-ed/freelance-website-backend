@@ -1,11 +1,11 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.CategoryDTO;
-import com.freelancemarketplace.backend.dto.CategoryResponse;
-import com.freelancemarketplace.backend.dto.SkillDTO;
-import com.freelancemarketplace.backend.dto.SkillDTO2;
+import com.freelancemarketplace.backend.category.dto.CategoryDTO;
+import com.freelancemarketplace.backend.category.dto.CategoryResponse;
+import com.freelancemarketplace.backend.skill.dto.SkillDTO;
+import com.freelancemarketplace.backend.skill.dto.SkillDTO2;
 import com.freelancemarketplace.backend.domain.model.CategoryModel;
-import com.freelancemarketplace.backend.domain.model.SkillModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -19,7 +19,7 @@ public interface SkillMapper {
 
     CategoryDTO toCategoryDTO(CategoryModel categoryModel);
 
-    @Mapping(target = "categories", source = "categories", qualifiedByName = "mapCategoriesToCategoryResponses")
+    @Mapping(target = "categories", source = "categories")
     SkillDTO toDTO(SkillModel skillModel);
 
     SkillModel toEntity(SkillDTO skillDTO);
@@ -30,7 +30,6 @@ public interface SkillMapper {
 
     SkillModel toEntity2(SkillDTO2 skillDTO);
 
-    @Named("mapCategoriesToCategoryResponses")
     default Set<CategoryResponse>mapCategoriesToCategoryName(Set<CategoryModel> categories){
         if(categories == null)
             return null;

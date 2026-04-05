@@ -1,10 +1,10 @@
 package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.dto.NotificationDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.notification.dto.NotificationDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.NotificationService;
+import com.freelancemarketplace.backend.notification.application.service.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -79,8 +79,5 @@ public class NotificationController {
                 ));
 
     }
-
-
-
 
 }

@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.contract.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.contract.application.service.HourlyPaymentService;
 import lombok.RequiredArgsConstructor;

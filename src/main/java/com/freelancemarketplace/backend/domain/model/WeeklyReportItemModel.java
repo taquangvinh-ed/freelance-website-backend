@@ -10,7 +10,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
+@Entity(name = "LegacyWeeklyReportItemModel")
 @Table(name = "weekly_report_item")
 public class WeeklyReportItemModel {
     @Id

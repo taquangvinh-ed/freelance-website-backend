@@ -1,10 +1,9 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.*;
 import com.freelancemarketplace.backend.domain.model.CertificateModel;
 import com.freelancemarketplace.backend.domain.model.ExperienceModel;
-import com.freelancemarketplace.backend.domain.model.FreelancerModel;
-import com.freelancemarketplace.backend.domain.model.SkillModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

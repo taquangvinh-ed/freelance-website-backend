@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.user.domain.model;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.user.domain.enums.AccountStatus;
 import com.freelancemarketplace.backend.user.domain.enums.UserRoles;
 import jakarta.persistence.*;
@@ -43,7 +43,6 @@ public class UserModel extends BaseEntity implements AppUser {
 
     @Enumerated(EnumType.STRING)
     private UserRoles role; // e.g., "FREELANCER", "CLIENT", "ADMIN"
-
 
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;

@@ -56,7 +56,7 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
     private final CategoriesRepository categoriesRepository;
     private final SkillsRepository skillsRepository;
 
-    @Value("${ANTHROPIC_API_KEY:}")
+    @Value("${anthropic.api.key:${ANTHROPIC_API_KEY:${CLAUDE_API_KEY:}}}")
     private String anthropicApiKey;
 
     @Value("${ai.claude.api-url:https://api.anthropic.com/v1/messages}")
@@ -74,7 +74,7 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
 
         if (anthropicApiKey == null || anthropicApiKey.isBlank()) {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.CONFIGURATION_ERROR,
-                    "ANTHROPIC_API_KEY is missing. Please set it in environment variables.");
+                    "Claude API key is missing. Set ANTHROPIC_API_KEY or CLAUDE_API_KEY.");
         }
 
         String requestId = "ai_req_" + UUID.randomUUID();
@@ -197,10 +197,7 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
     }
 
     private void normalizeSuggestion(AiSuggestedProjectDTO project, AiSuggestProjectRequest request, List<String> warnings) {
-        if (project.getTitle() == null || project.getTitle().isBlank()) {
-            project.setTitle("Project based on your brief");
-            warnings.add("Title was missing from AI output and has been defaulted.");
-        }
+        normalizeTitle(project, request, warnings);
 
         if (project.getDescription() == null || project.getDescription().isBlank()) {
             project.setDescription("Please refine requirements, deliverables, timeline and acceptance criteria.");
@@ -288,6 +285,90 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
         }
     }
 
+    private void normalizeTitle(AiSuggestedProjectDTO project, AiSuggestProjectRequest request, List<String> warnings) {
+        String title = project.getTitle() == null ? "" : project.getTitle().trim();
+        String description = project.getDescription() == null ? "" : project.getDescription().trim();
+
+        if (title.isBlank()) {
+            project.setTitle(buildSmartFallbackTitle(request, project.getCategoryName()));
+            warnings.add("Title was missing from AI output and has been generated.");
+            return;
+        }
+
+        if (isWeakTitle(title, description)) {
+            project.setTitle(buildSmartFallbackTitle(request, project.getCategoryName()));
+            warnings.add("Title quality was low and has been regenerated (not copied from description).");
+            return;
+        }
+
+        // Keep AI title but normalize spacing and trailing punctuation noise.
+        project.setTitle(title.replaceAll("\\s+", " ").replaceAll("[\\s\\-:;,.]+$", ""));
+    }
+
+    private boolean isWeakTitle(String title, String description) {
+        String normalizedTitle = title.trim();
+        if (normalizedTitle.length() < 8 || normalizedTitle.length() > 100) {
+            return true;
+        }
+
+        int wordCount = normalizedTitle.split("\\s+").length;
+        if (wordCount < 3 || wordCount > 14) {
+            return true;
+        }
+
+        String lowered = normalizedTitle.toLowerCase(Locale.ROOT);
+        if (lowered.equals("new project suggestion") || lowered.equals("project based on your brief")) {
+            return true;
+        }
+
+        if (!description.isBlank()) {
+            String normalizedDescription = description.trim().replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
+            String normalizedTitleLower = normalizedTitle.replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
+            if (normalizedDescription.startsWith(normalizedTitleLower) && normalizedTitleLower.length() >= 12) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private String buildSmartFallbackTitle(AiSuggestProjectRequest request, String categoryName) {
+        String locale = request.getLocale() == null ? "" : request.getLocale().trim().toLowerCase(Locale.ROOT);
+
+        String projectType = "";
+        String industry = "";
+        if (request.getClientContext() != null) {
+            projectType = request.getClientContext().getProjectType() == null ? "" : request.getClientContext().getProjectType().trim();
+            industry = request.getClientContext().getIndustry() == null ? "" : request.getClientContext().getIndustry().trim();
+        }
+
+        String cleanedCategory = categoryName == null ? "" : categoryName.trim();
+
+        if (locale.startsWith("vi")) {
+            if (!projectType.isBlank() && !industry.isBlank()) {
+                return "Can freelancer cho du an " + projectType + " trong linh vuc " + industry;
+            }
+            if (!projectType.isBlank()) {
+                return "Can freelancer cho du an " + projectType;
+            }
+            if (!cleanedCategory.isBlank()) {
+                return "Can freelancer " + cleanedCategory + " cho du an moi";
+            }
+            return "Can freelancer cho du an moi";
+        }
+
+        if (!projectType.isBlank() && !industry.isBlank()) {
+            return "Looking for a " + projectType + " freelancer for " + industry + " project";
+        }
+        if (!projectType.isBlank()) {
+            return "Looking for a " + projectType + " freelancer";
+        }
+        if (!cleanedCategory.isBlank()) {
+            return "Need an experienced " + cleanedCategory + " freelancer";
+        }
+        return "Looking for an experienced freelancer for a new project";
+    }
+
     private void normalizeBudget(AiSuggestedProjectDTO project, AiSuggestProjectRequest request, List<String> warnings) {
         String budgetType = project.getBudget().getType();
         if (!ALLOWED_BUDGET_TYPES.contains(budgetType)) {
@@ -344,7 +425,7 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
 
     private AiSuggestedProjectDTO buildFallbackSuggestion(AiSuggestProjectRequest request) {
         AiSuggestedProjectDTO fallback = new AiSuggestedProjectDTO();
-        fallback.setTitle("New project suggestion");
+        fallback.setTitle(buildSmartFallbackTitle(request, "Web Development"));
         fallback.setDescription("Please describe objective, scope, deliverables, technical requirements and acceptance criteria.");
         fallback.setCategoryName("Web Development");
         fallback.setSkillNames(new ArrayList<>(List.of("Communication", "Project Planning", "Problem Solving", "Documentation")));
@@ -383,12 +464,13 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
                 "2) Follow exact schema.\n" +
                 "3) Conservative realistic assumptions.\n" +
                 "4) If info missing, infer and add assumptions to notes.\n" +
-                "5) For budget type HOURLY_RATE: minValue and maxValue required, minValue < maxValue, fixedValue omitted.\n" +
-                "6) For budget type FIXED_PRICE: fixedValue required, minValue/maxValue omitted.\n" +
-                "7) scope.duration must be one of: Less than 1 month, 1 to 3 months, 3 to 6 months, More than 6 months.\n" +
-                "8) scope.level must be one of: Entry level, Intermediate, Expert.\n" +
-                "9) scope.workload must be one of: Part-time, Full-time, Flexible.\n" +
-                "10) confidence in [0,1], skillNames between 4 and 8 items.\n" +
+                "5) Generate a strong standalone title (6-12 words). Do NOT copy the first words of description.\n" +
+                "6) For budget type HOURLY_RATE: minValue and maxValue required, minValue < maxValue, fixedValue omitted.\n" +
+                "7) For budget type FIXED_PRICE: fixedValue required, minValue/maxValue omitted.\n" +
+                "8) scope.duration must be one of: Less than 1 month, 1 to 3 months, 3 to 6 months, More than 6 months.\n" +
+                "9) scope.level must be one of: Entry level, Intermediate, Expert.\n" +
+                "10) scope.workload must be one of: Part-time, Full-time, Flexible.\n" +
+                "11) confidence in [0,1], skillNames between 4 and 8 items.\n" +
                 "Output JSON schema:\n" +
                 "{\n" +
                 "  \"title\": \"string\",\n" +
@@ -441,4 +523,3 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
                 "clientPrompt:\n" + request.getPrompt();
     }
 }
-

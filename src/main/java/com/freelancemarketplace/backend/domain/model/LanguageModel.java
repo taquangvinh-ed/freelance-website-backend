@@ -11,7 +11,7 @@ import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 import com.freelancemarketplace.backend.client.domain.model.ClientModel;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 
-@Entity
+@Entity(name = "LegacyLanguageModel")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.domain.model;
 
-import com.freelancemarketplace.backend.domain.enums.ProjectStatus;
+import com.freelancemarketplace.backend.project.domain.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ import com.freelancemarketplace.backend.proposal.domain.model.ProposalModel;
 import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 
-@Entity
+@Entity(name = "LegacyProjectModel")
 @Getter
 @Setter
 @NoArgsConstructor

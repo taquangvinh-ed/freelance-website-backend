@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.proposal.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.contract.dto.ContractDTO;
 import com.freelancemarketplace.backend.proposal.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.proposal.dto.ProposalDTO;
@@ -42,13 +42,11 @@ public class ProposalController {
         return ApiResponse.success(updatedProposal);
     }
 
-
     @DeleteMapping("/{proposalId}")
     public ApiResponse<?> deleteProposal(@PathVariable Long proposalId){
         proposalService.deleteProposal(proposalId);
         return ApiResponse.noContent();
     }
-
 
     @GetMapping("/{proposalId}")
     public ResponseEntity<ProposalDTO>getProposalById(@PathVariable Long proposalId){
@@ -103,6 +101,5 @@ public class ProposalController {
         ProposalDTO proposal = proposalService.getProposalByFreelancerAndProject(userId, projectId);
         return ResponseEntity.ok(proposal);
     }
-
 
 }

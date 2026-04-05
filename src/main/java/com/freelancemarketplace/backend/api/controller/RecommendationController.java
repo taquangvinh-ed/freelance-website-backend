@@ -1,10 +1,10 @@
 package com.freelancemarketplace.backend.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.dto.RecommendFreelancerDTO;
-import com.freelancemarketplace.backend.domain.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.domain.model.ProjectInteractionModel;
+import com.freelancemarketplace.backend.project.dto.ProjectDTO;
+import com.freelancemarketplace.backend.recommendation.dto.RecommendFreelancerDTO;
+import com.freelancemarketplace.backend.project.domain.model.ProjectInteractionModel;
 import com.freelancemarketplace.backend.recommandation.RecommendationService;
 import com.freelancemarketplace.backend.recommendation.infrastructure.repository.ProjectInteractionModelRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,6 @@ public class RecommendationController {
         Page<RecommendFreelancerDTO> freelancers = recommendationService.recommendFreelancers(projectId, pageable);
         return ApiResponse.success(freelancers);
     }
-
 
     @PostMapping("/train-cf")
     public ApiResponse<?> trainCF() {

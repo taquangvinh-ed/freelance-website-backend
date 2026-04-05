@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.application.service;
 
-import com.freelancemarketplace.backend.dto.ProjectDTO;
+import com.freelancemarketplace.backend.project.dto.ProjectDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

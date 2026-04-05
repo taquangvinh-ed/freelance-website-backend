@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.domain.model;
 
-import com.freelancemarketplace.backend.domain.enums.InteractionType;
+import com.freelancemarketplace.backend.recommendation.domain.enums.InteractionType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 
-@Entity
+@Entity(name = "LegacyProjectInteractionModel")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -2,11 +2,11 @@ package com.freelancemarketplace.backend.service.impl;
 
 import com.freelancemarketplace.backend.application.port.CloudStoragePort;
 import com.freelancemarketplace.backend.application.service.FreelancerProfileService;
-import com.freelancemarketplace.backend.dto.FreelancerDTO;
+import com.freelancemarketplace.backend.freelancer.dto.FreelancerDTO;
 import com.freelancemarketplace.backend.domain.exception.BaseApplicationException;
 import com.freelancemarketplace.backend.domain.exception.ErrorCode;
 import com.freelancemarketplace.backend.infrastructure.mapper.FreelancerMapper;
-import com.freelancemarketplace.backend.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.repository.FreelancersRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

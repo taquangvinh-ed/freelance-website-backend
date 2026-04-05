@@ -1,15 +1,12 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.ProjectProposalDTO;
-import com.freelancemarketplace.backend.dto.ProposalDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.api.response.ResponseMessage;
-import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.ProposalService;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.proposal.dto.ProjectProposalDTO;
+import com.freelancemarketplace.backend.proposal.dto.ProposalDTO;
+import com.freelancemarketplace.backend.proposal.application.service.ProposalService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,13 +40,11 @@ public class ProposalController {
         return ApiResponse.success(updatedProposal);
     }
 
-
     @DeleteMapping("/{proposalId}")
     public ApiResponse<?> deleteProposal(@PathVariable Long proposalId){
         proposalService.deleteProposal(proposalId);
         return ApiResponse.noContent();
     }
-
 
     @GetMapping("/{proposalId}")
     public ResponseEntity<ProposalDTO>getProposalById(@PathVariable Long proposalId){
@@ -65,7 +60,7 @@ public class ProposalController {
         return ApiResponse.success(proposals);
     }
 
-    @GetMapping("/team/{teaId}")
+    @GetMapping("/team/{teamId}")
     public ApiResponse<?> updatedProposal(@PathVariable Long teamId){
 
         List<ProposalDTO> proposals = proposalService.getAllProposalByTeamId(teamId);
@@ -104,6 +99,5 @@ public class ProposalController {
         ProposalDTO proposal = proposalService.getProposalByFreelancerAndProject(userId, projectId);
         return ResponseEntity.ok(proposal);
     }
-
 
 }

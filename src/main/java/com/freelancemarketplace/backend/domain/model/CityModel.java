@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.util.Set;
 
-@Entity
+@Entity(name = "LegacyCityModel")
 @Getter
 @Setter
 @NoArgsConstructor

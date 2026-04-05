@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.OrderDTO;
+import com.freelancemarketplace.backend.product.dto.OrderDTO;
 import com.freelancemarketplace.backend.domain.model.OrderModel;
 import org.mapstruct.*;
 

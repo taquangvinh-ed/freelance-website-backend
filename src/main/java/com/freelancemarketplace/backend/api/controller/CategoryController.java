@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.dto.CategoryDTO;
-import com.freelancemarketplace.backend.service.CategoryService;
+import com.freelancemarketplace.backend.category.dto.CategoryDTO;
+import com.freelancemarketplace.backend.category.application.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -33,7 +33,7 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public ApiResponse<?> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
-        return ApiResponse.delete();
+        return ApiResponse.noContent();
     }
 
     @GetMapping("/getAll")

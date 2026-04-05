@@ -1,12 +1,12 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.AiSuggestProjectResponseDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.api.request.AiSuggestProjectRequest;
+import com.freelancemarketplace.backend.project.dto.AiSuggestProjectResponseDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
+import com.freelancemarketplace.backend.project.api.request.AiSuggestProjectRequest;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.AIProjectSuggestionService;
+import com.freelancemarketplace.backend.project.application.service.AIProjectSuggestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.application.service;
 
-import com.freelancemarketplace.backend.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 
 /**
  * Application Service: Project Embedding & Vector Operations (SRP)

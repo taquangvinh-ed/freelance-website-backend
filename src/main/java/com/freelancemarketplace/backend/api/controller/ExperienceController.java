@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.ExperienceDTO;
-import com.freelancemarketplace.backend.service.ExperienceService;
+import com.freelancemarketplace.backend.freelancer.dto.ExperienceDTO;
+import com.freelancemarketplace.backend.freelancer.application.service.ExperienceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,6 @@ public class ExperienceController {
         ExperienceDTO updatedExperience = experienceService.update(experienceId, experienceDTO);
         return ResponseEntity.ok(updatedExperience);
     }
-
 
     @DeleteMapping("/{experienceId}")
     ResponseEntity<Void> delete(@PathVariable Long experienceId){

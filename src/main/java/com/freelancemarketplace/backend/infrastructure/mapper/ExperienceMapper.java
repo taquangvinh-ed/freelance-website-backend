@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.ExperienceDTO;
+import com.freelancemarketplace.backend.freelancer.dto.ExperienceDTO;
 import com.freelancemarketplace.backend.domain.model.ExperienceModel;
 import org.mapstruct.*;
 

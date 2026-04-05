@@ -17,7 +17,7 @@ import com.freelancemarketplace.backend.product.domain.model.ProductModel;
 import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 import com.freelancemarketplace.backend.report.domain.model.ReportModel;
 
-@Entity
+@Entity(name = "LegacyCompanyModel")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,11 +1,11 @@
 package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.dto.SkillDTO;
-import com.freelancemarketplace.backend.dto.SkillDTO2;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
+import com.freelancemarketplace.backend.skill.dto.SkillDTO;
+import com.freelancemarketplace.backend.skill.dto.SkillDTO2;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.SkillSerivice;
+import com.freelancemarketplace.backend.skill.application.service.SkillSerivice;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -89,10 +89,6 @@ public class SkillController {
                         givenSkill
                 ));
     }
-
-
-
-
 
     @GetMapping("/getAllSkill/Category/{categoryId}")
     ResponseEntity<ResponseDTO>getAllSkillByCategory(@PathVariable Long categoryId){

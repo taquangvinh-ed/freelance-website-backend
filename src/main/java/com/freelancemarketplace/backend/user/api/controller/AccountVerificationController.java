@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.user.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.user.dto.AccountVerificationDTO;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.exceptionHandling.ErrorCode;

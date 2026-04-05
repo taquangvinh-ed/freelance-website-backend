@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.payment.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.client.dto.ClientDTO;
 import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
@@ -32,7 +32,6 @@ public class StripeController {
         this.freelancerService = freelancerService;
         this.paymentService = paymentService;
     }
-
 
     @PostMapping("/webhook")
     public ApiResponse<?> handle(@RequestBody String payload,
@@ -73,6 +72,5 @@ public class StripeController {
 
         return ApiResponse.success(link);
     }
-
 
 }

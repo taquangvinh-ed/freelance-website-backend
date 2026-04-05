@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 
-@Entity
+@Entity(name = "LegacyQ_AModel")
 @Getter
 @Setter
 @NoArgsConstructor

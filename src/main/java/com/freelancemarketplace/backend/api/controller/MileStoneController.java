@@ -1,10 +1,10 @@
 package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.dto.MileStoneDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.MileStoneService;
+import com.freelancemarketplace.backend.contract.application.service.MileStoneService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +48,7 @@ public class MileStoneController {
                         updatedMileStone
                 ));
 
-
     }
-
 
     @DeleteMapping("/{mileStoneId}")
     public ResponseEntity<ResponseDTO>deleteMileStone(@PathVariable Long mileStoneId){
@@ -76,6 +74,5 @@ public class MileStoneController {
                         mileStones
                 ));
     }
-
 
 }

@@ -1,8 +1,9 @@
 package com.freelancemarketplace.backend.api.controller;
 
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.infrastructure.security.auth.LoginRequest;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
 import com.freelancemarketplace.backend.infrastructure.security.jwt.JwtTokenProvider;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;

@@ -1,11 +1,11 @@
 package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.dto.LanguageDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.language.dto.LanguageDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
 import com.freelancemarketplace.backend.domain.exception.LanguageException;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.LanguageService;
+import com.freelancemarketplace.backend.language.application.service.LanguageService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.CloudinaryService;
+import com.freelancemarketplace.backend.project.application.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

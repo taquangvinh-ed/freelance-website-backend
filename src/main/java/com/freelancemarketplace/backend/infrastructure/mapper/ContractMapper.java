@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.ContractDTO;
-import com.freelancemarketplace.backend.dto.MileStoneDTO;
-import com.freelancemarketplace.backend.domain.model.ContractModel;
+import com.freelancemarketplace.backend.contract.dto.ContractDTO;
+import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
+import com.freelancemarketplace.backend.contract.domain.model.ContractModel;
 import com.freelancemarketplace.backend.domain.model.MileStoneModel;
 import org.mapstruct.*;
 
@@ -19,7 +19,6 @@ public interface ContractMapper {
 
     @Mapping(target = "contractId", source = "contract.contractId")
     MileStoneDTO toDto(MileStoneModel mileStoneModel);
-
 
     @Mapping(target = "proposalId", source = "proposal.proposalId")
     @Mapping(target = "freelancerId", source = "freelancer.freelancerId")

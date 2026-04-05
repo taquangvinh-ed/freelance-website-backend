@@ -2,8 +2,8 @@ package com.freelancemarketplace.backend.service.impl;
 
 import com.freelancemarketplace.backend.application.port.ProjectCrudPort;
 import com.freelancemarketplace.backend.application.service.ProjectStatisticsService;
-import com.freelancemarketplace.backend.domain.enums.ProjectStatus;
-import com.freelancemarketplace.backend.repository.ProjectsRepository;
+import com.freelancemarketplace.backend.project.domain.enums.ProjectStatus;
+import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

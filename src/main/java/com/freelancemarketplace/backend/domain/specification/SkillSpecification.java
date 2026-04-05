@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.domain.specification;
 
-import com.freelancemarketplace.backend.domain.model.SkillModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

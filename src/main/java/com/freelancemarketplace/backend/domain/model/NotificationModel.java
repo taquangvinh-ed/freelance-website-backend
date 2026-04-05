@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import com.freelancemarketplace.backend.admin.domain.model.AdminModel;
 import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 
-@Entity
+@Entity(name = "LegacyNotificationModel")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 import com.freelancemarketplace.backend.user.domain.model.UserModel;
 
-@Entity
+@Entity(name = "LegacyProjectQuestionModel")
 @Getter
 @Setter
 @NoArgsConstructor

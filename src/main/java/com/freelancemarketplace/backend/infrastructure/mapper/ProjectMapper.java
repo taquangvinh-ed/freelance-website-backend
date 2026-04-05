@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.domain.model.*;
-import com.freelancemarketplace.backend.dto.*;
-import com.freelancemarketplace.backend.api.request.CreateProjectRequest;
+
+import com.freelancemarketplace.backend.project.api.request.CreateProjectRequest;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,7 +34,6 @@ public interface ProjectMapper {
     CategoryModel toEntity(CategoryDTO categoryDTO);
     CategoryDTO toCategoryDTO(CategoryModel categoryModel);
 
-
     ProjectScope toScopeEntity(ProjectScopeDTO projectScopeDTO);
     ProjectScopeDTO toScopeDTO(ProjectScope projectScope);
 
@@ -63,6 +62,5 @@ public interface ProjectMapper {
         dto.setWorkload(scope.getWorkload());
         return dto;
     }
-
 
 }

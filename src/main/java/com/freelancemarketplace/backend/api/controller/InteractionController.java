@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.domain.enums.InteractionType;
+import com.freelancemarketplace.backend.recommendation.domain.enums.InteractionType;
 import com.freelancemarketplace.backend.recommandation.InteractionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;

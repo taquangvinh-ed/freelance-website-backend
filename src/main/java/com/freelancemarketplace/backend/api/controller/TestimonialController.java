@@ -1,10 +1,10 @@
 package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.dto.ReviewDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
+import com.freelancemarketplace.backend.review.dto.ReviewDTO;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.TestomonialService;
+import com.freelancemarketplace.backend.review.application.service.TestomonialService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,6 @@ public class TestimonialController {
         this.testomonialService = testomonialService;
     }
 
-
     @PostMapping("/")
     ResponseEntity<ResponseDTO> create(@RequestBody ReviewDTO reviewDTO) {
         ReviewDTO newReview = testomonialService.createReview(reviewDTO);
@@ -34,7 +33,6 @@ public class TestimonialController {
                         newReview
                 ));
     }
-
 
     @DeleteMapping("/{testimonialId}")
     ResponseEntity<ResponseDTO> delete(@PathVariable Long testimonialId
@@ -86,6 +84,5 @@ public class TestimonialController {
                         testimonialPage
                 ));
     }
-
 
 }

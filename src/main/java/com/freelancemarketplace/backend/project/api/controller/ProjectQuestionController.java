@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.project.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.admin.dto.AnswerQuestionRequest;
 import com.freelancemarketplace.backend.admin.dto.CreateQuestionRequest;
 import com.freelancemarketplace.backend.project.dto.ProjectQuestionDTO;

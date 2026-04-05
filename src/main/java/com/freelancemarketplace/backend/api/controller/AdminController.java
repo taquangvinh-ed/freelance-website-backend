@@ -1,15 +1,16 @@
 package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.api.request.DisableUserRequest;
-import com.freelancemarketplace.backend.api.request.UserRequest;
+import com.freelancemarketplace.backend.user.api.request.DisableUserRequest;
+import com.freelancemarketplace.backend.user.api.request.UserRequest;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.dto.AdminDTO;
-import com.freelancemarketplace.backend.dto.UserDTO;
+import com.freelancemarketplace.backend.admin.dto.AdminDTO;
+import com.freelancemarketplace.backend.user.dto.UserDTO;
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.service.AdminService;
+import com.freelancemarketplace.backend.admin.application.service.AdminService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,14 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Profile("legacy")
 @RestController
 @RequestMapping(path = "/api/admin", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RequiredArgsConstructor
 public class AdminController {
 
-
     private final AdminService adminService;
-
 
     @PutMapping("/{adminId}")
     public ApiResponse<?> updateAdmin(@PathVariable Long adminId,
@@ -36,7 +36,7 @@ public class AdminController {
     @DeleteMapping("/admin/{adminId}")
     public ApiResponse<?> deleteAdmin(@PathVariable Long adminId) {
        adminService.delete(adminId);
-        return ApiResponse.delete();
+        return ApiResponse.noContent();
     }
 
     @GetMapping("/admin/{adminId}")

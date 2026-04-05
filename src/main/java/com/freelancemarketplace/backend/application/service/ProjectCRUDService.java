@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.application.service;
 
-import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.api.request.CreateProjectRequest;
+import com.freelancemarketplace.backend.project.dto.ProjectDTO;
+import com.freelancemarketplace.backend.project.api.request.CreateProjectRequest;
 
 /**
  * Application Service: Project CRUD Operations (SRP - Single Responsibility Principle)

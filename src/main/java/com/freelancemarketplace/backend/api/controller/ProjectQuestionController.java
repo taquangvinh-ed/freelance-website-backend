@@ -1,13 +1,14 @@
 package com.freelancemarketplace.backend.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.AnswerQuestionRequest;
-import com.freelancemarketplace.backend.dto.CreateQuestionRequest;
-import com.freelancemarketplace.backend.dto.ProjectQuestionDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.admin.dto.AnswerQuestionRequest;
+import com.freelancemarketplace.backend.admin.dto.CreateQuestionRequest;
+import com.freelancemarketplace.backend.project.dto.ProjectQuestionDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.ProjectQuestionService;
+import com.freelancemarketplace.backend.project.application.service.ProjectQuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

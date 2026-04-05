@@ -13,7 +13,7 @@ import com.freelancemarketplace.backend.client.domain.model.CompanyModel;
 import com.freelancemarketplace.backend.freelancer.domain.model.ExperienceModel;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 
-@Entity
+@Entity(name = "LegacyLocationModel")
 @Getter
 @Setter
 @NoArgsConstructor

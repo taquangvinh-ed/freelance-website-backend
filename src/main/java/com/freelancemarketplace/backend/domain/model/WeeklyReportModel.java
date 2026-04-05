@@ -13,7 +13,7 @@ import com.freelancemarketplace.backend.contract.domain.model.ContractModel;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "LegacyWeeklyReportModel")
 @Table(name = "weekly_reports")
 public class WeeklyReportModel {
     @Id

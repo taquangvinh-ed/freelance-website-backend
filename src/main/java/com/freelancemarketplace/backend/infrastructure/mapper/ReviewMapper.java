@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.ReviewDTO;
-import com.freelancemarketplace.backend.domain.model.TestimonialModel;
+import com.freelancemarketplace.backend.review.dto.ReviewDTO;
+import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,7 +28,6 @@ public interface ReviewMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     TestimonialModel partialUpdate(ReviewDTO reviewDTO, @MappingTarget TestimonialModel testimonialModel);
-
 
     default Page<ReviewDTO> toDTOPage(Page<TestimonialModel> modelpage, Pageable pageable){
         List<ReviewDTO> dtoList = modelpage.getContent().stream()

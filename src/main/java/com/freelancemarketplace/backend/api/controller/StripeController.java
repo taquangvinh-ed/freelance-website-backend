@@ -1,9 +1,10 @@
 package com.freelancemarketplace.backend.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.domain.model.FreelancerModel;
-import com.freelancemarketplace.backend.service.FreelancerService;
-import com.freelancemarketplace.backend.service.PaymentService;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.freelancer.application.service.FreelancerService;
+import com.freelancemarketplace.backend.payment.application.service.PaymentService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Account;
 import com.stripe.model.Event;
@@ -28,7 +29,6 @@ public class StripeController {
         this.freelancerService = freelancerService;
         this.paymentService = paymentService;
     }
-
 
     @PostMapping("/webhook")
     public ApiResponse<?> handle(@RequestBody String payload,
@@ -69,6 +69,5 @@ public class StripeController {
 
         return ApiResponse.success(link);
     }
-
 
 }

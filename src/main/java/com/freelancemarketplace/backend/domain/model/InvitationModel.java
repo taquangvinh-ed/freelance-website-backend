@@ -12,7 +12,7 @@ import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
+@Entity(name = "LegacyInvitationModel")
 @Table(name = "invitation")
 public class InvitationModel {
     @Id

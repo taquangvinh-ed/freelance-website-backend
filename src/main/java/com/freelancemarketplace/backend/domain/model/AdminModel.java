@@ -15,7 +15,7 @@ import com.freelancemarketplace.backend.location.domain.model.LocationModel;
 import com.freelancemarketplace.backend.notification.domain.model.NotificationModel;
 import com.freelancemarketplace.backend.user.domain.model.UserModel;
 
-@Entity
+@Entity(name = "LegacyAdminModel")
 @Getter
 @Setter
 @NoArgsConstructor

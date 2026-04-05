@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.dto.BudgetDTO;
-import com.freelancemarketplace.backend.service.BudgetService;
+import com.freelancemarketplace.backend.project.dto.BudgetDTO;
+import com.freelancemarketplace.backend.project.application.service.BudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +29,7 @@ public class BudgetController {
     @DeleteMapping("/{budgetId}")
     public ApiResponse<?> deleteBudget(@PathVariable Long budgetId) {
         budgetService.deleteBudget(budgetId);
-        return ApiResponse.delete();
+        return ApiResponse.noContent();
     }
-
 
 }

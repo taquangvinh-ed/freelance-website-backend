@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.CategoryDTO;
-import com.freelancemarketplace.backend.dto.SkillDTO;
+import com.freelancemarketplace.backend.category.dto.CategoryDTO;
+import com.freelancemarketplace.backend.skill.dto.SkillDTO;
 import com.freelancemarketplace.backend.domain.model.CategoryModel;
-import com.freelancemarketplace.backend.domain.model.SkillModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import org.mapstruct.*;
 
 import java.util.List;

@@ -13,7 +13,7 @@ import com.freelancemarketplace.backend.contract.domain.model.ContractModel;
 import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 import com.freelancemarketplace.backend.proposal.domain.model.ProposalModel;
 
-@Entity
+@Entity(name = "LegacyMileStoneModel")
 @Getter
 @Setter
 @NoArgsConstructor

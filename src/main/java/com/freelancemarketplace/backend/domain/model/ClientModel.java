@@ -20,7 +20,7 @@ import com.freelancemarketplace.backend.report.domain.model.ReportModel;
 import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
 import com.freelancemarketplace.backend.user.domain.model.UserModel;
 
-@Entity
+@Entity(name = "LegacyClientModel")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 public class ClaudeLLMAdapter implements LLMPort {
     
-    @Value("${anthropic.api.key}")
+    @Value("${anthropic.api.key:${ANTHROPIC_API_KEY:${CLAUDE_API_KEY:}}}")
     private String apiKey;
     
     @Value("${anthropic.model:claude-3-sonnet-20240229}")
@@ -84,4 +84,3 @@ public class ClaudeLLMAdapter implements LLMPort {
         return null;
     }
 }
-

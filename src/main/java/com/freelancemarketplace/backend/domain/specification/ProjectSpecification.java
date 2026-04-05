@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.domain.specification;
 
 import com.freelancemarketplace.backend.domain.enums.BudgetTypes;
-import com.freelancemarketplace.backend.domain.model.BudgetModel;
-import com.freelancemarketplace.backend.domain.model.ProjectModel;
-import com.freelancemarketplace.backend.domain.model.SkillModel;
+import com.freelancemarketplace.backend.project.domain.model.BudgetModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -12,10 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-import com.freelancemarketplace.backend.project.domain.model.BudgetModel;
-import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
-import com.freelancemarketplace.backend.project.domain.model.ProjectScope;
-import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 
 public class ProjectSpecification {
 
@@ -44,7 +40,9 @@ public class ProjectSpecification {
 
                 if (!normalizedSkillNames.isEmpty()) {
                     predicates.add(criteriaBuilder.lower(skillsJoin.get("name")).in(normalizedSkillNames));
-                    query.distinct(true);
+                    if (query != null) {
+                        query.distinct(true);
+                    }
                 }
             }
 

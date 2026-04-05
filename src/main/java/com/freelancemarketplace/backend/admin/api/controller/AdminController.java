@@ -1,8 +1,7 @@
 package com.freelancemarketplace.backend.admin.api.controller;
 
-
 import com.freelancemarketplace.backend.admin.application.service.AdminService;
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.admin.dto.AdminDTO;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.user.dto.UserDTO;
@@ -28,8 +27,6 @@ public class AdminController {
     Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     private final AdminService adminService;
-
-
 
     @PutMapping("/{adminId}")
     public ApiResponse<?> updateAdmin(@PathVariable Long adminId,
@@ -104,8 +101,5 @@ public class AdminController {
         UserDTO user = adminService.banUser(userId, adminId, request);
         return ApiResponse.success(user);
     }
-
-
-
 
 }

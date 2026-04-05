@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.MileStoneDTO;
+import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.domain.model.MileStoneModel;
 import org.mapstruct.*;
 

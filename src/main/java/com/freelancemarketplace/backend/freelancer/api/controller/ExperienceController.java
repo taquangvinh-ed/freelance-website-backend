@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.freelancer.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.freelancer.dto.ExperienceDTO;
 import com.freelancemarketplace.backend.freelancer.application.service.ExperienceService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,6 @@ public class ExperienceController {
         ExperienceDTO updatedExperience = experienceService.update(experienceId, experienceDTO);
         return ResponseEntity.ok(updatedExperience);
     }
-
 
     @DeleteMapping("/{experienceId}")
     ResponseEntity<Void> delete(@PathVariable Long experienceId){

@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.api.request.SendEmailRequest;
-import com.freelancemarketplace.backend.service.EmailService;
+import com.freelancemarketplace.backend.email.application.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

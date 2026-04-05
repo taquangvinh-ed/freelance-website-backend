@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.dto.ClientDTO;
-import com.freelancemarketplace.backend.service.ClientService;
+import com.freelancemarketplace.backend.client.dto.ClientDTO;
+import com.freelancemarketplace.backend.client.application.service.ClientService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +32,7 @@ public class ClientController {
     public ApiResponse<?> deleteClient(@PathVariable Long clientId
                                                    ){
         clientService.deleteClient(clientId);
-        return ApiResponse.delete();
+        return ApiResponse.noContent();
     }
-
 
 }

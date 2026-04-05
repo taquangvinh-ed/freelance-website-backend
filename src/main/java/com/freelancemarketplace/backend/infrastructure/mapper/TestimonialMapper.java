@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.TestimonialDTO;
-import com.freelancemarketplace.backend.domain.model.TestimonialModel;
+import com.freelancemarketplace.backend.review.dto.TestimonialDTO;
+import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

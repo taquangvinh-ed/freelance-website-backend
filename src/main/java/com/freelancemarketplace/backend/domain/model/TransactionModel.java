@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
+@Entity(name = "LegacyTransactionModel")
 @Getter
 @Setter
 @NoArgsConstructor

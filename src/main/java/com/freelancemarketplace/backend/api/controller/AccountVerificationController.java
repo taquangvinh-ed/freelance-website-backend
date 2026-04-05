@@ -1,13 +1,13 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.AccountVerificationDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.api.request.ReviewVerificationRequest;
+import com.freelancemarketplace.backend.user.dto.AccountVerificationDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
+import com.freelancemarketplace.backend.user.api.request.ReviewVerificationRequest;
 import com.freelancemarketplace.backend.api.request.VerifyOtpRequest;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.AccountVerificationService;
+import com.freelancemarketplace.backend.user.application.service.AccountVerificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.infrastructure.persistence;
 
 import com.freelancemarketplace.backend.application.port.ProjectCrudPort;
-import com.freelancemarketplace.backend.domain.model.ProjectModel;
-import com.freelancemarketplace.backend.domain.enums.ProjectStatus;
-import com.freelancemarketplace.backend.repository.ProjectsRepository;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.project.domain.enums.ProjectStatus;
+import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
-@Entity
+@Entity(name = "LegacyClarificationProjectQANotificationModel")
 @Table(name = "clarification_project_qa_notifications")
 @Getter
 @Setter

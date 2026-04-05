@@ -37,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/categories/getAll",
             "/api/skills/getAllSkill/Category/{categoryId}",
             "/api/skills/getAll",
-            "/api/categories/getAll",
             "/api/projects/getAllProjects",
             "/api/projects/recommend/train-cf",
             "/api/projects/filter",
@@ -52,8 +51,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try {
-            if (PUBLIC_ENDPOINTS.contains(request.getRequestURI())) {
-                filterChain.doFilter(request, response); // Skip JWT validation for login
+            String uri = request.getRequestURI();
+            // Remove query string if present
+            if (uri.contains("?")) {
+                uri = uri.substring(0, uri.indexOf("?"));
+            }
+
+            // Check if URI is in public endpoints (allow exact and wildcard matches)
+            String finalUri = uri;
+            String finalUri1 = uri;
+            boolean isPublic = PUBLIC_ENDPOINTS.stream()
+                    .anyMatch(endpoint -> {
+                        if (endpoint.contains("**")) {
+                            // Wildcard pattern: /api/stripe/**
+                            String prefix = endpoint.replace("/**", "");
+                            return finalUri.startsWith(prefix);
+                        } else if (endpoint.contains("{")) {
+                            // Path variable pattern: /api/skills/getAllSkill/Category/{categoryId}
+                            String pattern = endpoint.replaceAll("\\{.*?}", "[^/]+");
+                            return finalUri1.matches(pattern);
+                        } else {
+                            // Exact match
+                            return finalUri.equals(endpoint);
+                        }
+                    });
+
+            if (isPublic) {
+                filterChain.doFilter(request, response);
                 return;
             }
 

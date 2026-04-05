@@ -5,12 +5,11 @@ import com.freelancemarketplace.backend.category.dto.CategoryDTO;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.category.application.service.CategoryService;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(path = "/api/categories", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class CategoryController {
 

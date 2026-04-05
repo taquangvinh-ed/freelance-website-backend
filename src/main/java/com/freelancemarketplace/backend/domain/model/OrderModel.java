@@ -13,7 +13,7 @@ import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 import com.freelancemarketplace.backend.client.domain.model.ClientModel;
 import com.freelancemarketplace.backend.payment.domain.model.PaymentModel;
 
-@Entity
+@Entity(name = "LegacyOrderModel")
 @Getter
 @Setter
 @NoArgsConstructor

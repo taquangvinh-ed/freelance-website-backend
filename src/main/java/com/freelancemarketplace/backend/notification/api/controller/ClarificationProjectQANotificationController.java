@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.notification.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.notification.dto.ClarificationiProjectQANotificationDTO;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.notification.application.service.NotificationService;

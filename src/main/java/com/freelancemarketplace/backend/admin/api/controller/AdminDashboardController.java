@@ -1,4 +1,5 @@
 package com.freelancemarketplace.backend.admin.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.user.domain.enums.UserRoles;
 import com.freelancemarketplace.backend.project.application.service.ProjectService;
@@ -17,7 +18,6 @@ public class AdminDashboardController {
 
     private final UserService userService;
     private final ProjectService projectService;
-
 
     @GetMapping("/count-user-by-role")
     public ApiResponse<?> countUserByRole(@RequestParam UserRoles role){

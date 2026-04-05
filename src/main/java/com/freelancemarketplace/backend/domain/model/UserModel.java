@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.domain.model;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.domain.enums.AccountStatus;
-import com.freelancemarketplace.backend.domain.enums.UserRoles;
+import com.freelancemarketplace.backend.user.domain.enums.UserRoles;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 import com.freelancemarketplace.backend.client.domain.model.ClientModel;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 
-@Entity
+@Entity(name = "LegacyUserModel")
 @Getter
 @Setter
 @NoArgsConstructor

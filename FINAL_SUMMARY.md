@@ -200,7 +200,7 @@ PostgreSQL tables auto-created via JPA:
 # Run
 ./gradlew bootRun
 
-# Or with env vars
+# Or with .env vars
 AI_LLM_API_KEY=your-key ./gradlew bootRun
 ```
 

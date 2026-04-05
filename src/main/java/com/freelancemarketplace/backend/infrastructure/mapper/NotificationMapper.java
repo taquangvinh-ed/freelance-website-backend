@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.NotificationDTO;
+import com.freelancemarketplace.backend.notification.dto.NotificationDTO;
 import com.freelancemarketplace.backend.domain.model.NotificationModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

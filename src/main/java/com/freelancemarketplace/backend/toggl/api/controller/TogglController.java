@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.toggl.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.toggl.dto.ClockifyTimeEntryResponse;
 import com.freelancemarketplace.backend.toggl.dto.TogglTimeEntryResponseDTO;
@@ -17,13 +17,11 @@ public class TogglController {
 
     private final TogglService togglService;
 
-
     @PostMapping("/create-project")
     ApiResponse<?> createProjectOnToggl(@RequestParam String projectName){
         Long togglProjectId = togglService.createProjectOnToggl(projectName);
         return ApiResponse.success(togglProjectId);
     }
-
 
     @PostMapping("/start/{contractId}")
     public ApiResponse<?> startTimer(
@@ -38,7 +36,6 @@ public class TogglController {
                 contractId,
                 description
         );
-
 
         return ApiResponse.success(response);
     }

@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import com.freelancemarketplace.backend.test.domain.model.TestModel;
 
-@Entity
+@Entity(name = "LegacyFreelancerTestResults")
 @Getter
 @Setter
 @NoArgsConstructor

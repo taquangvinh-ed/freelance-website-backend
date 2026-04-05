@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.report.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.report.application.service.DashboardClientService;
 import com.freelancemarketplace.backend.report.application.service.DashboardFreelancerService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ import com.freelancemarketplace.backend.project.dto.PostedProject;
 import com.freelancemarketplace.backend.recommendation.dto.OverallStatsDTO;
 import com.freelancemarketplace.backend.recommendation.dto.ProjectTrackingDTO;
 import com.freelancemarketplace.backend.skill.dto.SkillDistributionDTO;
-
 
 @RestController
 @RequestMapping(path = "/api/dashboard", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -55,7 +55,6 @@ public class DashboardController {
         return ApiResponse.success(skillDistributions);
     }
 
-
     @GetMapping("/freelancer/recentClient")
     public ApiResponse<?> getRecentClients(
             @AuthenticationPrincipal AppUser appUser) {
@@ -85,7 +84,6 @@ public class DashboardController {
         return ApiResponse.success(completedProjects);
     }
 
-
     @GetMapping("/client/getStats")
     public ApiResponse<?> getStats(@AuthenticationPrincipal AppUser appUser){
         Long userId = appUser.getId();
@@ -106,7 +104,6 @@ public class DashboardController {
         List<RecentPaymentDTO> recentPayments = dashboardClientService.getRecentPayments(userId);
         return ApiResponse.success(recentPayments);
     }
-
 
     @GetMapping("/client/getAllPostedProjects")
     public ApiResponse<?> getAllPostedProject(@AuthenticationPrincipal AppUser appUser){

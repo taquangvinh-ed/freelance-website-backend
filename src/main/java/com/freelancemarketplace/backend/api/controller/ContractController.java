@@ -1,13 +1,13 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.dto.ContractDTO;
-import com.freelancemarketplace.backend.dto.ContractResponseDTO;
-import com.freelancemarketplace.backend.dto.MileStoneDTO;
-import com.freelancemarketplace.backend.dto.WeeklyReportDTO;
-import com.freelancemarketplace.backend.service.CloudinaryService;
-import com.freelancemarketplace.backend.service.ContractReportingService;
-import com.freelancemarketplace.backend.service.ContractService;
+import com.freelancemarketplace.backend.contract.dto.ContractDTO;
+import com.freelancemarketplace.backend.contract.dto.ContractResponseDTO;
+import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
+import com.freelancemarketplace.backend.contract.dto.WeeklyReportDTO;
+import com.freelancemarketplace.backend.project.application.service.CloudinaryService;
+import com.freelancemarketplace.backend.contract.application.service.ContractReportingService;
+import com.freelancemarketplace.backend.contract.application.service.ContractService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,7 +31,6 @@ public class ContractController {
     private final ContractReportingService contractReportingService;
     private final CloudinaryService cloudinaryService;
 
-
     @PutMapping("/{contractId}")
     public ApiResponse<?> updateContract(@PathVariable Long contractId,
                                                @RequestBody ContractDTO contractDTO) {
@@ -43,7 +42,7 @@ public class ContractController {
     @DeleteMapping("/{contractId}")
     public ApiResponse<?> deleteContract(@PathVariable Long contractId) {
         contractService.deleteContract(contractId);
-        return ApiResponse.delete();
+        return ApiResponse.noContent();
     }
 
     @GetMapping("/freelancer/{freelancerId}")
@@ -74,7 +73,6 @@ public class ContractController {
         Timestamp result = contractService.markMilestoneAsCompleted(contractId, milestoneId, file);
         return ApiResponse.success(result);
     }
-
 
     @GetMapping("/{contractId}/hourly-contract-logs")
     public ApiResponse<?> getLogs(@PathVariable Long contractId) {

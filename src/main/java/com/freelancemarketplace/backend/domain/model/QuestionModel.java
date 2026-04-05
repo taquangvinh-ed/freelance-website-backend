@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.util.Set;
 import com.freelancemarketplace.backend.test.domain.model.TestModel;
 
-@Entity
+@Entity(name = "LegacyQuestionModel")
 @Getter
 @Setter
 @NoArgsConstructor

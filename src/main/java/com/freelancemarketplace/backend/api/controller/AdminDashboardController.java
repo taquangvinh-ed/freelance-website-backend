@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.api.controller;
 
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.domain.enums.UserRoles;
-import com.freelancemarketplace.backend.service.ProjectService;
-import com.freelancemarketplace.backend.service.UserService;
+import com.freelancemarketplace.backend.user.domain.enums.UserRoles;
+import com.freelancemarketplace.backend.project.application.service.ProjectService;
+import com.freelancemarketplace.backend.user.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,6 @@ public class AdminDashboardController {
 
     private final UserService userService;
     private final ProjectService projectService;
-
 
     @GetMapping("/count-user-by-role")
     public ApiResponse<?> countUserByRole(@RequestParam UserRoles role){

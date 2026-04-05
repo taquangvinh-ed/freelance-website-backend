@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
 
-@Entity
+@Entity(name = "LegacyMessageModel")
 @Getter
 @Setter
 @NoArgsConstructor

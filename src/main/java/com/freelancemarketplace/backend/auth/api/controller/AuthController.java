@@ -1,20 +1,20 @@
 package com.freelancemarketplace.backend.auth.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
-import com.freelancemarketplace.backend.auth.LoginRequest;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.LoginRequest;
 import com.freelancemarketplace.backend.api.response.ApiResponse;
-import com.freelancemarketplace.backend.jwt.JwtTokenProvider;
+import com.freelancemarketplace.backend.infrastructure.security.jwt.JwtTokenProvider;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class AuthController {
     private final AuthenticationManager authenticationManager;

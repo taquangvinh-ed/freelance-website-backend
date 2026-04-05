@@ -1,6 +1,7 @@
 package com.freelancemarketplace.backend.conversation.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.conversation.dto.ContactInfoDTO;
 import com.freelancemarketplace.backend.conversation.dto.ConversationDTO;
 import com.freelancemarketplace.backend.conversation.dto.CurrentUserProfileDTO;
@@ -36,7 +37,6 @@ public class ChatController {
 
         messagingTemplate.convertAndSend("/topic/chat/" + roomId,  response);
     }
-
 
     @GetMapping("/api/chat/getContactInfo/{userId}")
     public ApiResponse<?> getContactInfo(@PathVariable Long userId){

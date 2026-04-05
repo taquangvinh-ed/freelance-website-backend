@@ -17,7 +17,7 @@ import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.product.domain.model.OrderModel;
 import com.freelancemarketplace.backend.team.domain.model.TeamModel;
 
-@Entity
+@Entity(name = "LegacyPaymentModel")
 @Getter
 @Setter
 @NoArgsConstructor

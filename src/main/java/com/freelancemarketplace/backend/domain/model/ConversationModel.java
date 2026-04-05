@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.freelancemarketplace.backend.team.domain.model.TeamModel;
 
-@Entity
+@Entity(name = "LegacyConversationModel")
 @Getter
 @Setter
 @NoArgsConstructor

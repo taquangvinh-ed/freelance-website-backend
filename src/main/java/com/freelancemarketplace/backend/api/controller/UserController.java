@@ -1,13 +1,14 @@
 package com.freelancemarketplace.backend.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
-import com.freelancemarketplace.backend.dto.RegistrationtDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
+import com.freelancemarketplace.backend.user.dto.RegistrationtDTO;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
 import com.freelancemarketplace.backend.infrastructure.security.jwt.JwtTokenProvider;
 import com.freelancemarketplace.backend.infrastructure.mapper.UserMapper;
 import com.freelancemarketplace.backend.domain.model.UserModel;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.UserService;
+import com.freelancemarketplace.backend.user.application.service.UserService;
 import com.stripe.exception.StripeException;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +24,6 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
-
 
     public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, UserMapper userMapper) {
         this.userService = userService;
@@ -46,6 +46,5 @@ public class UserController {
         responseRegistration.setToken(jwt);
         return ApiResponse.created(responseRegistration);
     }
-
 
 }

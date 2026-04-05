@@ -1,8 +1,9 @@
 package com.freelancemarketplace.backend.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.TogglTimeEntryResponseDTO;
-import com.freelancemarketplace.backend.service.TogglService;
+import com.freelancemarketplace.backend.toggl.dto.TogglTimeEntryResponseDTO;
+import com.freelancemarketplace.backend.toggl.application.service.TogglService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,13 +16,11 @@ public class TogglController {
 
     private final TogglService togglService;
 
-
     @PostMapping("/create-project")
     ApiResponse<?> createProjectOnToggl(@RequestParam String projectName){
         Long togglProjectId = togglService.createProjectOnToggl(projectName);
         return ApiResponse.success(togglProjectId);
     }
-
 
     @PostMapping("/start/{contractId}")
     public ApiResponse<?> startTimer(
@@ -36,7 +35,6 @@ public class TogglController {
                 contractId,
                 description
         );
-
 
         return ApiResponse.success(response);
     }

@@ -18,7 +18,7 @@ import com.freelancemarketplace.backend.proposal.domain.model.ProposalModel;
 import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 
-@Entity
+@Entity(name = "LegacyTeamModel")
 @Getter
 @Setter
 @NoArgsConstructor

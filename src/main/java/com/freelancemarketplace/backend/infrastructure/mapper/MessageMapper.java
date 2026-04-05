@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.MessageDTO;
+import com.freelancemarketplace.backend.conversation.dto.MessageDTO;
 import com.freelancemarketplace.backend.domain.model.MessageModel;
 import org.mapstruct.*;
 

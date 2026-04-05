@@ -1,9 +1,9 @@
 package com.freelancemarketplace.backend.service.impl;
 
 import com.freelancemarketplace.backend.application.service.ProjectEmbeddingService;
-import com.freelancemarketplace.backend.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
-import com.freelancemarketplace.backend.repository.ProjectsRepository;
+import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

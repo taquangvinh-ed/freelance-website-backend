@@ -16,7 +16,7 @@ import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.freelancer.domain.model.VideoModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 
-@Entity
+@Entity(name = "LegacyProductModel")
 @Getter
 @Setter
 @NoArgsConstructor

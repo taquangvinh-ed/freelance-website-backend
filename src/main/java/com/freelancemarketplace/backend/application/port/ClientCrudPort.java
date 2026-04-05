@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.application.port;
 
-import com.freelancemarketplace.backend.domain.model.ClientModel;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
 import java.util.Optional;
 
 /**

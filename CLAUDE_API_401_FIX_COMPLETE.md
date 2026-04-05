@@ -141,7 +141,7 @@ $env:AI_LLM_API_KEY="sk-ant-api03-your-key-here"
 ```yaml
 ai:
   llm:
-    api-key: "${AI_LLM_API_KEY:}"  # Reads from env var
+    api-key: "${AI_LLM_API_KEY:}"  # Reads from .env var
     mock-enabled: false  # Disable mock mode
 ```
 

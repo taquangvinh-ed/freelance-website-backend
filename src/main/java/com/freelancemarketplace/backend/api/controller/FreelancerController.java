@@ -1,11 +1,12 @@
 package com.freelancemarketplace.backend.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.*;
-import com.freelancemarketplace.backend.domain.model.FreelancerModel;
+
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.api.response.ResponseMessage;
 import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.FreelancerService;
+import com.freelancemarketplace.backend.freelancer.application.service.FreelancerService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import org.springframework.http.MediaType;
@@ -29,8 +30,6 @@ public class FreelancerController {
     public FreelancerController(FreelancerService freelancerService) {
         this.freelancerService = freelancerService;
     }
-
-
 
     @PutMapping("/{freelancerId}")
     ApiResponse<?> updateFreelancer(@PathVariable Long freelancerId,
@@ -57,7 +56,6 @@ public class FreelancerController {
         FreelancerDTO givenFreelancer = freelancerService.getFreelancerById(freelancerId);
         return ApiResponse.success(givenFreelancer);
     }
-
 
     @GetMapping("/profile/{freelancerId}") // 👈 Truyền ID qua URL
     public ApiResponse<?> getOtherFreelancerProfile(

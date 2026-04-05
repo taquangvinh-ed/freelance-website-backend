@@ -12,7 +12,7 @@ import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerTestResults;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 
-@Entity
+@Entity(name = "LegacyTestModel")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -11,7 +11,7 @@ import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "LegacyTimeLog")
 @Table(name = "time_log")
 public class TimeLog {
     @Id

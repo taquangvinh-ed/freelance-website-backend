@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.email.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.email.api.request.SendEmailRequest;
 import com.freelancemarketplace.backend.email.application.service.EmailService;
 import lombok.RequiredArgsConstructor;

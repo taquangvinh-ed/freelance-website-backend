@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.dto.WeeklyReportDTO;
-import com.freelancemarketplace.backend.dto.WeeklyReportItemDTO;
+import com.freelancemarketplace.backend.contract.dto.WeeklyReportDTO;
+import com.freelancemarketplace.backend.contract.dto.WeeklyReportItemDTO;
 import com.freelancemarketplace.backend.domain.model.WeeklyReportItemModel;
 import com.freelancemarketplace.backend.domain.model.WeeklyReportModel;
 import org.mapstruct.*;

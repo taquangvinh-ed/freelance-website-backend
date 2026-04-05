@@ -1,7 +1,6 @@
 package com.freelancemarketplace.backend.toggl.application.service.imp;
 
-
-import com.freelancemarketplace.backend.config.TogglConfig;
+import com.freelancemarketplace.backend.infrastructure.config.TogglConfig;
 import com.freelancemarketplace.backend.toggl.dto.TogglStartRequestDTO;
 import com.freelancemarketplace.backend.toggl.dto.TogglTimeEntryResponseDTO;
 import com.freelancemarketplace.backend.toggl.dto.TogglUserRequestDTO;
@@ -56,7 +55,6 @@ public class TogglServiceImp implements TogglService {
         return headers;
     }
 
-
     @Override
     public String getOrCreateFreelancerUser(Long freelancerId, String freelancerName, String email) {
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId)
@@ -98,8 +96,6 @@ public class TogglServiceImp implements TogglService {
         }
     }
 
-
-
     @Override
     public Long createProjectOnToggl(String projectName) {
         String url = config.getBaseUrl() + "/workspaces/" + config.getDefaultWorkspaceId() + "/projects";
@@ -125,7 +121,6 @@ public class TogglServiceImp implements TogglService {
 
                 if (projectIdObject instanceof Number) {
 
-
                     return ((Number) projectIdObject).longValue();
                 } else {
                     // Xử lý trường hợp ID bị thiếu hoặc không phải số
@@ -145,14 +140,12 @@ public class TogglServiceImp implements TogglService {
         }
     }
 
-
     @Override
     @Transactional
     public TogglTimeEntryResponseDTO startTimeEntry( // Trả về DTO phản hồi Toggl
                                                      Long freelancerId,
                                                      Long contractId,
                                                      String description) { // Giữ nguyên tham số
-
 
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
                 () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
@@ -161,7 +154,6 @@ public class TogglServiceImp implements TogglService {
         ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
                 () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
         );
-
 
         Long togglProjectId;
         if(contract.getToggleProjectId() == null){

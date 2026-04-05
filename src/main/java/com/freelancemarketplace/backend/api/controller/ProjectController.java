@@ -1,12 +1,10 @@
 package com.freelancemarketplace.backend.api.controller;
+import com.freelancemarketplace.backend.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.api.request.CreateProjectRequest;
-import com.freelancemarketplace.backend.api.response.ResponseMessage;
-import com.freelancemarketplace.backend.api.response.ResponseStatusCode;
-import com.freelancemarketplace.backend.service.ProjectService;
+import com.freelancemarketplace.backend.project.dto.ProjectDTO;
+import com.freelancemarketplace.backend.project.api.request.CreateProjectRequest;
+import com.freelancemarketplace.backend.project.application.service.ProjectService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -26,7 +24,6 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-
     @PostMapping("/")
     public ApiResponse<?> createProject(@AuthenticationPrincipal AppUser appUser, @RequestBody CreateProjectRequest req){
 
@@ -41,7 +38,6 @@ public class ProjectController {
                                              @RequestBody ProjectDTO projectDTO){
         ProjectDTO updatedProject = projectService.updateProject(projectId, projectDTO);
         return ApiResponse.success(updatedProject);
-
 
     }
 
@@ -63,7 +59,6 @@ public class ProjectController {
         return ApiResponse.success(project);
     }
 
-
     @PutMapping("/assignSkillToProject/Project/{projectId}/Skill/{skillId}")
     public ApiResponse<?> assignSkillToProject(@PathVariable Long projectId,
                                                            @PathVariable Long skillId){
@@ -81,7 +76,7 @@ public class ProjectController {
     }
 
     @GetMapping("/filter")
-    public Page<ProjectDTO> advancedSearch(
+    public ApiResponse<?> advancedSearch(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) List<String> skillNames,
             @RequestParam(required = false) BigDecimal minRate,
@@ -92,16 +87,18 @@ public class ProjectController {
             @RequestParam(required = false) String workload,
             Pageable pageable) {
 
-        return projectService.filter(keyword,
-                skillNames, minRate, maxRate, isHourly,duration,level,workload, pageable);
+        Page<ProjectDTO> projects = projectService.filter(keyword,
+                skillNames, minRate, maxRate, isHourly, duration, level, workload, pageable);
+        return ApiResponse.success(projects);
     }
 
     @GetMapping("/autocomplete-search")
-    public Page<ProjectDTO> autocompleteSearch(
+    public ApiResponse<?> autocompleteSearch(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "10") int limit, Pageable pageable) {
 
-        return projectService.autocompleteSearch(keyword, limit, pageable);
+        Page<ProjectDTO> projects = projectService.autocompleteSearch(keyword, limit, pageable);
+        return ApiResponse.success(projects);
     }
 
 }
