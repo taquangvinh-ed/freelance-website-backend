@@ -1,0 +1,166 @@
+package com.freelancemarketplace.backend.report.application.service.imp;
+
+import com.freelancemarketplace.backend.client.dto.ClientDashboardStatsDTO;
+import com.freelancemarketplace.backend.project.dto.PostedProject;
+import com.freelancemarketplace.backend.recommendation.dto.ProjectTrackingDTO;
+import com.freelancemarketplace.backend.payment.dto.RecentPaymentDTO;
+import com.freelancemarketplace.backend.contract.domain.enums.ContractStatus;
+import com.freelancemarketplace.backend.contract.domain.enums.ContractTypes;
+import com.freelancemarketplace.backend.contract.domain.enums.MileStoneStatus;
+import com.freelancemarketplace.backend.project.domain.enums.ProjectStatus;
+import com.freelancemarketplace.backend.exceptionHandling.ResourceNotFoundException;
+import com.freelancemarketplace.backend.client.infrastructure.repository.ClientsRepository;
+import com.freelancemarketplace.backend.contract.infrastructure.repository.ContractsRepository;
+import com.freelancemarketplace.backend.payment.infrastructure.repository.PaymentsRepository;
+import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
+import com.freelancemarketplace.backend.report.application.service.DashboardClientService;
+import com.freelancemarketplace.backend.contract.application.service.ProgressCalculationService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import com.freelancemarketplace.backend.contract.domain.model.ContractModel;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
+import com.freelancemarketplace.backend.contract.domain.model.MileStoneModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.payment.domain.model.PaymentModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class DashboardClientServiceImp implements DashboardClientService {
+
+    private final ContractsRepository contractsRepository;
+    private final ClientsRepository clientsRepository;
+    private final ProgressCalculationService progressService;
+    private final PaymentsRepository paymentsRepository;
+    private final ProjectsRepository projectsRepository;
+
+    @Override
+    public ClientDashboardStatsDTO getStats(Long clientId) {
+
+        ClientModel client = clientsRepository.findById(clientId).orElseThrow(
+                ()-> new ResourceNotFoundException("Client with id: " + clientId + " not found")
+        );
+
+        List<ContractModel> contracts = contractsRepository.findAllByClient(client);
+        ClientDashboardStatsDTO result = new ClientDashboardStatsDTO();
+
+        // Set total projects
+        long totalProjects = projectsRepository.findAllByClient(client).size();
+        log.info("Total projects for client {}: {}", clientId, totalProjects);
+        result.setTotalProjects((int)totalProjects);
+
+        // If no contracts, return stats with only total projects
+        if(contracts.isEmpty()) {
+            return result;
+        }
+
+        long activeProjects = contracts.stream().filter(contract -> contract.getStatus() == ContractStatus.ACTIVE).count();
+        result.setActiveProjects((int)activeProjects);
+
+        long pendingPayment = contracts.stream().filter(contractModel -> contractModel.getStatus() == ContractStatus.ACTIVE)
+                .filter(contractModel -> contractModel.getTypes() == ContractTypes.FIXED_PRICE)
+                .mapToLong(contract-> contract.getMileStones().stream()
+                        .filter(mileStoneModel -> mileStoneModel.getStatus() == MileStoneStatus.ACCEPTED).count()).sum();
+        result.setPendingPayments((int)pendingPayment);
+
+        Optional<BigDecimal> totalSpent = contracts.stream()
+                .filter(contractModel -> contractModel.getStatus() == ContractStatus.ACTIVE || contractModel.getStatus()==ContractStatus.COMPLETED)
+                .filter(contractModel -> contractModel.getTypes() == ContractTypes.FIXED_PRICE)
+                .flatMap(contract -> contract.getMileStones().stream()
+                        .filter(mileStoneModel -> mileStoneModel.getStatus() == MileStoneStatus.ESCROWED || mileStoneModel.getStatus() == MileStoneStatus.COMPLETED)
+                        .map(MileStoneModel::getAmount)
+
+                ).reduce(BigDecimal::add);
+        BigDecimal finalTotalSpent = totalSpent.orElse(BigDecimal.ZERO);
+        result.setTotalSpent(finalTotalSpent);
+        return result;
+    }
+
+
+    @Override
+    public List<ProjectTrackingDTO> getClientActiveProjects(Long clientId) {
+
+        // 1. Lấy danh sách hợp đồng ACTIVE của Client
+        // Giả định bạn có phương thức tìm kiếm hợp đồng theo Client ID và Status
+
+        ClientModel client = clientsRepository.findById(clientId).orElseThrow(
+                ()-> new ResourceNotFoundException("Client with id: " + clientId + " not found")
+        );
+
+        List<ContractModel> contracts = contractsRepository.findAllByClient(client);
+        List<ContractModel> activeContracts = contracts.stream().filter(contractModel -> contractModel.getStatus() == ContractStatus.ACTIVE).toList();
+
+        // 2. Map từ ContractModel sang ProjectTrackingDTO
+        return activeContracts.stream()
+                .map(contract -> {
+                    ProjectTrackingDTO dto = new ProjectTrackingDTO();
+                    dto.setContractId(contract.getContractId());
+                    dto.setProjectTitle(contract.getContractProject().getTitle());
+                    dto.setStatus(contract.getStatus().name());
+                    dto.setDeadline(contract.getEndDate());
+
+                    // Lấy thông tin Freelancer (Giả định ContractModel có trường FreelancerModel)
+                    FreelancerModel freelancer = contract.getFreelancer();
+                    if (freelancer != null) {
+                        dto.setFreelancerName(freelancer.getFirstName() + " " + freelancer.getLastName());
+                        dto.setFreelancerProfileUrl("/freelancers/" + freelancer.getFreelancerId());
+                    }
+
+                    // 3. Tính toán Tiến độ (Logic phức tạp nhất)
+                    // Hàm này sẽ tính tiến độ dựa trên Milestones (FIXED) hoặc TimeSheets (HOURLY)
+                    double progress = progressService.calculateProgress(contract);
+                    dto.setProgressPercentage(progress);
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<RecentPaymentDTO> getRecentPayments(Long clientId) {
+        // 1. Truy vấn từ Repository:
+        // Logic cần đảm bảo lấy các giao dịch (thành công) theo thứ tự giảm dần của ngày tạo/thanh toán.
+        // Giới hạn 5 bản ghi.
+        // Bạn cần viết một method tùy chỉnh trong PaymentRepository cho việc này.
+
+        List<PaymentModel> recentPayments = paymentsRepository.findTop5ByContractClientClientIdOrderByPaidAtDesc(clientId);
+
+        // 2. Map Entity sang DTO
+        return recentPayments.stream()
+                .map(payment -> new RecentPaymentDTO(
+                        payment.getPaymentId(),
+                        payment.getAmount(),
+                        payment.getContract().getContractProject().getTitle(), // Giả sử Payment liên kết với Contract
+                        payment.getPaidAt(),
+                        payment.getStatus().toString()
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<PostedProject> getAllPostedProject(Long clientId){
+        ClientModel client = clientsRepository.findById(clientId).orElseThrow(
+                ()->new ResourceNotFoundException("Client with id: " + clientId + " not found")
+        );
+        List<ProjectModel> projects = projectsRepository.findAllByClient(client);
+
+       return  projects.stream().filter(projectModel -> projectModel.getStatus() == ProjectStatus.OPEN).map(
+                projectModel -> {
+                    PostedProject postedProject = new PostedProject();
+                    postedProject.setProjectId(projectModel.getProjectId());
+                    postedProject.setTitle(projectModel.getTitle());
+                    return postedProject;
+                }
+        ).toList();
+    }
+
+}

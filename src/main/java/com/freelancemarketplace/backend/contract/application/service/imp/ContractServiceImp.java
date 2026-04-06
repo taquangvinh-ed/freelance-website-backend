@@ -1,0 +1,221 @@
+package com.freelancemarketplace.backend.contract.application.service.imp;
+
+import com.freelancemarketplace.backend.client.infrastructure.repository.ClientsRepository;
+import com.freelancemarketplace.backend.contract.domain.enums.ContractStatus;
+import com.freelancemarketplace.backend.contract.domain.enums.MileStoneStatus;
+import com.freelancemarketplace.backend.exceptionHandling.ApiException;
+import com.freelancemarketplace.backend.exceptionHandling.ErrorCode;
+import com.freelancemarketplace.backend.exceptionHandling.ResourceNotFoundException;
+import com.freelancemarketplace.backend.freelancer.infrastructure.repository.FreelancersRepository;
+import com.freelancemarketplace.backend.client.infrastructure.mapper.ClientMapper;
+import com.freelancemarketplace.backend.contract.infrastructure.mapper.ContractMapper;
+import com.freelancemarketplace.backend.contract.infrastructure.mapper.MileStoneMapper;
+import com.freelancemarketplace.backend.contract.infrastructure.mapper.WeeklyReportMapper;
+import com.freelancemarketplace.backend.report.infrastructure.repository.WeeklyReportModelRepository;
+import com.freelancemarketplace.backend.contract.infrastructure.repository.ContractsRepository;
+import com.freelancemarketplace.backend.contract.infrastructure.repository.MileStoneModelRepository;
+import com.freelancemarketplace.backend.project.application.service.CloudinaryService;
+import com.freelancemarketplace.backend.contract.application.service.ContractLifeCycleService;
+import com.freelancemarketplace.backend.contract.application.service.ContractService;
+import com.freelancemarketplace.backend.payment.application.service.PaymentService;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import com.freelancemarketplace.backend.contract.domain.model.ContractModel;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
+import com.freelancemarketplace.backend.client.dto.ClientDTO;
+import com.freelancemarketplace.backend.contract.domain.model.MileStoneModel;
+import com.freelancemarketplace.backend.contract.domain.model.WeeklyReportModel;
+import com.freelancemarketplace.backend.contract.dto.ContractDTO;
+import com.freelancemarketplace.backend.contract.dto.ContractResponseDTO;
+import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
+import com.freelancemarketplace.backend.contract.dto.WeeklyReportDTO;
+import com.freelancemarketplace.backend.email.dto.PaymentIntentResponse;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+
+@Service
+@AllArgsConstructor
+public class ContractServiceImp implements ContractService {
+
+
+    private ContractsRepository contractsRepository;
+    private ContractMapper contractMapper;
+    private FreelancersRepository freelancersRepository;
+    private MileStoneMapper mileStoneMapper;
+    private MileStoneModelRepository mileStoneModelRepository;
+    private ClientMapper clientMapper;
+    private PaymentService paymentService;
+    private ClientsRepository clientsRepository;
+    private ContractLifeCycleService contractLifeCycleService;
+    private WeeklyReportModelRepository weeklyReportModelRepository;
+    private WeeklyReportMapper weeklyReportMapper;
+    private CloudinaryService cloudinaryService;
+
+    @Override
+    public ContractDTO updateContract(Long contractId, ContractDTO contractDTO) {
+
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+        ContractModel updatedContract = contractMapper.partialUpdate(contractDTO, contract);
+
+        ContractModel savedContract = contractsRepository.save(updatedContract);
+
+        return contractMapper.toDto(savedContract);
+    }
+
+    @Override
+    public void deleteContract(Long contractId) {
+        if (!contractsRepository.existsById(contractId))
+            throw new ResourceNotFoundException("Contract with id: " + contractId + " not found");
+        contractsRepository.deleteById(contractId);
+    }
+
+    @Override
+    public List<ContractDTO> findAllContractByFreelancerId(Long freelancerId) {
+
+        FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(
+                () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
+        );
+
+        List<ContractModel> contracts = contractsRepository.findAllByFreelancer(freelancer);
+
+        return contractMapper.toDTOs(contracts);
+    }
+
+    @Override
+    public ContractResponseDTO getContractById(Long contractId) {
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+        ContractResponseDTO contractResponseDTO = new ContractResponseDTO();
+        contractResponseDTO.setContractId(contract.getContractId());
+        contractResponseDTO.setTypes(contract.getTypes().toString());
+        contractResponseDTO.setAmount(contract.getAmount());
+        contractResponseDTO.setStartDate(contract.getStartDate());
+        contractResponseDTO.setEndDate(contract.getEndDate());
+        contractResponseDTO.setStatus(contract.getStatus().toString());
+        contractResponseDTO.setProposalId(contract.getProposal().getProposalId());
+        contractResponseDTO.setFreelancerName(contract.getFreelancer().getFirstName() + " " + contract.getFreelancer().getLastName());
+        contractResponseDTO.setClientName(contract.getClient().getFirstName() + " " + contract.getClient().getLastName());
+
+        List<MileStoneDTO> milestones = new ArrayList<>();
+
+        contract.getMileStones().forEach(mileStoneModel -> {
+            MileStoneDTO mileStoneDTO = mileStoneMapper.toDto(mileStoneModel);
+            milestones.add(mileStoneDTO);
+        });
+        contractResponseDTO.setMileStones(milestones);
+
+        return contractResponseDTO;
+    }
+
+    @Transactional
+    @Override
+    public MileStoneDTO processMilestonePayment(Long contractId, Long milestoneId) throws Exception {
+
+        MileStoneModel mileStone = mileStoneModelRepository.findById(milestoneId).orElseThrow(
+                () -> new ResourceNotFoundException("Milestone with id: " + milestoneId + " not found")
+        );
+
+        ContractModel contractModel = contractsRepository.findByIdWithClientAndUser(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+
+        ClientModel client = contractModel.getClient();
+        System.out.println("ClientId: " + client.getClientId());
+        if (client.getStripeCustomerId() == null) {
+            String clientName = client.getFirstName() + client.getLastName();
+            String stripeCustomerId = paymentService.createStripeCustomer(client.getUser().getEmail(), clientName);
+            client.setStripeCustomerId(stripeCustomerId);
+            clientsRepository.save(client);
+        }
+
+
+        ClientDTO clientDTO = clientMapper.toDto(client);
+        MileStoneDTO milestoneDTO = mileStoneMapper.toDto(mileStone);
+
+        PaymentIntentResponse response = paymentService.createEscrowPayment(milestoneDTO, client.getClientId(), clientDTO, contractId);
+        mileStone.setPaymentIntentId(response.getPaymentIntentId());
+        mileStone.setStatus(MileStoneStatus.ESCROWED);
+        MileStoneModel savedMilestone = mileStoneModelRepository.save(mileStone);
+        MileStoneDTO result = mileStoneMapper.toDto(savedMilestone);
+        result.setClientSecret(response.getClientSecret());
+        return result;
+    }
+
+
+    @Override
+    public Timestamp markMilestoneAsCompleted(Long contractId, Long milestoneId, MultipartFile file) throws Exception {
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+
+        FreelancerModel freelancer = contract.getFreelancer();
+        if (freelancer.getStripeCustomerId() == null) {
+            String freelancerName = freelancer.getFirstName() + freelancer.getLastName();
+            String stripeCustomerId = paymentService.createStripeCustomer(freelancer.getUser().getEmail(), freelancerName);
+            freelancer.setStripeCustomerId(stripeCustomerId);
+            freelancersRepository.save(freelancer);
+        }
+
+        MileStoneModel milestone = contract.getMileStones().stream().filter(m -> m.getMileStoneId().equals(milestoneId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Milestone with id: " + milestoneId + " not found"));
+        milestone.setStatus(MileStoneStatus.COMPLETED);
+        milestone.setCompletedAt(Timestamp.from(Instant.now()));
+        String fileUrl = null;
+        String fileName = null;
+        if (file != null && !file.isEmpty()) {
+
+            try {
+                fileUrl = cloudinaryService.uploadFileMilestone(file); // dùng InputStream → an toàn
+                fileName = file.getOriginalFilename();
+
+            } catch (IOException e) {
+                throw new FileUploadException("Upload file đính kèm thất bại: " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
+                        "Lỗi không xác định khi upload file milestone", e);
+            }
+        }
+        milestone.setFileUrl(fileUrl);
+        milestone.setFileName(fileName);
+        contractsRepository.save(contract);
+        return milestone.getCompletedAt();
+    }
+
+
+    @Override
+    public void doneContractract(Long contractId) {
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+        if (contract.getStatus() != ContractStatus.ACTIVE) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_OPERATION,
+                    "Cannot complete contract. This contract is not currently ACTIVE.");
+        }
+        contract.setStatus(ContractStatus.DONE);
+        contractsRepository.save(contract);
+        contractLifeCycleService.stopWeeklyReporting(contract.getContractId());
+    }
+
+    @Override
+    public List<WeeklyReportDTO> getAllWeeklyReports(Long contractId) {
+        ContractModel contract = contractsRepository.findById(contractId).orElseThrow(
+                () -> new ResourceNotFoundException("Contract with id: " + contractId + " not found")
+        );
+        List<WeeklyReportModel> reports = weeklyReportModelRepository.findAllByContract(contract);
+        return weeklyReportMapper.toDTOs(reports);
+    }
+
+}

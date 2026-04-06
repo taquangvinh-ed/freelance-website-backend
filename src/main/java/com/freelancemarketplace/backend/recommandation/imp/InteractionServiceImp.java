@@ -1,14 +1,14 @@
 package com.freelancemarketplace.backend.recommandation.imp;
 
-import com.freelancemarketplace.backend.enums.InteractionType;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
+import com.freelancemarketplace.backend.recommendation.domain.enums.InteractionType;
+import com.freelancemarketplace.backend.exceptionHandling.ResourceNotFoundException;
 import com.freelancemarketplace.backend.recommandation.InteractionService;
-import com.freelancemarketplace.backend.model.FreelancerModel;
-import com.freelancemarketplace.backend.model.ProjectInteractionModel;
-import com.freelancemarketplace.backend.model.ProjectModel;
-import com.freelancemarketplace.backend.repository.FreelancersRepository;
-import com.freelancemarketplace.backend.repository.ProjectInteractionModelRepository;
-import com.freelancemarketplace.backend.repository.ProjectsRepository;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectInteractionModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.freelancer.infrastructure.repository.FreelancersRepository;
+import com.freelancemarketplace.backend.recommendation.infrastructure.repository.ProjectInteractionModelRepository;
+import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,21 +1,20 @@
 package com.freelancemarketplace.backend.recommandation.imp;
 
-import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.dto.RecommendFreelancerDTO;
-import com.freelancemarketplace.backend.enums.InvitationStatus;
-import com.freelancemarketplace.backend.enums.ProjectStatus;
-import com.freelancemarketplace.backend.exception.ResourceNotFoundException;
-import com.freelancemarketplace.backend.mapper.ProjectMapper;
-import com.freelancemarketplace.backend.model.*;
+import com.freelancemarketplace.backend.project.dto.ProjectDTO;
+import com.freelancemarketplace.backend.recommendation.dto.RecommendFreelancerDTO;
+import com.freelancemarketplace.backend.freelancer.domain.enums.InvitationStatus;
+import com.freelancemarketplace.backend.project.domain.enums.ProjectStatus;
+import com.freelancemarketplace.backend.exceptionHandling.ResourceNotFoundException;
+import com.freelancemarketplace.backend.project.infrastructure.mapper.ProjectMapper;
 import com.freelancemarketplace.backend.recommandation.EmbeddingService;
 import com.freelancemarketplace.backend.recommandation.RecommendationService;
 import com.freelancemarketplace.backend.recommandation.ScoredFreelancer;
 import com.freelancemarketplace.backend.recommandation.ScoredProject;
-import com.freelancemarketplace.backend.repository.FreelancersRepository;
-import com.freelancemarketplace.backend.repository.InvitationRepository;
-import com.freelancemarketplace.backend.repository.ProjectInteractionModelRepository;
-import com.freelancemarketplace.backend.repository.ProjectsRepository;
-import lombok.AllArgsConstructor;
+import com.freelancemarketplace.backend.freelancer.infrastructure.repository.FreelancersRepository;
+import com.freelancemarketplace.backend.email.infrastructure.repository.InvitationRepository;
+import com.freelancemarketplace.backend.recommendation.infrastructure.repository.ProjectInteractionModelRepository;
+import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
@@ -32,9 +31,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.project.domain.model.BudgetModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectInteractionModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class RecommendationServiceImp implements RecommendationService {
 

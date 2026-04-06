@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.recommandation;
 
-import com.freelancemarketplace.backend.model.ProjectModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

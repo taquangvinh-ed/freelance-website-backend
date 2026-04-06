@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.recommandation;
 
-import com.freelancemarketplace.backend.dto.ProjectDTO;
-import com.freelancemarketplace.backend.dto.RecommendFreelancerDTO;
+import com.freelancemarketplace.backend.project.dto.ProjectDTO;
+import com.freelancemarketplace.backend.recommendation.dto.RecommendFreelancerDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

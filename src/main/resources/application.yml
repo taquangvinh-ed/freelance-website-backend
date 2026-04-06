@@ -12,9 +12,15 @@ spring:
         format_sql: true
         ddl-auto: update
   config:
-    import: "application-dev.yml"
+    import: "optional:file:.env[.properties],application-dev.yml"
   profiles:
     active: "dev"
+
+anthropic:
+  api:
+    key: ${ANTHROPIC_API_KEY:${CLAUDE_API_KEY:}}
+  model: ${ANTHROPIC_MODEL:claude-3-5-sonnet-latest}
+
 logging:
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}

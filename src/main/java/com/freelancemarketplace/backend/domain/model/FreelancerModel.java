@@ -1,0 +1,142 @@
+package com.freelancemarketplace.backend.domain.model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import com.freelancemarketplace.backend.contract.domain.model.ContractModel;
+import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
+import com.freelancemarketplace.backend.certification.domain.model.CertificateModel;
+import com.freelancemarketplace.backend.contract.domain.model.TimeLog;
+import com.freelancemarketplace.backend.language.domain.model.LanguageModel;
+import com.freelancemarketplace.backend.location.domain.model.LocationModel;
+import com.freelancemarketplace.backend.payment.domain.model.PaymentModel;
+import com.freelancemarketplace.backend.product.domain.model.ProductModel;
+import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
+import com.freelancemarketplace.backend.proposal.domain.model.ProposalModel;
+import com.freelancemarketplace.backend.report.domain.model.ReportModel;
+import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
+import com.freelancemarketplace.backend.team.domain.model.TeamModel;
+import com.freelancemarketplace.backend.user.domain.model.UserModel;
+
+@Entity(name = "LegacyFreelancerModel")
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "Freelancers")
+public class FreelancerModel extends BaseEntity {
+    @Id
+    private Long freelancerId;
+
+    @OneToOne
+    @JoinColumn(name = "userId", unique = true)
+    private UserModel user;
+
+    private String firstName;
+    private String lastName;
+    private String title;
+    private String avatar;
+    private String profilePicture;
+    private String phoneNumber;
+    private Double hourlyRate;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Bio bio = new Bio();
+
+    private Double wallet;
+    private Integer connections;
+    private Integer hoursPerWeek;
+    private String clockifyUserId;
+    private String togglUserId;
+    private String stripeAccountId;
+    @Column(nullable = true)
+    private Boolean onboardingCompleted;
+
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<VideoModel> videos;
+    @OneToOne(mappedBy = "freelancer")
+    private PortfolioModel portfolio;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "freelancer_languages",
+            joinColumns = @JoinColumn(name = "freelancerId"),
+            inverseJoinColumns = @JoinColumn(name = "languageId")
+    )
+    private Set<LanguageModel> languages = new HashSet<>();
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "locationId")
+    private LocationModel location;
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<ContractModel> contracts;
+
+    @OneToMany(mappedBy = "winningFreelancer")
+    private Set<ProjectModel> projects;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "freelancer_skills",
+            joinColumns = @JoinColumn(name = "freelancerId"),
+            inverseJoinColumns = @JoinColumn(name = "skillId")
+    )
+    private Set<SkillModel> skills = new HashSet<>();
+
+    @OneToMany(mappedBy = "freelancer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CertificateModel> certificates = new HashSet<>();
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<EducationModel> educations;
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<ProposalModel> proposals;
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<TestimonialModel> testimonials;
+
+    //Team that the freelancer is part of
+    @ManyToMany(mappedBy = "members")
+    private Set<TeamModel> teams;
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<ExperienceModel> experiences;
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<PaymentModel> payments;
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<ReportModel> reports;
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<ProductModel> products;
+
+    @OneToMany(mappedBy = "freelancer")
+    private Set<FreelancerTestResults> testResults;
+
+    @Column(name = "profile_embedding", columnDefinition = "bytea")
+    private byte[] profileEmbedding;
+
+    @Column(name = "skill_vector", columnDefinition = "bytea")
+    private byte[] skillVector;
+
+    private String stripeCustomerId;
+
+    @OneToMany(mappedBy = "freelancer")
+    private List<TimeLog> timeLog = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "freelancer")
+    private List<InvitationModel> invitation;
+}

@@ -1,0 +1,222 @@
+package com.freelancemarketplace.backend.conversation.application.service.imp;
+
+import com.freelancemarketplace.backend.conversation.dto.ContactInfoDTO;
+import com.freelancemarketplace.backend.conversation.dto.ConversationDTO;
+import com.freelancemarketplace.backend.conversation.dto.CurrentUserProfileDTO;
+import com.freelancemarketplace.backend.conversation.dto.MessageDTO;
+import com.freelancemarketplace.backend.client.exception.ClientNotFoundException;
+import com.freelancemarketplace.backend.client.infrastructure.repository.ClientsRepository;
+import com.freelancemarketplace.backend.user.domain.enums.UserRoles;
+import com.freelancemarketplace.backend.exceptionHandling.ApiException;
+import com.freelancemarketplace.backend.exceptionHandling.ErrorCode;
+import com.freelancemarketplace.backend.freelancer.exception.FreelancerNotFoundException;
+import com.freelancemarketplace.backend.freelancer.infrastructure.repository.FreelancersRepository;
+import com.freelancemarketplace.backend.conversation.infrastructure.repository.MessagesRepository;
+import com.freelancemarketplace.backend.conversation.infrastructure.mapper.MessageMapper;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+import com.freelancemarketplace.backend.conversation.domain.model.MessageModel;
+import com.freelancemarketplace.backend.user.domain.model.UserModel;
+import com.freelancemarketplace.backend.user.exception.UserNotFoundException;
+import com.freelancemarketplace.backend.user.infrastructure.repository.UserRepository;
+import com.freelancemarketplace.backend.conversation.application.service.ChatService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+@AllArgsConstructor
+@Slf4j
+public class ChatServiceImp implements ChatService {
+
+    private MessagesRepository messagesRepository;
+    private MessageMapper messageMapper;
+    private UserRepository userModelRepository;
+    private FreelancersRepository freelancersRepository;
+    private ClientsRepository clientsRepository;
+    private UserRepository userRepository;
+
+
+    @Override
+    public MessageDTO saveMessageToDatabase(String roomId, MessageDTO messageDTO) {
+
+
+        if (messageDTO.getContent() == null)
+            throw new ApiException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_REQUEST, "Message has no content");
+
+        MessageModel newMessage = messageMapper.toEntity(messageDTO);
+        newMessage.setRoomId(roomId);
+        newMessage.setSentAt(Timestamp.from(Instant.now()));
+        newMessage.setCreatedAt(Timestamp.from(Instant.now()));
+        newMessage.setIsRead(false);
+        MessageModel savedMessage = messagesRepository.save(newMessage);
+        log.info("message is saved successfully");
+        return messageMapper.toDto(savedMessage);
+
+
+    }
+
+
+    @Override
+    public ContactInfoDTO getContactInfo(Long userId) {
+        UserModel user = userModelRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException("User not found with id: " + userId)
+        );
+
+        ContactInfoDTO contactInfoDTO = new ContactInfoDTO();
+
+        if (user.getRole() == UserRoles.FREELANCER) {
+            FreelancerModel freelancer = freelancersRepository.findById(userId).orElseThrow(
+                    () -> new FreelancerNotFoundException("Freelancer not found with id: " + userId)
+            );
+
+            contactInfoDTO.setUserId(userId);
+            contactInfoDTO.setFirstName(freelancer.getFirstName());
+            contactInfoDTO.setLastName(freelancer.getLastName());
+            contactInfoDTO.setAvatar(freelancer.getProfilePicture());
+            contactInfoDTO.setRole(UserRoles.FREELANCER.toString());
+
+        }
+
+        if (user.getRole() == UserRoles.CLIENT) {
+            ClientModel client = clientsRepository.findById(userId).orElseThrow(
+                    () -> new ClientNotFoundException("Client not found with id: " + userId)
+            );
+            contactInfoDTO.setUserId(userId);
+            contactInfoDTO.setFirstName(client.getFirstName());
+            contactInfoDTO.setLastName(client.getLastName());
+            contactInfoDTO.setAvatar(client.getProfilePicture());
+            contactInfoDTO.setRole(UserRoles.CLIENT.toString());
+        }
+
+        return contactInfoDTO;
+    }
+
+
+    @Override
+    public List<ConversationDTO> getRecentConversations(Long userId) {
+
+        List<MessageModel> allRelevantMessages = messagesRepository.findBySenderIdOrReceiverId(userId, userId);
+
+        Map<Long, List<MessageModel>> messagesGroupByPartner = allRelevantMessages.stream().collect(Collectors.groupingBy(message -> {
+            return message.getSenderId().equals(userId) ? message.getReceiverId() : message.getSenderId();
+        }));
+
+        List<ConversationDTO> conversationList = messagesGroupByPartner.entrySet().stream().map(
+                        entry -> {
+                            Long partnerId = entry.getKey();
+                            List<MessageModel> conversationMessages = entry.getValue();
+
+                            //Find last Message
+                            MessageModel lastMessage = conversationMessages.stream().max(Comparator.comparing(MessageModel::getSentAt)).orElse(null);
+                            if (lastMessage == null)
+                                return null;
+
+
+                            long unreadCount = conversationMessages.stream()
+                                    .filter(msg -> msg.getReceiverId().equals(userId)) // Chỉ xét tin nhắn mà MÌNH là người nhận
+                                    .filter(msg -> !msg.getIsRead()) // Giả định MessageModel có trường isRead()
+                                    .count();
+
+
+                            String roomId = createRoomId(userId, partnerId);
+
+                            ConversationDTO conversation = new ConversationDTO();
+
+                            ContactInfoDTO contactInfo = getContactInfo(partnerId);
+
+                            conversation.setPartnerId(contactInfo.getUserId());
+                            conversation.setPartnerFullName(contactInfo.getLastName() + " " + contactInfo.getFirstName());
+                            conversation.setPartnerAvatar(contactInfo.getAvatar());
+                            conversation.setPartnerRole(contactInfo.getRole());
+                            if (lastMessage.getType().equals("TEXT")) {
+                                conversation.setLastMessage(lastMessage.getContent());
+                            } else {
+                                conversation.setLastMessage(lastMessage.getFileName());
+                            }
+                            conversation.setLastMessageTime(lastMessage.getSentAt());
+                            conversation.setRoomId(roomId);
+                            conversation.setUnreadCount((int) unreadCount);
+
+                            return conversation;
+                        }
+                ).filter(Objects::nonNull)
+                .sorted(Comparator.comparing(ConversationDTO::getLastMessageTime)
+                        .reversed())
+                .toList();
+
+        return conversationList;
+
+    }
+
+    @Override
+    public String createRoomId(Long userId1, Long userId2) {
+        List<Long> ids = Arrays.asList(userId1, userId2);
+
+        String sortedRoomId = ids.stream()
+                .sorted()
+                .map(String::valueOf)
+                .collect(Collectors.joining("_"));
+
+        return sortedRoomId;
+    }
+
+
+    @Override
+    public List<MessageDTO> fetchMessageHistory(Long senderId, Long receiverId){
+        List<MessageModel> allRelevantMessages = messagesRepository.findChatHistory(senderId, receiverId);
+        return messageMapper.toDTOs(allRelevantMessages);
+    }
+
+
+    @Override
+    public CurrentUserProfileDTO getCurrentUserProfile(Long userId){
+
+        CurrentUserProfileDTO userProfile = new CurrentUserProfileDTO();
+
+        UserModel user = userRepository.findById(userId).orElseThrow(
+                ()-> new UserNotFoundException("User not found with id: " + userId)
+        );
+
+        String role = user.getRole().toString();
+        userProfile.setRole(role);
+
+
+        if(role.equalsIgnoreCase("FREELANCER")){
+            FreelancerModel freelancer = freelancersRepository.findById(userId).orElseThrow(
+                    ()-> new FreelancerNotFoundException("Freelancer not found with id " + userId)
+            );
+            userProfile.setFirstName(freelancer.getFirstName());
+            userProfile.setLastName(freelancer.getLastName());
+            userProfile.setAvatar(freelancer.getAvatar());
+        }
+
+       if(role.equalsIgnoreCase("CLIENT")){
+           ClientModel client  = clientsRepository.findById(userId).orElseThrow(
+                   ()-> new ClientNotFoundException("Client not found with id " + userId));
+           userProfile.setFirstName(client.getFirstName());
+           userProfile.setLastName(client.getLastName());
+           userProfile.setAvatar(client.getAvatar());
+       }
+
+        return  userProfile;
+    }
+
+
+    @Override
+    public void markAsRead(Long partnerId, Long userId){
+        List<MessageModel> messages = messagesRepository.findBySenderIdAndReceiverId(partnerId, userId);
+        List<MessageModel> unreadMessages = messages.stream().filter(msg ->!msg.getIsRead()).toList();
+        if(!unreadMessages.isEmpty()){
+            unreadMessages.forEach(msg->msg.setIsRead(true));
+            messagesRepository.saveAll(unreadMessages);
+        }
+    }
+
+}

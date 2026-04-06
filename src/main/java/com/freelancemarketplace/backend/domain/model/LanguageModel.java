@@ -1,0 +1,39 @@
+package com.freelancemarketplace.backend.domain.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.Set;
+import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
+import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
+
+@Entity(name = "LegacyLanguageModel")
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "Languages")
+public class LanguageModel extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long languageId;
+
+    @NotBlank(message = "language name must be required")
+    private String languageName;
+
+    @NotBlank(message = "iso code must be required")
+    private String isoCode;
+
+    private Boolean isActived;
+
+    @ManyToMany(mappedBy = "languages")
+    private Set<ClientModel> clients;
+
+    @ManyToMany(mappedBy = "languages")
+    private Set<FreelancerModel> freelancers;
+
+}

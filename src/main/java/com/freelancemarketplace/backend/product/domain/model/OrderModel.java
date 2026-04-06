@@ -1,0 +1,46 @@
+package com.freelancemarketplace.backend.product.domain.model;
+
+import com.freelancemarketplace.backend.product.domain.enums.OrderStatus;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
+import com.freelancemarketplace.backend.client.domain.model.ClientModel;
+import com.freelancemarketplace.backend.payment.domain.model.PaymentModel;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "orders")
+public class OrderModel extends BaseEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long orderId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clientId", nullable = false)
+    private ClientModel client;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "productId", nullable = false)
+    private ProductModel product;
+
+    @Column(nullable = false)
+    private BigDecimal price;
+
+    @Column(nullable = false)
+    private Timestamp purchaseDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
+
+    @OneToOne(mappedBy = "order")
+    private PaymentModel payment;
+}
