@@ -1,0 +1,214 @@
+{
+  "info": {
+    "name": "AI Project Assistant API",
+    "description": "API endpoints for AI Project Assistant",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/ai/project-assistant/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "ai", "project-assistant", "health"]
+        }
+      }
+    },
+    {
+      "name": "Suggest Project",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"brief\": \"I need to build an e-commerce website with payment integration and user authentication. Must support at least 1000 concurrent users.\",\n  \"categoryId\": 1,\n  \"scope\": \"LARGE\",\n  \"timeline\": \"3 to 6 months\",\n  \"experienceLevel\": \"EXPERT\",\n  \"preferredSkills\": [\"React\", \"Node.js\", \"PostgreSQL\"],\n  \"region\": null,\n  \"complexityHint\": \"HIGH\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/ai/project-assistant/suggest",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "ai", "project-assistant", "suggest"]
+        }
+      }
+    },
+    {
+      "name": "Improve Project",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"feedback\": \"Budget is too high, I only have $5000. Also don't need complex payment integration.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/ai/project-assistant/improve/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "ai", "project-assistant", "improve", "1"]
+        }
+      }
+    },
+    {
+      "name": "Record Feedback - Accept",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"feedback\": \"ACCEPTED\",\n  \"notes\": \"Great suggestions! Will use most of them.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/ai/project-assistant/feedback/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "ai", "project-assistant", "feedback", "1"]
+        }
+      }
+    },
+    {
+      "name": "Record Feedback - Reject",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"feedback\": \"REJECTED\",\n  \"notes\": \"Not what I was looking for.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/ai/project-assistant/feedback/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "ai", "project-assistant", "feedback", "1"]
+        }
+      }
+    },
+    {
+      "name": "Record Feedback - Partial",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"feedback\": \"PARTIAL\",\n  \"notes\": \"I like the title and skills, but need to adjust budget.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/ai/project-assistant/feedback/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "ai", "project-assistant", "feedback", "1"]
+        }
+      }
+    },
+    {
+      "name": "Get History",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/ai/project-assistant/history?page=0&size=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "ai", "project-assistant", "history"],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/ai/project-assistant/stats",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "ai", "project-assistant", "stats"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "YOUR_JWT_TOKEN_HERE",
+      "type": "string"
+    }
+  ]
+}
+

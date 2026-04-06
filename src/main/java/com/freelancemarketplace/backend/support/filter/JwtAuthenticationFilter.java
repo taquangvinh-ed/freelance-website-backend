@@ -44,13 +44,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/projects/autocomplete-search",
             "/api/stripe/**",
             "/onboarding/**",
-            "/topic/notifications/**"
+            "/topic/notifications/**",
+            "/api/ai/project-assistant/health"
     );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String requestURI = request.getRequestURI();
+        log.debug("🔐 JWT Filter processing: {}", requestURI);
+
         try {
+<<<<<<< HEAD:src/main/java/com/freelancemarketplace/backend/support/filter/JwtAuthenticationFilter.java
             String uri = request.getRequestURI();
             // Remove query string if present
             if (uri.contains("?")) {
@@ -77,25 +82,46 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     });
 
             if (isPublic) {
+=======
+            if (PUBLIC_ENDPOINTS.contains(requestURI)) {
+                log.debug("✅ Public endpoint, skipping JWT validation: {}", requestURI);
+>>>>>>> c224ecde9e1dde802b9c52adb870c373b32b0b9c:src/main/java/com/freelancemarketplace/backend/filter/JwtAuthenticationFilter.java
                 filterChain.doFilter(request, response);
                 return;
             }
 
             String jwt = getJwtFromRequest(request);
+            log.debug("🔑 JWT extracted: {}", jwt != null ? "YES (length: " + jwt.length() + ")" : "NO");
 
-            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-                String email = jwtTokenProvider.getUserEmaildFromJwt(jwt);
-                UserDetails userDetails = customUserDetailService.loadUserByUsername(email);
+            if (StringUtils.hasText(jwt)) {
+                boolean isValid = jwtTokenProvider.validateToken(jwt);
+                log.debug("🔍 Token validation result: {}", isValid);
 
-                if (userDetails != null) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                if (isValid) {
+                    String email = jwtTokenProvider.getUserEmaildFromJwt(jwt);
+                    log.debug("📧 Email from JWT: {}", email);
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    UserDetails userDetails = customUserDetailService.loadUserByUsername(email);
+                    log.debug("👤 User loaded: {}", userDetails != null ? userDetails.getUsername() : "NULL");
+
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        log.debug("✅ Authentication set in SecurityContext for user: {}", email);
+                    } else {
+                        log.warn("❌ UserDetails is null for email: {}", email);
+                    }
+                } else {
+                    log.warn("❌ Token validation failed");
                 }
+            } else {
+                log.warn("❌ No JWT token found in request to: {}", requestURI);
             }
         } catch (Exception e) {
-            log.error("Failed on set user authenticaiton ", e);
+            log.error("❌ Failed to set user authentication for URI: {}", requestURI, e);
         }
         filterChain.doFilter(request, response);
     }
