@@ -321,15 +321,55 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
             return true;
         }
 
+        // Reject sentence-like/request-like titles that are usually copied from description.
+        if (lowered.startsWith("toi can")
+                || lowered.startsWith("oi can")
+                || lowered.startsWith("can freelancer")
+                || lowered.startsWith("i need")
+                || lowered.startsWith("we need")
+                || lowered.startsWith("need ")) {
+            return true;
+        }
+
         if (!description.isBlank()) {
-            String normalizedDescription = description.trim().replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
-            String normalizedTitleLower = normalizedTitle.replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
-            if (normalizedDescription.startsWith(normalizedTitleLower) && normalizedTitleLower.length() >= 12) {
+            String normalizedDescription = normalizeTextForComparison(description);
+            String normalizedTitleLower = normalizeTextForComparison(normalizedTitle);
+
+            // Title appears inside description => likely copied from body text.
+            if (normalizedDescription.contains(normalizedTitleLower) && normalizedTitleLower.length() >= 10) {
                 return true;
+            }
+
+            // High token overlap between title and description opening means low originality.
+            Set<String> descTokens = new HashSet<>(Arrays.asList(normalizedDescription.split("\\s+")));
+            String[] titleTokens = normalizedTitleLower.split("\\s+");
+            long overlap = Arrays.stream(titleTokens)
+                    .filter(token -> token.length() > 2)
+                    .filter(descTokens::contains)
+                    .count();
+
+            long significantTitleTokens = Arrays.stream(titleTokens)
+                    .filter(token -> token.length() > 2)
+                    .count();
+
+            if (significantTitleTokens > 0) {
+                double overlapRatio = (double) overlap / significantTitleTokens;
+                if (overlapRatio >= 0.85d) {
+                    return true;
+                }
             }
         }
 
         return false;
+    }
+
+    private String normalizeTextForComparison(String raw) {
+        return raw == null
+                ? ""
+                : raw.toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9\\s+]", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
     }
 
     private String buildSmartFallbackTitle(AiSuggestProjectRequest request, String categoryName) {
@@ -465,12 +505,13 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
                 "3) Conservative realistic assumptions.\n" +
                 "4) If info missing, infer and add assumptions to notes.\n" +
                 "5) Generate a strong standalone title (6-12 words). Do NOT copy the first words of description.\n" +
-                "6) For budget type HOURLY_RATE: minValue and maxValue required, minValue < maxValue, fixedValue omitted.\n" +
-                "7) For budget type FIXED_PRICE: fixedValue required, minValue/maxValue omitted.\n" +
-                "8) scope.duration must be one of: Less than 1 month, 1 to 3 months, 3 to 6 months, More than 6 months.\n" +
-                "9) scope.level must be one of: Entry level, Intermediate, Expert.\n" +
-                "10) scope.workload must be one of: Part-time, Full-time, Flexible.\n" +
-                "11) confidence in [0,1], skillNames between 4 and 8 items.\n" +
+                "6) Title must not be a sentence like 'I need...' or 'Toi can...'. Use outcome-focused naming.\n" +
+                "7) For budget type HOURLY_RATE: minValue and maxValue required, minValue < maxValue, fixedValue omitted.\n" +
+                "8) For budget type FIXED_PRICE: fixedValue required, minValue/maxValue omitted.\n" +
+                "9) scope.duration must be one of: Less than 1 month, 1 to 3 months, 3 to 6 months, More than 6 months.\n" +
+                "10) scope.level must be one of: Entry level, Intermediate, Expert.\n" +
+                "11) scope.workload must be one of: Part-time, Full-time, Flexible.\n" +
+                "12) confidence in [0,1], skillNames between 4 and 8 items.\n" +
                 "Output JSON schema:\n" +
                 "{\n" +
                 "  \"title\": \"string\",\n" +
