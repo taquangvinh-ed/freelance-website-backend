@@ -3,7 +3,7 @@
  * Chuẩn hóa contract: Tất cả endpoints dùng chung 1 format
  */
 
-package com.freelancemarketplace.backend.dto;
+package com.freelancemarketplace.backend.toggl.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

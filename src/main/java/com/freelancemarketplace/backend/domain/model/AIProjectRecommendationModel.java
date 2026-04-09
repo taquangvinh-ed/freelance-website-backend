@@ -1,6 +1,5 @@
-package com.freelancemarketplace.backend.model;
+package com.freelancemarketplace.backend.domain.model;
 
-import com.freelancemarketplace.backend.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 /**
  * Stores AI-generated project recommendations for audit and learning purposes

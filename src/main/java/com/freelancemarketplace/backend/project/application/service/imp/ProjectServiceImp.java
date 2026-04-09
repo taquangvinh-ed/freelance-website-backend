@@ -16,7 +16,7 @@ import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import com.freelancemarketplace.backend.project.infrastructure.repository.BudgetsRepository;
 import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
-import com.freelancemarketplace.backend.recommandation.EmbeddingService;
+import com.freelancemarketplace.backend.recommendation.application.service.EmbeddingService;
 import com.freelancemarketplace.backend.project.api.request.CreateProjectRequest;
 import com.freelancemarketplace.backend.project.application.service.ProjectService;
 import com.freelancemarketplace.backend.project.domain.specification.ProjectSpecification;

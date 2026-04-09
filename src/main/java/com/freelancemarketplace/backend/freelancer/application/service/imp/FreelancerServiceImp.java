@@ -8,7 +8,7 @@ import com.freelancemarketplace.backend.freelancer.infrastructure.mapper.Freelan
 import com.freelancemarketplace.backend.freelancer.domain.model.Bio;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
-import com.freelancemarketplace.backend.recommandation.EmbeddingService;
+import com.freelancemarketplace.backend.recommendation.application.service.EmbeddingService;
 import com.freelancemarketplace.backend.freelancer.infrastructure.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.skill.infrastructure.repository.SkillsRepository;
 import com.freelancemarketplace.backend.review.infrastructure.repository.TestimonialsRepository;

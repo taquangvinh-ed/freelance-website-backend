@@ -1,4 +1,4 @@
-package com.freelancemarketplace.backend.service.imp;
+package com.freelancemarketplace.backend.contract.application.service.imp;
 
 /**
  * DEPRECATED: This file is deprecated. Use LLMServiceImp from package:

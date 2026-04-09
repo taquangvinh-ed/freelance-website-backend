@@ -1,14 +1,17 @@
-package com.freelancemarketplace.backend.service.imp;
+package com.freelancemarketplace.backend.contract.application.service.imp;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freelancemarketplace.backend.dto.ProjectAssistantRequest;
-import com.freelancemarketplace.backend.dto.ProjectAssistantResponse;
-import com.freelancemarketplace.backend.model.*;
-import com.freelancemarketplace.backend.repository.*;
+import com.freelancemarketplace.backend.service.PricingEngineService;
+import com.freelancemarketplace.backend.domain.model.AIAPILogModel;
+import com.freelancemarketplace.backend.domain.model.AIProjectRecommendationModel;
+import com.freelancemarketplace.backend.repository.AIAPILogRepository;
+import com.freelancemarketplace.backend.repository.AIProjectRecommendationRepository;
 import com.freelancemarketplace.backend.service.AIProjectAssistantService;
 import com.freelancemarketplace.backend.service.LLMService;
-import com.freelancemarketplace.backend.service.PricingEngineService;
+import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantRequest;
+import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantResponse;
+import com.freelancemarketplace.backend.user.infrastructure.repository.UserRepository;
 import com.freelancemarketplace.backend.util.RateLimiter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -151,15 +154,18 @@ public class AIProjectAssistantServiceImp implements AIProjectAssistantService {
 
     @Override
     @Transactional
-    public void recordUserFeedback(Long recommendationId, AIProjectRecommendationModel.RecommendationFeedback feedback, String notes) {
+    public void recordUserFeedback(Long recommendationId, String feedback, String notes) {
         var recommendation = recommendationRepository.findById(recommendationId)
                 .orElseThrow(() -> new RuntimeException("Recommendation not found"));
 
-        recommendation.setUserFeedback(feedback);
+        AIProjectRecommendationModel.RecommendationFeedback feedbackEnum =
+                AIProjectRecommendationModel.RecommendationFeedback.valueOf(feedback.toUpperCase(Locale.ROOT));
+
+        recommendation.setUserFeedback(feedbackEnum);
         recommendation.setFeedbackNotes(notes);
         recommendationRepository.save(recommendation);
 
-        log.info("Recorded user feedback for recommendation={}, feedback={}", recommendationId, feedback);
+        log.info("Recorded user feedback for recommendation={}, feedback={}", recommendationId, feedbackEnum);
     }
 
     @Override
@@ -307,7 +313,7 @@ public class AIProjectAssistantServiceImp implements AIProjectAssistantService {
     }
 
     private AIProjectRecommendationModel storeRecommendation(Long userId, ProjectAssistantRequest request,
-            ProjectAssistantResponse response, String rawResponse) {
+                                                             ProjectAssistantResponse response, String rawResponse) {
         var recommendation = new AIProjectRecommendationModel();
 
         // Get user

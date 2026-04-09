@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.service.impl;
 
 import com.freelancemarketplace.backend.application.service.ProjectEmbeddingService;
 import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
-import com.freelancemarketplace.backend.recommandation.EmbeddingService;
+import com.freelancemarketplace.backend.recommendation.application.service.EmbeddingService;
 import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -55,7 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.debug("🔐 JWT Filter processing: {}", requestURI);
 
         try {
-<<<<<<< HEAD:src/main/java/com/freelancemarketplace/backend/support/filter/JwtAuthenticationFilter.java
             String uri = request.getRequestURI();
             // Remove query string if present
             if (uri.contains("?")) {
@@ -82,10 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     });
 
             if (isPublic) {
-=======
-            if (PUBLIC_ENDPOINTS.contains(requestURI)) {
                 log.debug("✅ Public endpoint, skipping JWT validation: {}", requestURI);
->>>>>>> c224ecde9e1dde802b9c52adb870c373b32b0b9c:src/main/java/com/freelancemarketplace/backend/filter/JwtAuthenticationFilter.java
                 filterChain.doFilter(request, response);
                 return;
             }

@@ -1,4 +1,4 @@
-package com.freelancemarketplace.backend.dto;
+package com.freelancemarketplace.backend.toggl.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

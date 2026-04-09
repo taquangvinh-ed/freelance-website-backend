@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.MarketPriceStatsModel;
+import com.freelancemarketplace.backend.domain.model.MarketPriceStatsModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

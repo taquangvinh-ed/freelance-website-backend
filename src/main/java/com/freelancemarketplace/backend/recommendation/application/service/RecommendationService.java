@@ -1,4 +1,4 @@
-package com.freelancemarketplace.backend.recommandation;
+package com.freelancemarketplace.backend.recommendation.application.service;
 
 import com.freelancemarketplace.backend.project.dto.ProjectDTO;
 import com.freelancemarketplace.backend.recommendation.dto.RecommendFreelancerDTO;

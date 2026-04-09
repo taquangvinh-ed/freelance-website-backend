@@ -5,7 +5,7 @@ import com.freelancemarketplace.backend.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.dto.ProjectDTO;
 import com.freelancemarketplace.backend.recommendation.dto.RecommendFreelancerDTO;
 import com.freelancemarketplace.backend.project.domain.model.ProjectInteractionModel;
-import com.freelancemarketplace.backend.recommandation.RecommendationService;
+import com.freelancemarketplace.backend.recommendation.application.service.RecommendationService;
 import com.freelancemarketplace.backend.recommendation.infrastructure.repository.ProjectInteractionModelRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

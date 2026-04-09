@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.repository;
 
-import com.freelancemarketplace.backend.model.AIProjectRecommendationModel;
+import com.freelancemarketplace.backend.domain.model.AIProjectRecommendationModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

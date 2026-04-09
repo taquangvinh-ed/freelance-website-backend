@@ -1,12 +1,11 @@
-package com.freelancemarketplace.backend.controller;
+package com.freelancemarketplace.backend.api.controller;
 
-import com.freelancemarketplace.backend.auth.AppUser;
-import com.freelancemarketplace.backend.dto.AIProjectAssistantFrontendResponse;
-import com.freelancemarketplace.backend.dto.ProjectAssistantRequest;
-import com.freelancemarketplace.backend.dto.ProjectAssistantResponse;
-import com.freelancemarketplace.backend.dto.ResponseDTO;
-import com.freelancemarketplace.backend.model.AIProjectRecommendationModel;
+import com.freelancemarketplace.backend.api.response.ResponseDTO;
+import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.service.AIProjectAssistantService;
+import com.freelancemarketplace.backend.toggl.dto.AIProjectAssistantFrontendResponse;
+import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantRequest;
+import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -156,10 +155,7 @@ public class AIProjectAssistantController {
                         .body(new ResponseDTO("400", "Feedback type is required"));
             }
 
-            AIProjectRecommendationModel.RecommendationFeedback feedbackEnum =
-                    AIProjectRecommendationModel.RecommendationFeedback.valueOf(feedback.toUpperCase());
-
-            aiProjectAssistantService.recordUserFeedback(recommendationId, feedbackEnum, notes);
+            aiProjectAssistantService.recordUserFeedback(recommendationId, feedback, notes);
 
             return ResponseEntity.ok(new ResponseDTO(
                     "200",

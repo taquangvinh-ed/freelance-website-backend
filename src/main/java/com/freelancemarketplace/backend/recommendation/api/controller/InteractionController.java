@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.recommendation.api.controller;
 
 import com.freelancemarketplace.backend.recommendation.domain.enums.InteractionType;
-import com.freelancemarketplace.backend.recommandation.InteractionService;
+import com.freelancemarketplace.backend.recommendation.application.service.InteractionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

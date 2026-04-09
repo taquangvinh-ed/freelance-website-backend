@@ -1,4 +1,4 @@
-package com.freelancemarketplace.backend.recommandation.imp;
+package com.freelancemarketplace.backend.recommendation.application.service.imp;
 
 import com.freelancemarketplace.backend.project.dto.ProjectDTO;
 import com.freelancemarketplace.backend.recommendation.dto.RecommendFreelancerDTO;
@@ -6,16 +6,17 @@ import com.freelancemarketplace.backend.freelancer.domain.enums.InvitationStatus
 import com.freelancemarketplace.backend.project.domain.enums.ProjectStatus;
 import com.freelancemarketplace.backend.exceptionHandling.ResourceNotFoundException;
 import com.freelancemarketplace.backend.project.infrastructure.mapper.ProjectMapper;
-import com.freelancemarketplace.backend.recommandation.EmbeddingService;
-import com.freelancemarketplace.backend.recommandation.RecommendationService;
-import com.freelancemarketplace.backend.recommandation.ScoredFreelancer;
-import com.freelancemarketplace.backend.recommandation.ScoredProject;
+import com.freelancemarketplace.backend.recommendation.application.service.EmbeddingService;
+import com.freelancemarketplace.backend.recommendation.application.service.RecommendationService;
+import com.freelancemarketplace.backend.recommendation.application.service.ScoredFreelancer;
+import com.freelancemarketplace.backend.recommendation.application.service.ScoredProject;
 import com.freelancemarketplace.backend.freelancer.infrastructure.repository.FreelancersRepository;
 import com.freelancemarketplace.backend.email.infrastructure.repository.InvitationRepository;
 import com.freelancemarketplace.backend.recommendation.infrastructure.repository.ProjectInteractionModelRepository;
 import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,6 +27,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +36,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.project.domain.model.BudgetModel;
-import com.freelancemarketplace.backend.project.domain.model.ProjectInteractionModel;
 import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
 import com.freelancemarketplace.backend.review.domain.model.TestimonialModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
@@ -50,6 +52,9 @@ public class RecommendationServiceImp implements RecommendationService {
     private final ProjectMapper projectMapper;
     private final ProjectInteractionModelRepository projectInteractionModelRepository;
     private final InvitationRepository invitationRepository;
+
+    @Value("${embedding.service.url:http://localhost:5000}")
+    private String embeddingServiceUrl;
 
     @Override
     public Page<ProjectDTO> recommendProjects(Long freelancerId, Pageable pageable) {
@@ -172,33 +177,34 @@ public class RecommendationServiceImp implements RecommendationService {
 
 
     private List<ProjectModel> getCFRecommendations(Long freelancerId) {
-        List<ProjectInteractionModel> interactions = projectInteractionModelRepository.findAll(); // Export all
-        List<Map<String, Object>> interactionData = interactions.stream()
-                .map(i -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("freelancerId", i.getFreelancer().getFreelancerId());
-                    map.put("projectId", i.getProject().getProjectId());
-                    map.put("score", i.getInteractionScore());
-                    return map;
-                })
-                .collect(Collectors.toList());
-
-        String url = "http://localhost:5000/cf-recommend";
+        String url = buildUrl("/cf-recommend");
         Map<String, Object> request = new HashMap<>();
         request.put("freelancerId", freelancerId);
         request.put("n", 10); // Số lượng
         request.put("allProjects", projectsRepository.findAll().stream().map(ProjectModel::getProjectId).toList());
 
-        ResponseEntity<Map<String, List<Long>>> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                new HttpEntity<>(request, getJsonHeaders()),
-                new ParameterizedTypeReference<>() {
-                }
-        );
+        try {
+            ResponseEntity<Map<String, List<Long>>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    new HttpEntity<>(request, getJsonHeaders()),
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
 
-        List<Long> recommendedIds = response.getBody().get("recommendedProjects");
-        return projectsRepository.findAllById(recommendedIds);
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                return List.of();
+            }
+
+            List<Long> recommendedIds = response.getBody().get("recommendedProjects");
+            if (recommendedIds == null || recommendedIds.isEmpty()) {
+                return List.of();
+            }
+            return projectsRepository.findAllById(recommendedIds);
+        } catch (Exception ex) {
+            log.warn("CF recommendation unavailable for freelancer {}: {}", freelancerId, ex.getMessage());
+            return List.of();
+        }
     }
 
 
@@ -214,9 +220,9 @@ public class RecommendationServiceImp implements RecommendationService {
     }
 
     private double calculateSkillSimilarity(FreelancerModel f, ProjectModel p) {
-        String url = "http://localhost:5000/skill-similarity";
+        String url = buildUrl("/skill-similarity");
         String freelancerSkillVectorHex = bytesToHex(f.getSkillVector());
-        String projectSkillsText = p.getSkills().stream()
+        String projectSkillsText = safeProjectSkills(p).stream()
                 .map(SkillModel::getName)
                 .collect(Collectors.joining(", "));
 
@@ -233,17 +239,21 @@ public class RecommendationServiceImp implements RecommendationService {
 
 
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
-        ResponseEntity<Map<String, Double>> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                entity,
-                new ParameterizedTypeReference<>() {
-                }
-        );
+        try {
+            ResponseEntity<Map<String, Double>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
 
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            Double similarity = response.getBody().get("similarity");
-            return similarity != null ? similarity : 0.0;
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                Double similarity = response.getBody().get("similarity");
+                return similarity != null ? similarity : 0.0;
+            }
+        } catch (Exception ex) {
+            log.warn("Skill similarity service unavailable: {}", ex.getMessage());
         }
         return 0.0;
     }
@@ -253,7 +263,7 @@ public class RecommendationServiceImp implements RecommendationService {
     }
 
     private boolean isFreelancerInBudget(FreelancerModel freelancer, BudgetModel budget) {
-        if (budget == null || freelancer.getHourlyRate() == null) {
+        if (budget == null || budget.getType() == null || freelancer.getHourlyRate() == null) {
             return false;
         }
 
@@ -279,6 +289,9 @@ public class RecommendationServiceImp implements RecommendationService {
 
 
     private boolean hasApplied(FreelancerModel f, ProjectModel p) {
+        if (f.getProposals() == null || f.getProposals().isEmpty()) {
+            return false;
+        }
         return f.getProposals().stream()
                 .anyMatch(prop -> prop.getProject().getProjectId().equals(p.getProjectId()));
     }
@@ -287,7 +300,7 @@ public class RecommendationServiceImp implements RecommendationService {
     private double calculateProjectToFreelancerSimilarity(ProjectModel project, FreelancerModel freelancer) {
         double skillScore = 0.0;
         String projectVectorHex = bytesToHex(project.getSkillVector());
-        String freelancerSkillsText = freelancer.getSkills().stream()
+        String freelancerSkillsText = safeFreelancerSkills(freelancer).stream()
                 .map(SkillModel::getName)
                 .collect(Collectors.joining(", "));
 
@@ -303,6 +316,9 @@ public class RecommendationServiceImp implements RecommendationService {
 
 
     private double calculateFreelancerRating(FreelancerModel f) {
+        if (f.getTestimonials() == null || f.getTestimonials().isEmpty()) {
+            return 0.0;
+        }
         return f.getTestimonials().stream()
                 .filter(t -> t.getRatingScore() != null)
                 .mapToInt(TestimonialModel::getRatingScore)
@@ -312,7 +328,7 @@ public class RecommendationServiceImp implements RecommendationService {
 
 
     private double callProjectSkillSimilarity(String projectSkillVectorHex, String freelancerSkillsText) {
-        String url = "http://localhost:5000/project-skill-similarity";
+        String url = buildUrl("/project-skill-similarity");
 
         Map<String, String> request = new HashMap<>();
         request.put("project_skill_vector", projectSkillVectorHex);
@@ -343,7 +359,7 @@ public class RecommendationServiceImp implements RecommendationService {
 
 
     private List<FreelancerModel> getCFFreelancerRecommendations(Long projectId) {
-        String url = "http://localhost:5000/cf-recommend-freelancers";
+        String url = buildUrl("/cf-recommend-freelancers");
 
         // Lấy danh sách tất cả freelancer ID
         List<Long> allFreelancerIds = freelancersRepository.findAll()
@@ -376,11 +392,33 @@ public class RecommendationServiceImp implements RecommendationService {
                 }
             }
         } catch (Exception e) {
-            log.error("CF recommendation FAILED for project {}: {}", projectId, e.toString(), e);
-            throw new RuntimeException("Collaborative filtering service unavailable", e);
+            log.warn("CF recommendation unavailable for project {}: {}", projectId, e.getMessage());
+            return List.of();
         }
 
         return List.of(); // trả về rỗng nếu lỗi
+    }
+
+    private String buildUrl(String path) {
+        String base = embeddingServiceUrl == null ? "http://localhost:5000" : embeddingServiceUrl.trim();
+        if (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+        return base + path;
+    }
+
+    private Collection<SkillModel> safeProjectSkills(ProjectModel project) {
+        if (project == null || project.getSkills() == null) {
+            return Collections.emptyList();
+        }
+        return project.getSkills();
+    }
+
+    private Collection<SkillModel> safeFreelancerSkills(FreelancerModel freelancer) {
+        if (freelancer == null || freelancer.getSkills() == null) {
+            return Collections.emptyList();
+        }
+        return freelancer.getSkills();
     }
 
 }

@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.service;
 
-import com.freelancemarketplace.backend.dto.ProjectAssistantRequest;
-import com.freelancemarketplace.backend.dto.ProjectAssistantResponse;
-import com.freelancemarketplace.backend.model.AIProjectRecommendationModel;
+import com.freelancemarketplace.backend.domain.model.AIProjectRecommendationModel;
+import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantRequest;
+import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantResponse;
 
 /**
  * AI Project Assistant Service
@@ -35,7 +35,7 @@ public interface AIProjectAssistantService {
      * @param feedback ACCEPTED, REJECTED, PARTIAL
      * @param notes Optional notes from user
      */
-    void recordUserFeedback(Long recommendationId, AIProjectRecommendationModel.RecommendationFeedback feedback, String notes);
+    void recordUserFeedback(Long recommendationId, String feedback, String notes);
 
     /**
      * Get recommendation history for a user

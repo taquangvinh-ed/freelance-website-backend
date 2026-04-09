@@ -1,5 +1,8 @@
-package com.freelancemarketplace.backend.model;
+package com.freelancemarketplace.backend.domain.model;
 
+import com.freelancemarketplace.backend.audit.domain.model.BaseEntity;
+import com.freelancemarketplace.backend.category.domain.model.CategoryModel;
+import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

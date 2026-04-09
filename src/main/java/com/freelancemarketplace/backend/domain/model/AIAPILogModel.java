@@ -1,4 +1,4 @@
-package com.freelancemarketplace.backend.model;
+package com.freelancemarketplace.backend.domain.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class AIAPILogModel extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    private UserModel user; // Who made this request
+    private com.freelancemarketplace.backend.user.domain.model.UserModel user; // Who made this request
 
     private String provider; // anthropic, openai, google
 

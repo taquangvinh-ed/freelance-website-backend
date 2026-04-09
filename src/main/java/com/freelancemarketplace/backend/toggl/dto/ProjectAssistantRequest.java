@@ -1,4 +1,4 @@
-package com.freelancemarketplace.backend.dto;
+package com.freelancemarketplace.backend.toggl.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

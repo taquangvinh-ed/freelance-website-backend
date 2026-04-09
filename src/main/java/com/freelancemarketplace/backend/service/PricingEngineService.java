@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.service;
 
-import com.freelancemarketplace.backend.dto.MarketPriceStatsDTO;
+import com.freelancemarketplace.backend.toggl.dto.MarketPriceStatsDTO;
 
 import java.math.BigDecimal;
 

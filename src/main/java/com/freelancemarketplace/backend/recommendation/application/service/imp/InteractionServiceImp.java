@@ -1,8 +1,8 @@
-package com.freelancemarketplace.backend.recommandation.imp;
+package com.freelancemarketplace.backend.recommendation.application.service.imp;
 
 import com.freelancemarketplace.backend.recommendation.domain.enums.InteractionType;
 import com.freelancemarketplace.backend.exceptionHandling.ResourceNotFoundException;
-import com.freelancemarketplace.backend.recommandation.InteractionService;
+import com.freelancemarketplace.backend.recommendation.application.service.InteractionService;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.project.domain.model.ProjectInteractionModel;
 import com.freelancemarketplace.backend.project.domain.model.ProjectModel;
@@ -25,6 +25,13 @@ public class InteractionServiceImp implements InteractionService {
 
     @Override
     public void logInteraction(Long freelancerId, Long projectId, InteractionType interactionType) {
+        if (freelancerId == null || projectId == null) {
+            throw new IllegalArgumentException("freelancerId and projectId are required");
+        }
+        if (interactionType == null) {
+            throw new IllegalArgumentException("interactionType is required");
+        }
+
         ProjectInteractionModel newInteraction = new ProjectInteractionModel();
 
         FreelancerModel freelancer = freelancersRepository.findById(freelancerId).orElseThrow(

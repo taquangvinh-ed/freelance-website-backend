@@ -1,4 +1,4 @@
-package com.freelancemarketplace.backend.recommandation;
+package com.freelancemarketplace.backend.recommendation.application.service;
 
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import lombok.AllArgsConstructor;

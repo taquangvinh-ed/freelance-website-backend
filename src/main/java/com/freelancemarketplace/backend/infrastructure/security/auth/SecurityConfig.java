@@ -79,17 +79,13 @@ public class SecurityConfig {
                                 "api/upload/file-chat", "/api/message/mark-as-read/**", "/api/proposals/find-by-freelancer-and-project/**",
                                     "/api/proposals/{proposalId}", "/api/contracts/get-contract/{contractId}", "/api/testimonials/**", "/api/experiences/**"
                                ,"/api/freelancers/profile/{freelancerId}", "/api/contracts/*/hourly-contract-logs", "/api/freelancers/info/*",
-<<<<<<< HEAD:src/main/java/com/freelancemarketplace/backend/infrastructure/security/auth/SecurityConfig.java
                                 "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar", "/api/projects/ai-suggest",
-                                "/api/contracts/*/hourly-payments", "/api/hourly-payments/*" ).hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
-=======
-                                "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar",
+                                "/api/contracts/*/hourly-payments", "/api/hourly-payments/*",
                                 "/api/ai/project-assistant/suggest",
                                 "/api/ai/project-assistant/improve/**",
                                 "/api/ai/project-assistant/feedback/**",
                                 "/api/ai/project-assistant/history",
                                 "/api/ai/project-assistant/stats").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
->>>>>>> c224ecde9e1dde802b9c52adb870c373b32b0b9c:src/main/java/com/freelancemarketplace/backend/config/SecurityConfig.java
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",

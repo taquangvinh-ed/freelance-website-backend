@@ -3,7 +3,7 @@
  * Liệt kê full schema cố định, KHÔNG dùng { ... }
  */
 
-package com.freelancemarketplace.backend.dto;
+package com.freelancemarketplace.backend.toggl.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
