@@ -4,7 +4,8 @@ import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.project.dto.ProjectDTO;
 import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.api.request.CreateProjectRequest;
-import com.freelancemarketplace.backend.project.application.service.ProjectService;
+import com.freelancemarketplace.backend.project.application.service.ProjectCrudService;
+import com.freelancemarketplace.backend.project.application.service.ProjectSearchService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -18,61 +19,55 @@ import java.util.List;
 @RequestMapping(value = "/api/projects", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class ProjectController {
 
-    private final ProjectService projectService;
+    private final ProjectCrudService projectCrudService;
+    private final ProjectSearchService projectSearchService;
 
-    public ProjectController(ProjectService projectService) {
-        this.projectService = projectService;
+    public ProjectController(ProjectCrudService projectCrudService, ProjectSearchService projectSearchService) {
+        this.projectCrudService = projectCrudService;
+        this.projectSearchService = projectSearchService;
     }
 
     @PostMapping("/")
     public ApiResponse<?> createProject(@AuthenticationPrincipal AppUser appUser, @RequestBody CreateProjectRequest req){
-
         Long userId = appUser.getId();
-
-        ProjectDTO newProject = projectService.createProject(userId, req);
+        ProjectDTO newProject = projectCrudService.createProject(userId, req);
         return ApiResponse.created(newProject);
     }
 
     @PutMapping("/{projectId}")
-    ApiResponse<?> updateProject(@PathVariable Long projectId,
-                                             @RequestBody ProjectDTO projectDTO){
-        ProjectDTO updatedProject = projectService.updateProject(projectId, projectDTO);
+    ApiResponse<?> updateProject(@PathVariable Long projectId, @RequestBody ProjectDTO projectDTO){
+        ProjectDTO updatedProject = projectCrudService.updateProject(projectId, projectDTO);
         return ApiResponse.success(updatedProject);
-
     }
 
     @DeleteMapping("/{projectId}")
     public ApiResponse<?> deleteProject(@PathVariable Long projectId){
-        projectService.deleteProject(projectId);
+        projectCrudService.deleteProject(projectId);
         return ApiResponse.noContent();
     }
 
     @GetMapping("/getAllProjects")
     public ApiResponse<?> getAllProject(){
-        List<ProjectDTO> projects = projectService.getAllProject();
+        List<ProjectDTO> projects = projectCrudService.getAllProjects();
         return ApiResponse.success(projects);
     }
 
     @GetMapping("/findProject/{projectId}")
     public ApiResponse<?> findProjectById(@PathVariable Long projectId){
-        ProjectDTO project = projectService.findProjectById(projectId);
+        ProjectDTO project = projectCrudService.findProjectById(projectId);
         return ApiResponse.success(project);
     }
 
     @PutMapping("/assignSkillToProject/Project/{projectId}/Skill/{skillId}")
-    public ApiResponse<?> assignSkillToProject(@PathVariable Long projectId,
-                                                           @PathVariable Long skillId){
-        projectService.assignSkillToProject(projectId,skillId);
+    public ApiResponse<?> assignSkillToProject(@PathVariable Long projectId, @PathVariable Long skillId){
+        projectCrudService.assignSkillToProject(projectId, skillId);
         return ApiResponse.noContent();
-
     }
 
     @PutMapping("/removeSkillFromProject/Project/{projectId}/Skill/{skillId}")
-    public ApiResponse<?> removeSkillFromProject(@PathVariable Long projectId,
-                                                           @PathVariable Long skillId){
-        projectService.removeSkillFromProject(projectId,skillId);
+    public ApiResponse<?> removeSkillFromProject(@PathVariable Long projectId, @PathVariable Long skillId){
+        projectCrudService.removeSkillFromProject(projectId, skillId);
         return ApiResponse.noContent();
-
     }
 
     @GetMapping("/filter")
@@ -87,8 +82,8 @@ public class ProjectController {
             @RequestParam(required = false) String workload,
             Pageable pageable) {
 
-        Page<ProjectDTO> projects = projectService.filter(keyword,
-                skillNames, minRate, maxRate, isHourly, duration, level, workload, pageable);
+        Page<ProjectDTO> projects = projectSearchService.searchProjects(
+                keyword, skillNames, minRate, maxRate, isHourly, duration, level, workload, pageable);
         return ApiResponse.success(projects);
     }
 
@@ -97,8 +92,7 @@ public class ProjectController {
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "10") int limit, Pageable pageable) {
 
-        Page<ProjectDTO> projects = projectService.autocompleteSearch(keyword, limit, pageable);
+        Page<ProjectDTO> projects = projectSearchService.autocompleteSearch(keyword, limit, pageable);
         return ApiResponse.success(projects);
     }
-
 }
