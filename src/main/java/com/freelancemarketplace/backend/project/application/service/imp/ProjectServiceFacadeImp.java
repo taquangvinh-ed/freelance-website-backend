@@ -8,18 +8,12 @@ import com.freelancemarketplace.backend.project.application.service.ProjectServi
 import com.freelancemarketplace.backend.project.application.service.ProjectStatisticsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Project Service Facade Implementation
- * 
- * This implementation delegates to focused services following the Single Responsibility Principle:
- * - ProjectCrudService: CRUD operations
- * - ProjectSearchService: Search and filtering
- * - ProjectStatisticsService: Statistics and counting
- */
+@Service
 public class ProjectServiceFacadeImp implements ProjectService {
 
     private final ProjectCrudService projectCrudService;
