@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.contract.api.controller;
 
 import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.contract.application.service.MileStoneService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

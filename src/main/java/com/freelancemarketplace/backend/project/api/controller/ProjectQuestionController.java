@@ -4,7 +4,7 @@ import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.admin.dto.AnswerQuestionRequest;
 import com.freelancemarketplace.backend.admin.dto.CreateQuestionRequest;
 import com.freelancemarketplace.backend.project.dto.ProjectQuestionDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.application.service.ProjectQuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

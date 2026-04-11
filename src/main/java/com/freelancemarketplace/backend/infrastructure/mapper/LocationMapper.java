@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.location.dto.LocationDTO;
-import com.freelancemarketplace.backend.domain.model.LocationModel;
+import com.freelancemarketplace.backend.location.domain.model.LocationModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

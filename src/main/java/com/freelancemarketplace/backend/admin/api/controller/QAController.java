@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.admin.api.controller;
 
 import com.freelancemarketplace.backend.admin.dto.Q_ADTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.admin.application.service.Q_AService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;

@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.contract.application.service.imp;
 
 /**
  * DEPRECATED: This file is deprecated. Use LLMServiceImp from package:
- * com.freelancemarketplace.backend.service.impl.LLMServiceImp
+ * com.freelancemarketplace.backend.recommendation.application.service.imp.LLMServiceImp
  *
  * This old implementation used stub/placeholder code.
  * The new implementation uses OkHttp to call Claude API directly.
@@ -13,8 +13,8 @@ package com.freelancemarketplace.backend.contract.application.service.imp;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freelancemarketplace.backend.model.AIAPILogModel;
-import com.freelancemarketplace.backend.repository.AIAPILogRepository;
-import com.freelancemarketplace.backend.service.LLMService;
+import com.freelancemarketplace.backend.recommendation.infrastructure.repository.AIAPILogRepository;
+import com.freelancemarketplace.backend.recommendation.application.service.LLMService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

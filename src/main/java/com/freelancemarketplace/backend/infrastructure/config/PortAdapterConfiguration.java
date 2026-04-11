@@ -1,6 +1,11 @@
 package com.freelancemarketplace.backend.infrastructure.config;
 
-import com.freelancemarketplace.backend.application.port.*;
+import com.freelancemarketplace.backend.project.application.port.ProjectCrudPort;
+import com.freelancemarketplace.backend.client.application.port.ClientCrudPort;
+import com.freelancemarketplace.backend.freelancer.application.port.FreelancerCrudPort;
+import com.freelancemarketplace.backend.notification.application.port.CloudStoragePort;
+import com.freelancemarketplace.backend.notification.application.port.EmailPort;
+import com.freelancemarketplace.backend.recommendation.application.port.LLMPort;
 import com.freelancemarketplace.backend.infrastructure.adapter.ClaudeLLMAdapter;
 import com.freelancemarketplace.backend.infrastructure.adapter.CloudinaryStorageAdapter;
 import com.freelancemarketplace.backend.infrastructure.persistence.ClientRepositoryAdapter;
@@ -91,4 +96,3 @@ public class PortAdapterConfiguration {
         return new ObjectMapper();
     }
 }
-

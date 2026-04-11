@@ -4,7 +4,7 @@ import com.freelancemarketplace.backend.category.dto.CategoryDTO;
 import com.freelancemarketplace.backend.category.dto.CategoryResponse;
 import com.freelancemarketplace.backend.skill.dto.SkillDTO;
 import com.freelancemarketplace.backend.skill.dto.SkillDTO2;
-import com.freelancemarketplace.backend.domain.model.CategoryModel;
+import com.freelancemarketplace.backend.category.domain.model.CategoryModel;
 import com.freelancemarketplace.backend.skill.domain.model.SkillModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

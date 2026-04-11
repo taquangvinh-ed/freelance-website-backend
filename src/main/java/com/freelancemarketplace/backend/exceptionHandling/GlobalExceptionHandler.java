@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.exceptionHandling;
 
 import com.freelancemarketplace.backend.admin.exception.AdminException;
 import com.freelancemarketplace.backend.admin.exception.AdminNotFoundException;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.client.exception.ClientNotFoundException;
 import com.freelancemarketplace.backend.contract.exception.ContractNotFoundException;
 import com.freelancemarketplace.backend.contract.exception.MilestoneNotFoundException;

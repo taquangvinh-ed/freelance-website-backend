@@ -1,5 +1,5 @@
 package com.freelancemarketplace.backend.conversation.api.controller;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.conversation.dto.ContactInfoDTO;

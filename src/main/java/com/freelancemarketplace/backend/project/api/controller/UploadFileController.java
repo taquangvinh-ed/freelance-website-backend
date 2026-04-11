@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.project.api.controller;
 
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.application.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.language.api.controller;
 
 import com.freelancemarketplace.backend.language.dto.LanguageDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.language.exception.LanguageException;
 import com.freelancemarketplace.backend.language.application.service.LanguageService;
 import jakarta.validation.Valid;

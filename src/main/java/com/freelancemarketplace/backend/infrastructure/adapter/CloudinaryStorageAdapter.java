@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.adapter;
 
-import com.freelancemarketplace.backend.application.port.CloudStoragePort;
+import com.freelancemarketplace.backend.notification.application.port.CloudStoragePort;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.AllArgsConstructor;

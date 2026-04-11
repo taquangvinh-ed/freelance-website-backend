@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.freelancer.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.freelancer.application.service.FreelancerService;
 import com.freelancemarketplace.backend.skill.application.service.SkillSerivice;

@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.client.api.controller;
 
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import com.freelancemarketplace.backend.client.application.service.ClientService;

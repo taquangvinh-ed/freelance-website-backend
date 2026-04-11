@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.certification.dto.CertificateDTO;
-import com.freelancemarketplace.backend.domain.model.CertificateModel;
+import com.freelancemarketplace.backend.certification.domain.model.CertificateModel;
 import org.mapstruct.*;
 
 import java.util.List;

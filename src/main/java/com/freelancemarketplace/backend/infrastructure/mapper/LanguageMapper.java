@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.language.dto.LanguageDTO;
-import com.freelancemarketplace.backend.domain.model.LanguageModel;
+import com.freelancemarketplace.backend.language.domain.model.LanguageModel;
 import org.mapstruct.Mapper;
 
 import java.util.List;

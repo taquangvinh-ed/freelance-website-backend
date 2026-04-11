@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.admin.dto.Q_ADTO;
-import com.freelancemarketplace.backend.domain.model.Q_AModel;
+import com.freelancemarketplace.backend.admin.domain.model.Q_AModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

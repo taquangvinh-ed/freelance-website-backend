@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.project.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.project.dto.AiSuggestProjectResponseDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.api.request.AiSuggestProjectRequest;
 import com.freelancemarketplace.backend.exceptionHandling.ErrorCode;
 import com.freelancemarketplace.backend.project.application.service.AIProjectSuggestionService;

@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.recommendation.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.dto.ProjectDTO;
 import com.freelancemarketplace.backend.recommendation.dto.RecommendFreelancerDTO;
 import com.freelancemarketplace.backend.project.domain.model.ProjectInteractionModel;

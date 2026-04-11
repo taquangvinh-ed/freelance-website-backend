@@ -3,7 +3,7 @@ package com.freelancemarketplace.backend.admin.api.controller;
 import com.freelancemarketplace.backend.admin.application.service.AdminService;
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.admin.dto.AdminDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.user.dto.UserDTO;
 import com.freelancemarketplace.backend.user.api.request.DisableUserRequest;
 import com.freelancemarketplace.backend.user.api.request.UserRequest;

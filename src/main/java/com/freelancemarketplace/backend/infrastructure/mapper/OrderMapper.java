@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.product.dto.OrderDTO;
-import com.freelancemarketplace.backend.domain.model.OrderModel;
+import com.freelancemarketplace.backend.product.domain.model.OrderModel;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)

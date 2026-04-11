@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.project.api.controller;
 
 import com.freelancemarketplace.backend.project.dto.BudgetDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.application.service.BudgetService;
 import org.springframework.web.bind.annotation.*;
 

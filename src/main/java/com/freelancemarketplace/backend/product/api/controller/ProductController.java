@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.product.api.controller;
 
 import com.freelancemarketplace.backend.product.dto.ProductDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.product.application.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

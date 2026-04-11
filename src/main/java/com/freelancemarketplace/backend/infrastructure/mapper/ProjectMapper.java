@@ -1,7 +1,5 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
-import com.freelancemarketplace.backend.domain.model.*;
-
 import com.freelancemarketplace.backend.project.api.request.CreateProjectRequest;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;

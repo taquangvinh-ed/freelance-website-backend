@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.admin.dto.AdminDTO;
-import com.freelancemarketplace.backend.domain.model.AdminModel;
+import com.freelancemarketplace.backend.admin.domain.model.AdminModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

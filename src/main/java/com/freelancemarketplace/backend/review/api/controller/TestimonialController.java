@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.review.api.controller;
 
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.review.dto.ReviewDTO;
 import com.freelancemarketplace.backend.review.application.service.TestomonialService;
 import org.springframework.data.domain.Page;

@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.adapter;
 
-import com.freelancemarketplace.backend.application.port.LLMPort;
+import com.freelancemarketplace.backend.recommendation.application.port.LLMPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

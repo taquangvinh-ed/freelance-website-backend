@@ -1,5 +1,5 @@
 package com.freelancemarketplace.backend.admin.api.controller;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.user.domain.enums.UserRoles;
 import com.freelancemarketplace.backend.project.application.service.ProjectService;

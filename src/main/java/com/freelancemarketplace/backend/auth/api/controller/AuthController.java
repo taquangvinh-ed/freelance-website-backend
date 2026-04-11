@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.auth.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.infrastructure.security.auth.LoginRequest;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.infrastructure.security.jwt.JwtTokenProvider;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;

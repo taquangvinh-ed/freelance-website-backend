@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.category.api.controller;
 
 import com.freelancemarketplace.backend.project.dto.BudgetDTO;
 import com.freelancemarketplace.backend.category.dto.CategoryDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.category.application.service.CategoryService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

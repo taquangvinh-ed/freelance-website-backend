@@ -2,8 +2,8 @@ package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.proposal.dto.ProposalDTO;
-import com.freelancemarketplace.backend.domain.model.MileStoneModel;
-import com.freelancemarketplace.backend.domain.model.ProposalModel;
+import com.freelancemarketplace.backend.contract.domain.model.MileStoneModel;
+import com.freelancemarketplace.backend.proposal.domain.model.ProposalModel;
 import org.mapstruct.*;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.skill.api.controller;
 
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.skill.dto.SkillDTO;
 import com.freelancemarketplace.backend.skill.dto.SkillDTO2;
 import com.freelancemarketplace.backend.skill.application.service.SkillSerivice;

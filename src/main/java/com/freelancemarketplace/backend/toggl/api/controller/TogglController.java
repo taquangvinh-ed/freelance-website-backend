@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.toggl.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.toggl.dto.ClockifyTimeEntryResponse;
 import com.freelancemarketplace.backend.toggl.dto.TogglTimeEntryResponseDTO;
 import com.freelancemarketplace.backend.toggl.application.service.TogglService;

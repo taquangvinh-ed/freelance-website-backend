@@ -1,5 +1,5 @@
 package com.freelancemarketplace.backend.certification.api.controller;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.certification.dto.CertificateDTO;

@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.project.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.project.dto.ProjectDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.project.api.request.CreateProjectRequest;
 import com.freelancemarketplace.backend.project.application.service.ProjectService;
 import org.springframework.data.domain.Page;

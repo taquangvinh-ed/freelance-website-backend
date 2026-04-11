@@ -4,7 +4,7 @@ import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.contract.dto.ContractDTO;
 import com.freelancemarketplace.backend.proposal.dto.ProjectProposalDTO;
 import com.freelancemarketplace.backend.proposal.dto.ProposalDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.proposal.application.service.ProposalService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

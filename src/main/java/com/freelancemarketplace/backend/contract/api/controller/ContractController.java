@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.contract.api.controller;
 
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.contract.dto.ContractDTO;
 import com.freelancemarketplace.backend.contract.dto.ContractResponseDTO;
 import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;

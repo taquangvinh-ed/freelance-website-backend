@@ -1,6 +1,6 @@
 package com.freelancemarketplace.backend.infrastructure.persistence;
 
-import com.freelancemarketplace.backend.application.port.ClientCrudPort;
+import com.freelancemarketplace.backend.client.application.port.ClientCrudPort;
 import com.freelancemarketplace.backend.client.domain.model.ClientModel;
 import com.freelancemarketplace.backend.client.infrastructure.repository.ClientsRepository;
 import lombok.AllArgsConstructor;

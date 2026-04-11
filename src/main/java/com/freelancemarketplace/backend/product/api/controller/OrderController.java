@@ -1,7 +1,7 @@
 package com.freelancemarketplace.backend.product.api.controller;
 
 import com.freelancemarketplace.backend.product.dto.OrderDTO;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.product.application.service.OrderService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

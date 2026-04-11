@@ -1,13 +1,13 @@
 package com.freelancemarketplace.backend.payment.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.client.dto.ClientDTO;
 import com.freelancemarketplace.backend.contract.dto.MileStoneDTO;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
 import com.freelancemarketplace.backend.freelancer.application.service.FreelancerService;
 import com.freelancemarketplace.backend.payment.application.service.PaymentService;
-import com.freelancemarketplace.backend.payment.application.service.imp.StripeService;
+import com.freelancemarketplace.backend.payment.application.service.StripeService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Account;
 import com.stripe.model.Event;

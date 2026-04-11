@@ -1,11 +1,11 @@
 package com.freelancemarketplace.backend.contract.application.service.imp;
 
 import com.freelancemarketplace.backend.toggl.dto.MarketPriceStatsDTO;
-import com.freelancemarketplace.backend.domain.model.MarketPriceStatsModel;
-import com.freelancemarketplace.backend.repository.BudgetsRepository;
-import com.freelancemarketplace.backend.repository.MarketPriceStatsRepository;
+import com.freelancemarketplace.backend.report.domain.model.MarketPriceStatsModel;
+import com.freelancemarketplace.backend.project.infrastructure.repository.BudgetsRepository;
+import com.freelancemarketplace.backend.report.infrastructure.repository.MarketPriceStatsRepository;
 import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
-import com.freelancemarketplace.backend.service.PricingEngineService;
+import com.freelancemarketplace.backend.contract.application.service.PricingEngineService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;

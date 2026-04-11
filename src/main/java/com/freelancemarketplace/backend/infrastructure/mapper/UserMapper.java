@@ -2,7 +2,7 @@ package com.freelancemarketplace.backend.infrastructure.mapper;
 
 import com.freelancemarketplace.backend.user.dto.RegistrationtDTO;
 import com.freelancemarketplace.backend.user.dto.UserDTO;
-import com.freelancemarketplace.backend.domain.model.UserModel;
+import com.freelancemarketplace.backend.user.domain.model.UserModel;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 

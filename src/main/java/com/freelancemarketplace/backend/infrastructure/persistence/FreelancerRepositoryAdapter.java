@@ -1,8 +1,8 @@
 package com.freelancemarketplace.backend.infrastructure.persistence;
 
-import com.freelancemarketplace.backend.application.port.FreelancerCrudPort;
+import com.freelancemarketplace.backend.freelancer.application.port.FreelancerCrudPort;
 import com.freelancemarketplace.backend.freelancer.domain.model.FreelancerModel;
-import com.freelancemarketplace.backend.repository.FreelancersRepository;
+import com.freelancemarketplace.backend.freelancer.infrastructure.repository.FreelancersRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

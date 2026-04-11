@@ -1,14 +1,13 @@
 package com.freelancemarketplace.backend.user.api.controller;
 
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
-import com.freelancemarketplace.backend.api.response.ApiResponse;
+import com.freelancemarketplace.backend.common.api.response.ApiResponse;
 import com.freelancemarketplace.backend.user.dto.RegistrationtDTO;
 import com.freelancemarketplace.backend.user.dto.UserDTO;
 import com.freelancemarketplace.backend.infrastructure.security.jwt.JwtTokenProvider;
 import com.freelancemarketplace.backend.user.infrastructure.mapper.UserMapper;
 import com.freelancemarketplace.backend.user.domain.model.UserModel;
 import com.freelancemarketplace.backend.user.application.service.UserService;
-import com.stripe.exception.StripeException;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/")
-    ApiResponse<?> registerUser(@RequestBody RegistrationtDTO registrationtDTO) throws StripeException {
+    ApiResponse<?> registerUser(@RequestBody RegistrationtDTO registrationtDTO) throws Exception {
         RegistrationtDTO responseRegistration = userService.registerUser(registrationtDTO);
 
         UserModel newUser = userMapper.registraionDtoToUserEntity(registrationtDTO);
