@@ -1,5 +1,6 @@
 package com.freelancemarketplace.backend.recommendation.application.service.imp;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,10 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * LLM Service Implementation using Claude API via OkHttp
- * Direct HTTP calls - no SDK dependency
- */
 @Service
 @Slf4j
 public class LLMServiceImp implements LLMService {
@@ -27,30 +24,26 @@ public class LLMServiceImp implements LLMService {
     @Value("${ai.llm.api-key:}")
     private String apiKey;
 
-    @Value("${ai.llm.model:claude-3-5-haiku-20241022}")
+    @Value("${ai.llm.model:gemini-2.0-flash}")
     private String model;
 
-    @Value("${ai.llm.api-url:https://api.anthropic.com/v1/messages}")
+    @Value("${ai.llm.api-url:https://generativelanguage.googleapis.com/v1beta/models}")
     private String apiUrl;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final OkHttpClient httpClient;
 
-    // Claude 3.5 Haiku pricing (per 1M tokens)
-    private static final BigDecimal INPUT_PRICE_PER_1M = new BigDecimal("0.80");
-    private static final BigDecimal OUTPUT_PRICE_PER_1M = new BigDecimal("4.00");
+    private static final BigDecimal INPUT_PRICE_PER_1M = new BigDecimal("0.075");
+    private static final BigDecimal OUTPUT_PRICE_PER_1M = new BigDecimal("0.30");
 
     public LLMServiceImp() {
         this.httpClient = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
 
-    /**
-     * Generate project suggestions using Claude API
-     */
     @Override
     public String generateProjectSuggestions(
             String brief,
@@ -62,16 +55,13 @@ public class LLMServiceImp implements LLMService {
 
         String prompt = buildProjectSuggestionPrompt(brief, categoryName, scope, timeline, preferredSkills, marketContext);
         try {
-            return callClaudeAPI(prompt);
+            return callGeminiAPI(prompt);
         } catch (Exception e) {
             log.error("Error generating project suggestions", e);
             throw new RuntimeException("Failed to generate suggestions: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * Improve existing project suggestions
-     */
     @Override
     public String improveProjectSuggestions(
             String originalBrief,
@@ -81,25 +71,18 @@ public class LLMServiceImp implements LLMService {
 
         String prompt = buildImprovementPrompt(originalBrief, previousSuggestions, userFeedback, marketContext);
         try {
-            return callClaudeAPI(prompt);
+            return callGeminiAPI(prompt);
         } catch (Exception e) {
             log.error("Error improving suggestions", e);
             throw new RuntimeException("Failed to improve suggestions: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * Count tokens in text
-     */
     @Override
     public Integer countTokens(String text) {
-        // Rough estimation: 1 token ≈ 4 characters
         return Math.max(1, text.length() / 4);
     }
 
-    /**
-     * Estimate cost of LLM call
-     */
     @Override
     public BigDecimal estimateCost(Integer inputTokens, Integer outputTokens) {
         if (inputTokens == null || outputTokens == null) {
@@ -117,9 +100,6 @@ public class LLMServiceImp implements LLMService {
         return inputCost.add(outputCost);
     }
 
-    /**
-     * Validate LLM response
-     */
     @Override
     public boolean validateResponse(String response) {
         if (response == null || response.isEmpty()) {
@@ -129,12 +109,10 @@ public class LLMServiceImp implements LLMService {
         try {
             ObjectNode jsonNode = (ObjectNode) objectMapper.readTree(response);
 
-            // Check required fields
             if (!jsonNode.has("title") || !jsonNode.has("budget")) {
                 return false;
             }
 
-            // Check for guaranteed success claims (guardrail)
             if (response.toLowerCase().contains("guaranteed") ||
                 response.toLowerCase().contains("100% sure")) {
                 return false;
@@ -147,17 +125,11 @@ public class LLMServiceImp implements LLMService {
         }
     }
 
-    /**
-     * Get current model
-     */
     @Override
     public String getCurrentModel() {
         return model;
     }
 
-    /**
-     * Get model pricing
-     */
     @Override
     public Map<String, BigDecimal> getModelPricing() {
         Map<String, BigDecimal> pricing = new HashMap<>();
@@ -166,71 +138,76 @@ public class LLMServiceImp implements LLMService {
         return pricing;
     }
 
-    /**
-     * Call Claude API with prompt
-     */
-    private String callClaudeAPI(String prompt) {
+    @Override
+    public String chat(String userMessage, String projectContext, String projectBrief) {
+        String prompt = buildChatPrompt(userMessage, projectContext, projectBrief);
         try {
-            // Build request payload
+            return callGeminiAPI(prompt);
+        } catch (Exception e) {
+            log.error("Error generating chat response", e);
+            throw new RuntimeException("Failed to generate chat response: " + e.getMessage(), e);
+        }
+    }
+
+    private String callGeminiAPI(String prompt) {
+        try {
             ObjectNode requestBody = objectMapper.createObjectNode();
-            requestBody.put("model", model);
-            requestBody.put("max_tokens", 1500);
+            requestBody.put("generationConfig.maxOutputTokens", 2048);
+            requestBody.put("generationConfig.temperature", 0.7);
 
-            // Add messages
-            ArrayNode messagesArray = objectMapper.createArrayNode();
-            ObjectNode messageNode = objectMapper.createObjectNode();
-            messageNode.put("role", "user");
-            messageNode.put("content", prompt);
-            messagesArray.add(messageNode);
+            ArrayNode contentsArray = objectMapper.createArrayNode();
+            ObjectNode contentNode = contentsArray.addObject();
+            ArrayNode partsArray = contentNode.putArray("parts");
+            ObjectNode partNode = partsArray.addObject();
+            partNode.put("text", prompt);
 
-            requestBody.set("messages", messagesArray);
+            requestBody.set("contents", contentsArray);
 
-            // Build HTTP request
+            String fullUrl = apiUrl + "/" + model + ":generateContent?key=" + apiKey;
+
             MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
             String requestJson = objectMapper.writeValueAsString(requestBody);
 
             Request request = new Request.Builder()
-                    .url(apiUrl)
+                    .url(fullUrl)
                     .post(RequestBody.create(requestJson, mediaType))
-                    .addHeader("x-api-key", apiKey)
-                    .addHeader("anthropic-version", "2023-06-01")
                     .addHeader("Content-Type", "application/json")
                     .build();
 
-            // Execute request
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     ResponseBody responseBody = response.body();
                     String errorBody = responseBody != null ? responseBody.string() : "Unknown error";
-                    log.error("Claude API error: {} - {}", response.code(), errorBody);
-                    throw new RuntimeException("Claude API call failed: " + response.code());
+                    log.error("Gemini API error: {} - {}", response.code(), errorBody);
+                    throw new RuntimeException("Gemini API call failed: " + response.code() + " - " + errorBody);
                 }
 
                 ResponseBody responseBody = response.body();
                 if (responseBody == null) {
-                    throw new RuntimeException("Empty response from Claude API");
+                    throw new RuntimeException("Empty response from Gemini API");
                 }
 
                 String responseBodyStr = responseBody.string();
-                log.debug("Claude API response: {}", responseBodyStr);
+                log.debug("Gemini API response: {}", responseBodyStr);
 
-                // Parse response
-                ObjectNode responseNode = (ObjectNode) objectMapper.readTree(responseBodyStr);
-                return responseNode.get("content")
+                JsonNode responseNode = objectMapper.readTree(responseBodyStr);
+                String text = responseNode.path("candidates")
                         .get(0)
-                        .get("text")
+                        .path("content")
+                        .path("parts")
+                        .get(0)
+                        .path("text")
                         .asText();
+
+                return text;
             }
 
         } catch (IOException e) {
-            log.error("IOException calling Claude API", e);
-            throw new RuntimeException("Failed to call Claude API: " + e.getMessage(), e);
+            log.error("IOException calling Gemini API", e);
+            throw new RuntimeException("Failed to call Gemini API: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * Build prompt for project suggestion
-     */
     private String buildProjectSuggestionPrompt(
             String brief,
             String categoryName,
@@ -265,9 +242,6 @@ public class LLMServiceImp implements LLMService {
                 "}\n";
     }
 
-    /**
-     * Build prompt for improvement
-     */
     private String buildImprovementPrompt(
             String originalBrief,
             String previousSuggestions,
@@ -282,23 +256,6 @@ public class LLMServiceImp implements LLMService {
                 "Please improve suggestions based on user feedback. Return same JSON format.\n";
     }
 
-    /**
-     * Generate chat response for project assistant
-     */
-    @Override
-    public String chat(String userMessage, String projectContext, String projectBrief) {
-        String prompt = buildChatPrompt(userMessage, projectContext, projectBrief);
-        try {
-            return callClaudeAPI(prompt);
-        } catch (Exception e) {
-            log.error("Error generating chat response", e);
-            throw new RuntimeException("Failed to generate chat response: " + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Build prompt for chat
-     */
     private String buildChatPrompt(String userMessage, String projectContext, String projectBrief) {
         return "You are a helpful AI assistant for a freelancer marketplace. You help clients create better project postings.\n\n" +
                 "ROLE & BEHAVIOR:\n" +
@@ -319,8 +276,3 @@ public class LLMServiceImp implements LLMService {
                 "- Be supportive and encouraging.\n";
     }
 }
-
-
-
-
-
