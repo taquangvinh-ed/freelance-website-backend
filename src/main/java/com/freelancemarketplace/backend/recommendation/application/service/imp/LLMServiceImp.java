@@ -24,10 +24,13 @@ public class LLMServiceImp implements LLMService {
     @Value("${ai.llm.api-key:}")
     private String apiKey;
 
-    @Value("${ai.llm.model:gemini-2.0-flash}")
+    @Value("${OPENROUTER_API_KEY:}")
+    private String openRouterApiKey;
+
+    @Value("${ai.llm.model:google/gemini-2.5-flash}")
     private String model;
 
-    @Value("${ai.llm.api-url:https://generativelanguage.googleapis.com/v1beta/models}")
+    @Value("${ai.llm.api-url:https://openrouter.ai/api/v1/chat/completions}")
     private String apiUrl;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -39,9 +42,25 @@ public class LLMServiceImp implements LLMService {
     public LLMServiceImp() {
         this.httpClient = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .build();
+    }
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        String resolvedApiKey = resolveApiKey();
+
+        log.info("LLM Config - apiKeyPresent: {}, apiKeyLength: {}, apiKeyPreview: {}, model: {}, apiUrl: {}",
+                !resolvedApiKey.isBlank(),
+                resolvedApiKey.length(),
+                maskApiKey(resolvedApiKey),
+                model,
+                apiUrl);
+
+        if (resolvedApiKey.isBlank()) {
+            log.warn("No OpenRouter API key found. Set OPENROUTER_API_KEY or ai.llm.api-key.");
+        }
     }
 
     @Override
@@ -55,7 +74,7 @@ public class LLMServiceImp implements LLMService {
 
         String prompt = buildProjectSuggestionPrompt(brief, categoryName, scope, timeline, preferredSkills, marketContext);
         try {
-            return callGeminiAPI(prompt);
+            return callOpenRouterAPI(prompt, resolveApiKey());
         } catch (Exception e) {
             log.error("Error generating project suggestions", e);
             throw new RuntimeException("Failed to generate suggestions: " + e.getMessage(), e);
@@ -71,7 +90,7 @@ public class LLMServiceImp implements LLMService {
 
         String prompt = buildImprovementPrompt(originalBrief, previousSuggestions, userFeedback, marketContext);
         try {
-            return callGeminiAPI(prompt);
+            return callOpenRouterAPI(prompt, resolveApiKey());
         } catch (Exception e) {
             log.error("Error improving suggestions", e);
             throw new RuntimeException("Failed to improve suggestions: " + e.getMessage(), e);
@@ -113,8 +132,8 @@ public class LLMServiceImp implements LLMService {
                 return false;
             }
 
-            if (response.toLowerCase().contains("guaranteed") ||
-                response.toLowerCase().contains("100% sure")) {
+            String lowerResponse = response.toLowerCase();
+            if (lowerResponse.contains("guaranteed") || lowerResponse.contains("100% sure")) {
                 return false;
             }
 
@@ -142,71 +161,128 @@ public class LLMServiceImp implements LLMService {
     public String chat(String userMessage, String projectContext, String projectBrief) {
         String prompt = buildChatPrompt(userMessage, projectContext, projectBrief);
         try {
-            return callGeminiAPI(prompt);
+            return callOpenRouterAPI(prompt, resolveApiKey());
         } catch (Exception e) {
             log.error("Error generating chat response", e);
             throw new RuntimeException("Failed to generate chat response: " + e.getMessage(), e);
         }
     }
 
-    private String callGeminiAPI(String prompt) {
+    private String resolveApiKey() {
+        String resolved = firstNonBlank(openRouterApiKey, apiKey, System.getenv("OPENROUTER_API_KEY"));
+        if (resolved == null) {
+            log.warn("All API key sources are null");
+            return "";
+        }
+
+        String sanitized = resolved.trim().replace("\r", "").replace("\n", "");
+        if (isPlaceholder(sanitized)) {
+            log.warn("API key is still a placeholder: {}", sanitized);
+            return "";
+        }
+
+        if (sanitized.length() < 10) {
+            log.warn("API key seems invalid (too short): length={}", sanitized.length());
+        }
+
+        log.info("Resolved API key - starts with: {}, length: {}",
+                sanitized.substring(0, Math.min(10, sanitized.length())), sanitized.length());
+
+        return sanitized;
+    }
+
+    private boolean isPlaceholder(String value) {
+        return value == null || value.isBlank() || (value.startsWith("${") && value.endsWith("}"));
+    }
+
+    private String maskApiKey(String apiKey) {
+        if (apiKey == null || apiKey.isBlank()) {
+            return "<empty>";
+        }
+        if (apiKey.length() <= 10) {
+            return "***";
+        }
+        return apiKey.substring(0, 6) + "..." + apiKey.substring(apiKey.length() - 4);
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    private String callOpenRouterAPI(String prompt, String apiKey) {
         try {
+            if (isPlaceholder(apiKey)) {
+                throw new IllegalStateException("Missing OpenRouter API key. Check OPENROUTER_API_KEY or ai.llm.api-key.");
+            }
+
             ObjectNode requestBody = objectMapper.createObjectNode();
-            requestBody.put("generationConfig.maxOutputTokens", 2048);
-            requestBody.put("generationConfig.temperature", 0.7);
 
-            ArrayNode contentsArray = objectMapper.createArrayNode();
-            ObjectNode contentNode = contentsArray.addObject();
-            ArrayNode partsArray = contentNode.putArray("parts");
-            ObjectNode partNode = partsArray.addObject();
-            partNode.put("text", prompt);
+            ArrayNode messagesArray = requestBody.putArray("messages");
 
-            requestBody.set("contents", contentsArray);
+            ObjectNode systemMessage = messagesArray.addObject();
+            systemMessage.put("role", "system");
+            systemMessage.put("content", "You are a helpful AI assistant. Be concise and helpful.");
 
-            String fullUrl = apiUrl + "/" + model + ":generateContent?key=" + apiKey;
+            ObjectNode userMessage = messagesArray.addObject();
+            userMessage.put("role", "user");
+            userMessage.put("content", prompt);
+
+            requestBody.put("model", model);
+            requestBody.put("max_tokens", 2048);
+            requestBody.put("temperature", 0.7);
+
+            log.info("Calling OpenRouter API with model: {}", model);
 
             MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
             String requestJson = objectMapper.writeValueAsString(requestBody);
 
             Request request = new Request.Builder()
-                    .url(fullUrl)
+                    .url(apiUrl)
                     .post(RequestBody.create(requestJson, mediaType))
                     .addHeader("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + apiKey.trim())
+                    .addHeader("HTTP-Referer", "https://freelancer-marketplace.com")
+                    .addHeader("X-Title", "Freelancer Marketplace AI Assistant")
                     .build();
 
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     ResponseBody responseBody = response.body();
                     String errorBody = responseBody != null ? responseBody.string() : "Unknown error";
-                    log.error("Gemini API error: {} - {}", response.code(), errorBody);
-                    throw new RuntimeException("Gemini API call failed: " + response.code() + " - " + errorBody);
+                    log.error("OpenRouter API error: {} - {}", response.code(), errorBody);
+                    throw new RuntimeException("OpenRouter API call failed: " + response.code() + " - " + errorBody);
                 }
 
                 ResponseBody responseBody = response.body();
                 if (responseBody == null) {
-                    throw new RuntimeException("Empty response from Gemini API");
+                    throw new RuntimeException("Empty response from OpenRouter API");
                 }
 
                 String responseBodyStr = responseBody.string();
-                log.debug("Gemini API response: {}", responseBodyStr);
+                log.debug("OpenRouter API response: {}", responseBodyStr);
 
                 JsonNode responseNode = objectMapper.readTree(responseBodyStr);
-                String text = responseNode.path("candidates")
+                return responseNode.path("choices")
                         .get(0)
+                        .path("message")
                         .path("content")
-                        .path("parts")
-                        .get(0)
-                        .path("text")
                         .asText();
-
-                return text;
             }
 
         } catch (IOException e) {
-            log.error("IOException calling Gemini API", e);
-            throw new RuntimeException("Failed to call Gemini API: " + e.getMessage(), e);
+            log.error("IOException calling OpenRouter API", e);
+            throw new RuntimeException("Failed to call OpenRouter API: " + e.getMessage(), e);
         }
     }
+
 
     private String buildProjectSuggestionPrompt(
             String brief,

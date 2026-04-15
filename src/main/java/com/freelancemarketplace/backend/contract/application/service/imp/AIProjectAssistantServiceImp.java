@@ -495,7 +495,7 @@ public class AIProjectAssistantServiceImp implements AIProjectAssistantService {
 
             var log = new AIAPILogModel();
             log.setUser(user);
-            log.setProvider("anthropic");
+            log.setProvider("google");
             log.setModel(llmService.getCurrentModel());
             log.setPromptTokens(inputTokens);
             log.setCompletionTokens(outputTokens);

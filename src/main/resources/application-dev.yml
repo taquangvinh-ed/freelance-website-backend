@@ -84,20 +84,13 @@ toggl:
 # AI Project Assistant Configuration
 ai:
   llm:
-    # LLM Provider: anthropic (Claude), openai (GPT), google (Gemini)
-    provider: anthropic
-    # API URL for Claude
-    api-url: https://api.anthropic.com/v1/messages
-    # Model name: claude-3-5-haiku-20241022 (recommended for MVP - fast & cheap)
-    model: claude-3-5-haiku-20241022
-    # API Key - get from https://console.anthropic.com
-    api-key: ${AI_LLM_API_KEY}
-    # Max tokens per response
+    provider: openrouter
+    model: ${OPENROUTER_MODEL:google/gemini-2.5-flash}
+    api-key: ${OPENROUTER_API_KEY}
+    api-url: ${OPENROUTER_API_URL:https://openrouter.ai/api/v1/chat/completions}
     max-tokens: 1500
-    # Temperature: 0.0-1.0 (lower = more deterministic)
     temperature: 0.7
-    # Timeout in seconds
-    timeout-seconds: 30
+    timeout-seconds: 60
 
   # Pricing Engine Configuration
   pricing:

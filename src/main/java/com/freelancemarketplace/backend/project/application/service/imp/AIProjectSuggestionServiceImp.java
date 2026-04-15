@@ -56,25 +56,25 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
     private final CategoriesRepository categoriesRepository;
     private final SkillsRepository skillsRepository;
 
-    @Value("${anthropic.api.key:${ANTHROPIC_API_KEY:${CLAUDE_API_KEY:}}}")
-    private String anthropicApiKey;
+    @Value("${ai.llm.api-key:}")
+    private String openRouterApiKey;
 
-    @Value("${ai.claude.api-url:https://api.anthropic.com/v1/messages}")
-    private String anthropicApiUrl;
+    @Value("${OPENROUTER_MODEL:anthropic/claude-3.5-sonnet}")
+    private String openRouterModel;
 
-    @Value("${ai.claude.model:claude-3-5-sonnet-latest}")
-    private String anthropicModel;
+    @Value("${OPENROUTER_API_URL:https://openrouter.ai/api/v1/chat/completions}")
+    private String openRouterApiUrl;
 
-    @Value("${ai.claude.timeout-seconds:20}")
+    @Value("${ai.llm.timeout-seconds:60}")
     private Integer timeoutSeconds;
 
     @Override
     public AiSuggestProjectResponseDTO suggestProject(Long userId, AiSuggestProjectRequest request) {
         validateRateLimit(userId);
 
-        if (anthropicApiKey == null || anthropicApiKey.isBlank()) {
+        if (openRouterApiKey == null || openRouterApiKey.isBlank()) {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.CONFIGURATION_ERROR,
-                    "Claude API key is missing. Set ANTHROPIC_API_KEY or CLAUDE_API_KEY.");
+                    "OpenRouter API key is missing. Set OPENROUTER_API_KEY or ai.llm.api-key.");
         }
 
         String requestId = "ai_req_" + UUID.randomUUID();
@@ -83,7 +83,7 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
         try {
             String systemPrompt = buildSystemPrompt();
             String userPrompt = buildUserPrompt(request);
-            String llmRaw = callClaude(systemPrompt, userPrompt, requestId);
+            String llmRaw = callOpenRouter(systemPrompt, userPrompt, requestId);
 
             AiSuggestedProjectDTO suggestedProject = parseSuggestedProject(llmRaw);
             normalizeSuggestion(suggestedProject, request, warnings);
@@ -117,27 +117,27 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
         }
     }
 
-    private String callClaude(String systemPrompt, String userPrompt, String requestId) throws IOException, InterruptedException {
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("model", anthropicModel);
-        payload.put("max_tokens", 1400);
-        payload.put("temperature", 0.2);
-        payload.put("system", systemPrompt);
+    private String callOpenRouter(String systemPrompt, String userPrompt, String requestId) throws IOException, InterruptedException {
+        Map<String, Object> requestBody = new HashMap<>();
 
-        Map<String, String> userMessage = new HashMap<>();
-        userMessage.put("role", "user");
-        userMessage.put("content", userPrompt);
-        payload.put("messages", List.of(userMessage));
+        List<Map<String, String>> messages = new ArrayList<>();
+        messages.add(Map.of("role", "system", "content", systemPrompt));
+        messages.add(Map.of("role", "user", "content", userPrompt));
+        requestBody.put("messages", messages);
+        requestBody.put("model", openRouterModel);
+        requestBody.put("max_tokens", 1400);
+        requestBody.put("temperature", 0.2);
 
-        String requestBody = objectMapper.writeValueAsString(payload);
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
 
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(anthropicApiUrl))
+                .uri(URI.create(openRouterApiUrl))
                 .timeout(Duration.ofSeconds(timeoutSeconds))
                 .header("Content-Type", "application/json")
-                .header("x-api-key", anthropicApiKey)
-                .header("anthropic-version", "2023-06-01")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .header("Authorization", "Bearer " + openRouterApiKey)
+                .header("HTTP-Referer", "https://freelancer-marketplace.com")
+                .header("X-Title", "Freelancer Marketplace AI Project Assistant")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
         HttpClient client = HttpClient.newHttpClient();
@@ -152,33 +152,33 @@ public class AIProjectSuggestionServiceImp implements AIProjectSuggestionService
 
         if (response == null) {
             throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
-                    "Claude API did not return a response");
+                    "OpenRouter API did not return a response");
         }
 
         if (response.statusCode() == 401) {
             throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
-                    "Claude API 401. Check ANTHROPIC_API_KEY and project permissions.");
+                    "OpenRouter API 401. Check OPENROUTER_API_KEY.");
         }
 
         if (response.statusCode() >= 400) {
             throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
-                    "Claude API call failed: HTTP " + response.statusCode());
+                    "OpenRouter API call failed: HTTP " + response.statusCode());
         }
 
         JsonNode root = objectMapper.readTree(response.body());
-        JsonNode contentNode = root.path("content");
-        if (!contentNode.isArray() || contentNode.isEmpty()) {
+        JsonNode choices = root.path("choices");
+        if (choices.isMissingNode() || choices.isEmpty()) {
             throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
-                    "Claude API returned empty content");
+                    "OpenRouter API returned empty content");
         }
 
-        String text = contentNode.get(0).path("text").asText();
+        String text = choices.get(0).path("message").path("content").asText();
         if (text == null || text.isBlank()) {
             throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
-                    "Claude API returned blank text content");
+                    "OpenRouter API returned blank text content");
         }
 
-        log.info("Claude request success. requestId={}, model={}, outputChars={}", requestId, anthropicModel, text.length());
+        log.info("OpenRouter request success. requestId={}, model={}, outputChars={}", requestId, openRouterModel, text.length());
         return cleanJsonString(text);
     }
 
