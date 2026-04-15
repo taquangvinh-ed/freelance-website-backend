@@ -75,5 +75,14 @@ public interface LLMService {
      * @return Map with input_price_per_1m_tokens and output_price_per_1m_tokens
      */
     java.util.Map<String, BigDecimal> getModelPricing();
+
+    /**
+     * Generate chat response for project assistant
+     * @param userMessage User's message/question
+     * @param projectContext Current project context (title, description, budget, etc.)
+     * @param projectBrief Original project brief
+     * @return Chat response from LLM
+     */
+    String chat(String userMessage, String projectContext, String projectBrief);
 }
 

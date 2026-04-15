@@ -1,6 +1,8 @@
 package com.freelancemarketplace.backend.recommendation.application.service;
 
 import com.freelancemarketplace.backend.recommendation.domain.model.AIProjectRecommendationModel;
+import com.freelancemarketplace.backend.toggl.dto.ChatRequest;
+import com.freelancemarketplace.backend.toggl.dto.ChatResponse;
 import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantRequest;
 import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantResponse;
 
@@ -27,6 +29,14 @@ public interface AIProjectAssistantService {
      * @return Improved suggestions
      */
     ProjectAssistantResponse improveProjectDraft(Long userId, Long recommendationId, String feedback);
+
+    /**
+     * Chat with AI assistant during project creation
+     * @param userId Client ID
+     * @param request Chat request with message and project context
+     * @return Chat response from AI
+     */
+    ChatResponse chat(Long userId, ChatRequest request);
 
     /**
      * Record user feedback on AI recommendations

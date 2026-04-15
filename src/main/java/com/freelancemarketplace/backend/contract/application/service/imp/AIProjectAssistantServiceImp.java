@@ -9,6 +9,8 @@ import com.freelancemarketplace.backend.recommendation.infrastructure.repository
 import com.freelancemarketplace.backend.recommendation.infrastructure.repository.AIProjectRecommendationRepository;
 import com.freelancemarketplace.backend.recommendation.application.service.AIProjectAssistantService;
 import com.freelancemarketplace.backend.recommendation.application.service.LLMService;
+import com.freelancemarketplace.backend.toggl.dto.ChatRequest;
+import com.freelancemarketplace.backend.toggl.dto.ChatResponse;
 import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantRequest;
 import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantResponse;
 import com.freelancemarketplace.backend.user.infrastructure.repository.UserRepository;
@@ -24,6 +26,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -150,6 +153,138 @@ public class AIProjectAssistantServiceImp implements AIProjectAssistantService {
             log.error("Error improving project draft", e);
             throw new RuntimeException("Failed to improve suggestions: " + e.getMessage());
         }
+    }
+
+    @Override
+    @Transactional
+    public ChatResponse chat(Long userId, ChatRequest request) {
+        log.info("Chat request from user={}, message={}", userId, request.getMessage());
+
+        if (!canMakeRequest(userId)) {
+            log.warn("User {} exceeded rate limit", userId);
+            throw new RuntimeException("Rate limit exceeded. Maximum 10 requests per hour.");
+        }
+
+        try {
+            String projectContext = buildProjectContext(request.getProjectContext());
+            String projectBrief = getProjectBrief(request.getRecommendationId());
+
+            String aiResponse = llmService.chat(
+                    request.getMessage(),
+                    projectContext,
+                    projectBrief
+            );
+
+            logAPIUsage(userId, aiResponse, projectContext);
+
+            ChatResponse response = new ChatResponse();
+            response.setSuccess(true);
+            response.setMessage("Chat response generated");
+            response.setTimestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS).toString());
+
+            ChatResponse.Body body = new ChatResponse.Body();
+            body.setMessageId(UUID.randomUUID().toString());
+            body.setAiResponse(aiResponse);
+            body.setResponseType(detectResponseType(aiResponse));
+            body.setTips(generateTips(request.getMessage(), aiResponse));
+            body.setRequiresFollowUp(needsFollowUp(aiResponse));
+            response.setBody(body);
+
+            log.info("Successfully generated chat response for user={}", userId);
+            return response;
+
+        } catch (Exception e) {
+            log.error("Error generating chat response", e);
+            throw new RuntimeException("Failed to generate chat response: " + e.getMessage());
+        }
+    }
+
+    private String buildProjectContext(ChatRequest.ProjectContext context) {
+        if (context == null) {
+            return "No project context provided yet. User is starting to create a project.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Current Project State:\n");
+
+        if (context.getTitle() != null) {
+            sb.append("- Title: ").append(context.getTitle()).append("\n");
+        }
+        if (context.getDescription() != null) {
+            sb.append("- Description: ").append(context.getDescription()).append("\n");
+        }
+        if (context.getCategoryId() != null) {
+            sb.append("- Category ID: ").append(context.getCategoryId()).append("\n");
+        }
+        if (context.getScope() != null) {
+            sb.append("- Scope: ").append(context.getScope()).append("\n");
+        }
+        if (context.getTimeline() != null) {
+            sb.append("- Timeline: ").append(context.getTimeline()).append("\n");
+        }
+        if (context.getExperienceLevel() != null) {
+            sb.append("- Experience Level: ").append(context.getExperienceLevel()).append("\n");
+        }
+        if (context.getBudgetMin() != null && context.getBudgetMax() != null) {
+            sb.append("- Budget Range: ").append(context.getBudgetMin())
+              .append(" - ").append(context.getBudgetMax()).append("\n");
+        }
+        if (context.getSkills() != null && !context.getSkills().isEmpty()) {
+            sb.append("- Skills: ").append(String.join(", ", context.getSkills())).append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    private String getProjectBrief(Long recommendationId) {
+        if (recommendationId == null) {
+            return null;
+        }
+        return recommendationRepository.findById(recommendationId)
+                .map(AIProjectRecommendationModel::getUserBrief)
+                .orElse(null);
+    }
+
+    private ChatResponse.ResponseType detectResponseType(String aiResponse) {
+        String lower = aiResponse.toLowerCase();
+        if (lower.contains("suggest") || lower.contains("recommend") || lower.contains("should")) {
+            return ChatResponse.ResponseType.SUGGESTION;
+        }
+        if (lower.contains("tip") || lower.contains("advice") || lower.contains("best practice")) {
+            return ChatResponse.ResponseType.TIP;
+        }
+        if (lower.contains("?") && lower.indexOf('?') > lower.length() - 50) {
+            return ChatResponse.ResponseType.QUESTION;
+        }
+        if (lower.contains("warning") || lower.contains("caution") || lower.contains("be careful")) {
+            return ChatResponse.ResponseType.WARNING;
+        }
+        return ChatResponse.ResponseType.INFO;
+    }
+
+    private List<String> generateTips(String userMessage, String aiResponse) {
+        List<String> tips = new ArrayList<>();
+        String lowerMessage = userMessage.toLowerCase();
+
+        if (lowerMessage.contains("budget") || lowerMessage.contains("price") || lowerMessage.contains("cost")) {
+            tips.add("Tip: A clear budget helps attract serious freelancers.");
+            tips.add("Tip: Consider setting a range (min-max) to give flexibility.");
+        }
+        if (lowerMessage.contains("skill") || lowerMessage.contains("technology")) {
+            tips.add("Tip: List specific technologies to get more targeted proposals.");
+        }
+        if (lowerMessage.contains("timeline") || lowerMessage.contains("deadline") || lowerMessage.contains("time")) {
+            tips.add("Tip: Realistic timelines lead to better quality work.");
+        }
+        if (lowerMessage.contains("description") || lowerMessage.contains("detail")) {
+            tips.add("Tip: Detailed descriptions receive 40% more proposals on average.");
+        }
+
+        return tips;
+    }
+
+    private boolean needsFollowUp(String aiResponse) {
+        return aiResponse.contains("?") && aiResponse.indexOf('?') > aiResponse.length() - 100;
     }
 
     @Override

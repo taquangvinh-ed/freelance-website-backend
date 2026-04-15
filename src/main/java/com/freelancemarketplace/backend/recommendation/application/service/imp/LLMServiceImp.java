@@ -281,6 +281,43 @@ public class LLMServiceImp implements LLMService {
                 "MARKET CONTEXT:\n" + marketContext + "\n\n" +
                 "Please improve suggestions based on user feedback. Return same JSON format.\n";
     }
+
+    /**
+     * Generate chat response for project assistant
+     */
+    @Override
+    public String chat(String userMessage, String projectContext, String projectBrief) {
+        String prompt = buildChatPrompt(userMessage, projectContext, projectBrief);
+        try {
+            return callClaudeAPI(prompt);
+        } catch (Exception e) {
+            log.error("Error generating chat response", e);
+            throw new RuntimeException("Failed to generate chat response: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Build prompt for chat
+     */
+    private String buildChatPrompt(String userMessage, String projectContext, String projectBrief) {
+        return "You are a helpful AI assistant for a freelancer marketplace. You help clients create better project postings.\n\n" +
+                "ROLE & BEHAVIOR:\n" +
+                "- Answer questions about project setup, budget estimation, skills selection, and best practices.\n" +
+                "- Be concise, friendly, and helpful.\n" +
+                "- Provide specific, actionable advice.\n" +
+                "- If you're unsure about something, say so honestly.\n" +
+                "- Don't make up budget figures not supported by context.\n\n" +
+                "PROJECT CONTEXT:\n" + projectContext + "\n\n" +
+                (projectBrief != null && !projectBrief.isEmpty()
+                    ? "ORIGINAL BRIEF:\n" + projectBrief + "\n\n"
+                    : "") +
+                "USER QUESTION:\n" + userMessage + "\n\n" +
+                "IMPORTANT:\n" +
+                "- If user asks about budget, use the market data provided in PROJECT CONTEXT.\n" +
+                "- If user wants to change something, acknowledge and suggest how to improve.\n" +
+                "- Keep responses under 300 words.\n" +
+                "- Be supportive and encouraging.\n";
+    }
 }
 
 

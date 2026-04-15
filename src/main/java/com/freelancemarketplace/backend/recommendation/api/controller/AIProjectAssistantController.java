@@ -4,6 +4,8 @@ import com.freelancemarketplace.backend.common.api.response.ResponseDTO;
 import com.freelancemarketplace.backend.infrastructure.security.auth.AppUser;
 import com.freelancemarketplace.backend.recommendation.application.service.AIProjectAssistantService;
 import com.freelancemarketplace.backend.toggl.dto.AIProjectAssistantFrontendResponse;
+import com.freelancemarketplace.backend.toggl.dto.ChatRequest;
+import com.freelancemarketplace.backend.toggl.dto.ChatResponse;
 import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantRequest;
 import com.freelancemarketplace.backend.toggl.dto.ProjectAssistantResponse;
 import lombok.AllArgsConstructor;
@@ -243,6 +245,48 @@ public class AIProjectAssistantController {
         health.put("status", "UP");
         health.put("service", "AI Project Assistant");
         return ResponseEntity.ok(health);
+    }
+
+    /**
+     * Chat with AI assistant during project creation
+     * POST /api/ai/project-assistant/chat
+     */
+    @PostMapping("/chat")
+    public ResponseEntity<?> chat(
+            @AuthenticationPrincipal AppUser appUser,
+            @Valid @RequestBody ChatRequest request) {
+
+        log.info("Chat endpoint called, appUser: {}", appUser != null ? appUser.getUsername() : "NULL");
+
+        if (appUser == null) {
+            ChatResponse errorResponse = new ChatResponse();
+            errorResponse.setSuccess(false);
+            errorResponse.setMessage("User not authenticated");
+            errorResponse.setTimestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS).toString());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        try {
+            log.info("Received chat request from user={}, message={}", appUser.getId(), request.getMessage());
+
+            ChatResponse response = aiProjectAssistantService.chat(appUser.getId(), request);
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            log.error("Error in chat", e);
+            ChatResponse errorResponse = new ChatResponse();
+            errorResponse.setSuccess(false);
+            errorResponse.setMessage(e.getMessage());
+            errorResponse.setTimestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS).toString());
+            return ResponseEntity.badRequest().body(errorResponse);
+        } catch (Exception e) {
+            log.error("Unexpected error in chat", e);
+            ChatResponse errorResponse = new ChatResponse();
+            errorResponse.setSuccess(false);
+            errorResponse.setMessage("Internal server error");
+            errorResponse.setTimestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS).toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     // ==================== MAPPER METHODS ====================

@@ -82,10 +82,11 @@ public class SecurityConfig {
                                 "/api/freelancers/upload-avatar", "/api/freelancers/me/upload-avatar", "/api/projects/ai-suggest",
                                 "/api/contracts/*/hourly-payments", "/api/hourly-payments/*",
                                 "/api/ai/project-assistant/suggest",
-                                "/api/ai/project-assistant/improve/**",
-                                "/api/ai/project-assistant/feedback/**",
-                                "/api/ai/project-assistant/history",
-                                "/api/ai/project-assistant/stats").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
+                                 "/api/ai/project-assistant/improve/**",
+                                 "/api/ai/project-assistant/feedback/**",
+                                 "/api/ai/project-assistant/history",
+                                 "/api/ai/project-assistant/stats",
+                                 "/api/ai/project-assistant/chat").hasAnyRole("FREELANCER", "CLIENT", "ADMIN")
                         .requestMatchers("/api/freelancers/assignSkillToFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/removeSkillFromFreelancer/freelancer/*/skill/*",
                                 "/api/freelancers/{freelancerId}",
