@@ -17,5 +17,5 @@ public class TogglStartRequestDTO {
     private String created_with;
     private Long workspace_id;
     private Long duration;
-    private boolean billable = true;
+    private Boolean billable;
 }

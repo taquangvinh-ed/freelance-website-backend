@@ -100,17 +100,8 @@ public class TogglServiceImp implements TogglService {
     public Long createProjectOnToggl(String projectName) {
         String url = config.getBaseUrl() + "/workspaces/" + config.getDefaultWorkspaceId() + "/projects";
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("name", projectName);
-        body.put("active", true);
-        body.put("billable", true);
-
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, createAuthHeaders());
-
         try {
-            ResponseEntity<Map> response = restTemplate.exchange(
-                    url, HttpMethod.POST, entity, Map.class
-            );
+            ResponseEntity<Map> response = createTogglProject(url, projectName, config.isBillableEnabled());
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 // **BƯỚC SỬA LỖI QUAN TRỌNG:** Ánh xạ trực tiếp từ body Toggl V9
@@ -132,12 +123,43 @@ public class TogglServiceImp implements TogglService {
                     "Toggl create project failed: " + response.getStatusCode());
 
         } catch (HttpClientErrorException e) {
+            if (config.isBillableEnabled() && isPremiumBillableError(e)) {
+                log.warn("Toggl rejected billable project on free workspace. Retrying without billable flag.");
+                try {
+                    ResponseEntity<Map> fallbackResponse = createTogglProject(url, projectName, false);
+                    if (fallbackResponse.getStatusCode().is2xxSuccessful() && fallbackResponse.getBody() != null) {
+                        Object projectIdObject = fallbackResponse.getBody().get("id");
+                        if (projectIdObject instanceof Number) {
+                            return ((Number) projectIdObject).longValue();
+                        }
+                    }
+                } catch (HttpClientErrorException retryError) {
+                    throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
+                            "Toggl API Error (Create Project): " + retryError.getResponseBodyAsString(), retryError);
+                }
+            }
             throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
                     "Toggl API Error (Create Project): " + e.getResponseBodyAsString(), e);
         } catch (Exception e) {
             throw new ApiException(HttpStatus.BAD_GATEWAY, ErrorCode.EXTERNAL_SERVICE_ERROR,
                     "Failed to create Toggl project: " + e.getMessage(), e);
         }
+    }
+
+    private ResponseEntity<Map> createTogglProject(String url, String projectName, boolean includeBillable) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("name", projectName);
+        body.put("active", true);
+        if (includeBillable) {
+            body.put("billable", true);
+        }
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, createAuthHeaders());
+        return restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+    }
+
+    private boolean isPremiumBillableError(HttpClientErrorException e) {
+        String body = e.getResponseBodyAsString();
+        return body != null && body.toLowerCase().contains("must be a premium user to use billable on project");
     }
 
     @Override
@@ -181,7 +203,9 @@ public class TogglServiceImp implements TogglService {
         request.setProject_id(togglProjectId);
         request.setStart(startTime);
         request.setDescription(description);
-        request.setBillable(true);
+        if (config.isBillableEnabled()) {
+            request.setBillable(true);
+        }
         request.setCreated_with("FreelanceMVP_App");
         request.setDuration(-1L);
 

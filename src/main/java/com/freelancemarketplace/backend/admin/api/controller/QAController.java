@@ -27,14 +27,14 @@ public class QAController {
     }
 
     @PutMapping("/{qaId}")
-    ApiResponse<?> updateQA(@PathVariable Long qaId,
+    public ApiResponse<?> updateQA(@PathVariable Long qaId,
                                          @RequestBody Q_ADTO qAdto) {
         Q_ADTO updatedQA = qAService.updateQA(qaId, qAdto);
         return ApiResponse.success(updatedQA);
     }
 
     @DeleteMapping("/{qaId}")
-    ApiResponse<?> deleteQA(@PathVariable Long qaId) {
+    public ApiResponse<?> deleteQA(@PathVariable Long qaId) {
         qAService.deleteQA(qaId);
         return ApiResponse.noContent();
     }

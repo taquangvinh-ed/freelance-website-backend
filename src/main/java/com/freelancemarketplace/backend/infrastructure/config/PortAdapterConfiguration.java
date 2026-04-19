@@ -9,6 +9,7 @@ import com.freelancemarketplace.backend.infrastructure.adapter.CloudinaryStorage
 import com.freelancemarketplace.backend.infrastructure.persistence.ClientRepositoryAdapter;
 import com.freelancemarketplace.backend.infrastructure.persistence.FreelancerRepositoryAdapter;
 import com.freelancemarketplace.backend.infrastructure.persistence.ProjectRepositoryAdapter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,8 @@ public class PortAdapterConfiguration {
     
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        return new ObjectMapper()
+                .findAndRegisterModules()
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 }

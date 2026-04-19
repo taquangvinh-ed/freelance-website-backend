@@ -19,4 +19,7 @@ public class TogglConfig {
 
     @Value("${toggl.organization_id}")
     private String organizationId;
+
+    @Value("${toggl.billable.enabled:false}")
+    private boolean billableEnabled;
 }

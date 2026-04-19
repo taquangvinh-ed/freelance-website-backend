@@ -29,6 +29,8 @@ public class ProposalModel extends BaseEntity {
     // The name of the proposal
     private String name;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String currencyUnit;

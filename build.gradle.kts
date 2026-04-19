@@ -55,7 +55,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 
 	// AI Project Assistant Dependencies
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("com.squareup.okhttp3:okhttp:4.11.0")
 	implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 	implementation("org.apache.commons:commons-lang3:3.14.0")

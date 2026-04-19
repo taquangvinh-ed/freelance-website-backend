@@ -136,7 +136,6 @@ public class OrderServiceImp implements OrderService {
             throw new ResourceNotFoundException("payment with id: " + sessionId + " not found");
         payment.setStatus(PaymentStatus.COMPLETED);
         payment.setPaidAt(Timestamp.from(Instant.now()));
-        payment.setPaidAt(new Timestamp(System.currentTimeMillis()));
         payment.getOrder().setStatus(OrderStatus.PAID);
         paymentsRepository.save(payment);
     }

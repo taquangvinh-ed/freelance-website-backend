@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -55,6 +57,7 @@ public class HourlyPaymentServiceImp implements HourlyPaymentService {
         }
 
         payment.setStatus(PaymentStatus.COMPLETED);
+        payment.setPaidAt(Timestamp.from(Instant.now()));
         PaymentModel saved = paymentsRepository.save(payment);
 
         HourlyPaymentDetailDTO dto = toDetailDto(saved);

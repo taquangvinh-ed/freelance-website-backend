@@ -24,8 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.Instant;
 
 @Slf4j
 @Service
@@ -61,6 +59,7 @@ public class PaymentServiceImp implements PaymentService {
 
         PaymentModel paymentModel = new PaymentModel();
         paymentModel.setAmount(total);
+        paymentModel.setType(PaymentTypes.CREDIT_CARD);
         paymentModel.setStatus(PaymentStatus.PENDING);
         ClientModel client = clientsRepository.findById(clientId).orElseThrow(
                 () -> new ResourceNotFoundException("Client with id " + clientId + " not found")
@@ -70,7 +69,6 @@ public class PaymentServiceImp implements PaymentService {
         );
 
         paymentModel.setClient(client);
-        paymentModel.setPaidAt(Timestamp.from(Instant.now()));
         paymentModel.setContract(contract);
         paymentsRepository.save(paymentModel);
 
@@ -195,7 +193,6 @@ public String createFreelancerOnboardingLink(String stripeAccountId, String retu
         paymentModel.setType(PaymentTypes.CREDIT_CARD);
         paymentModel.setStatus(PaymentStatus.PENDING);
         paymentModel.setTransactionId(transactionId);
-        paymentModel.setPaidAt(Timestamp.from(Instant.now()));
 
         PaymentModel savedPayment = paymentsRepository.save(paymentModel);
         log.info("Created hourly payment record. paymentId={}, contractId={}, weeklyReportId={}, amount={}",
