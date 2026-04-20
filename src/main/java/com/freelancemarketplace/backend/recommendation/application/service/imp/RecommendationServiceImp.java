@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,6 +57,9 @@ public class RecommendationServiceImp implements RecommendationService {
     @Value("${embedding.service.url:http://localhost:5000}")
     private String embeddingServiceUrl;
 
+    private static final int MAX_CANDIDATES_FOR_SCORING = 10;
+    private static final int MAX_CONTENT_RECS = 50;
+
     @Override
     public Page<ProjectDTO> recommendProjects(Long freelancerId, Pageable pageable) {
 
@@ -63,14 +67,13 @@ public class RecommendationServiceImp implements RecommendationService {
                 () -> new ResourceNotFoundException("Freelancer with id: " + freelancerId + " not found")
         );
 
-
         List<ProjectModel> projects = projectsRepository.findByStatus(ProjectStatus.OPEN);
+        int maxCandidates = Math.min(projects.size(), MAX_CANDIDATES_FOR_SCORING);
+        List<ProjectModel> candidatesToScore = projects.stream().limit(maxCandidates).toList();
 
-
-        // 1. CONTENT-BASED MATCHING (Tính điểm và Sắp xếp)
-        List<ScoredProject> scoredProjectList = projects.stream()
+        List<ScoredProject> scoredProjectList = candidatesToScore.stream()
                 .map(p -> new ScoredProject(p, calculateSkillSimilarity(freelancer, p)))
-                .sorted((sp1, sp2) -> Double.compare(sp2.getScore(), sp1.getScore())) // SẮP XẾP giảm dần
+                .sorted((sp1, sp2) -> Double.compare(sp2.getScore(), sp1.getScore()))
                 .toList();
 
         // Tạo danh sách ProjectModel đã sắp xếp theo Content-Based
@@ -113,14 +116,14 @@ public class RecommendationServiceImp implements RecommendationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found: " + projectId));
 
         List<FreelancerModel> allFreelancers = freelancersRepository.findAll();
-
-        // === 1. LỌC THEO BUDGET (nếu là HOURLY) ===
-        List<FreelancerModel> candidates = allFreelancers.stream()
-                .filter(f -> !hasApplied(f, project)) // loại đã apply
-                .filter(f -> isFreelancerInBudget(f, project.getBudget())) // lọc theo budget
+        List<FreelancerModel> filteredByBudget = allFreelancers.stream()
+                .filter(f -> !hasApplied(f, project))
+                .filter(f -> isFreelancerInBudget(f, project.getBudget()))
                 .toList();
 
-        // === 2. CONTENT-BASED: skill + rating ===
+        int maxCandidates = Math.min(filteredByBudget.size(), MAX_CANDIDATES_FOR_SCORING);
+        List<FreelancerModel> candidates = filteredByBudget.stream().limit(maxCandidates).toList();
+
         List<ScoredFreelancer> scored = candidates.stream()
                 .map(f -> new ScoredFreelancer(f, calculateProjectToFreelancerSimilarity(project, f)))
                 .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
@@ -256,6 +259,61 @@ public class RecommendationServiceImp implements RecommendationService {
             log.warn("Skill similarity service unavailable: {}", ex.getMessage());
         }
         return 0.0;
+    }
+
+    private Map<Long, Double> calculateBatchSkillSimilarity(FreelancerModel freelancer, List<ProjectModel> projects) {
+        String url = buildUrl("/batch-skill-similarity");
+        String freelancerSkillVectorHex = bytesToHex(freelancer.getSkillVector());
+
+        if (freelancerSkillVectorHex.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Map<String, Object>> projectSkillsList = projects.stream()
+                .map(p -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", p.getProjectId());
+                    String skillsText = safeProjectSkills(p).stream()
+                            .map(SkillModel::getName)
+                            .collect(Collectors.joining(", "));
+                    map.put("skills", skillsText);
+                    return map;
+                })
+                .toList();
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("freelancer_skill_vector", freelancerSkillVectorHex);
+        request.put("project_skills", projectSkillsList);
+
+        HttpHeaders headers = getJsonHeaders();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+
+        try {
+            ResponseEntity<Map<String, Map<String, Double>>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                Map<String, Double> sims = response.getBody().get("similarities");
+                if (sims != null) {
+                    Map<Long, Double> result = new HashMap<>();
+                    sims.forEach((k, v) -> {
+                        try {
+                            result.put(Long.parseLong(k), v);
+                        } catch (NumberFormatException e) {
+                        }
+                    });
+                    return result;
+                }
+            }
+        } catch (Exception ex) {
+            log.warn("Batch skill similarity unavailable: {}", ex.getMessage());
+        }
+        return Map.of();
     }
 
     private String bytesToHex(byte[] bytes) {

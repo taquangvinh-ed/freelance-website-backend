@@ -29,7 +29,10 @@ public class ProjectProposalDTO {
 
    private BigDecimal amount;
 
-   private Integer deliveryDays;
+   private BigDecimal hourlyRate;
 
+   private Integer estimatedHours;
+
+   private Integer deliveryDays;
 
 }

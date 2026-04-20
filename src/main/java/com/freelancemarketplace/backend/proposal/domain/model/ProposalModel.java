@@ -29,7 +29,6 @@ public class ProposalModel extends BaseEntity {
     // The name of the proposal
     private String name;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -73,15 +72,5 @@ public class ProposalModel extends BaseEntity {
     @OneToMany(mappedBy = "proposal",  cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MileStoneModel> mileStones;
 
-    public void validateMilestones() {
-        if (mileStones != null && !mileStones.isEmpty()) {
-            BigDecimal totalMilestoneAmount = mileStones.stream()
-                    .map(MileStoneModel::getAmount)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            if (totalMilestoneAmount.compareTo(amount) != 0) {
-                throw new IllegalStateException("Total milestone amount must equal proposal amount");
-            }
-        }
-    }
 
 }

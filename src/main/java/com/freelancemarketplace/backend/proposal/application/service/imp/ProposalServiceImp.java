@@ -6,7 +6,6 @@ import com.freelancemarketplace.backend.proposal.dto.ProposalDTO;
 import com.freelancemarketplace.backend.proposal.exception.ProposalException;
 import com.freelancemarketplace.backend.exceptionHandling.ResourceNotFoundException;
 import com.freelancemarketplace.backend.freelancer.infrastructure.repository.FreelancersRepository;
-import com.freelancemarketplace.backend.contract.infrastructure.mapper.ContractMapper;
 import com.freelancemarketplace.backend.contract.infrastructure.mapper.MileStoneMapper;
 import com.freelancemarketplace.backend.proposal.infrastructure.mapper.ProposalMapper;
 import com.freelancemarketplace.backend.project.infrastructure.repository.ProjectsRepository;
@@ -120,10 +119,10 @@ public class ProposalServiceImp implements ProposalService {
 
     @Override
     public void deleteProposal(Long proposalId) {
-        ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
-                () -> new ResourceNotFoundException("Proposal with id: " + proposalId + " not found")
-        );
-
+        // Verify proposal exists before deleting
+        if (!proposalsRepository.existsById(proposalId)) {
+            throw new ResourceNotFoundException("Proposal with id: " + proposalId + " not found");
+        }
         proposalsRepository.deleteById(proposalId);
     }
 
@@ -158,6 +157,7 @@ public class ProposalServiceImp implements ProposalService {
 
 
     @Override
+    @Transactional
     public Page<ProjectProposalDTO> getAllProposalByProject(Long projectId, Pageable pageable) {
         ProjectModel project = projectsRepository.findById(projectId).orElseThrow(
                 () -> new ResourceNotFoundException("Project with id: " + projectId + " not found")
@@ -176,7 +176,9 @@ public class ProposalServiceImp implements ProposalService {
 //            projectProposal.setUsername(freelancer.getUser().getUsername())pr;
             projectProposal.setProposalDescription(proposal.getDescription());
             projectProposal.setAmount(proposal.getAmount());
-            projectProposal.setDeliveryDays(projectProposal.getDeliveryDays());
+            projectProposal.setHourlyRate(proposal.getHourlyRate());
+            projectProposal.setEstimatedHours(proposal.getEstimatedHours());
+            projectProposal.setDeliveryDays(proposal.getDeliveryDays());
             return projectProposal;
         }).collect(Collectors.toList());
 
@@ -216,23 +218,29 @@ public class ProposalServiceImp implements ProposalService {
     }
 
     @Override
+    @Transactional
     public void rejectProposal(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
                 () -> new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
         );
-        if (proposal.getStatus().equals(ProposalStatus.PENDING))
+        if (proposal.getStatus().equals(ProposalStatus.PENDING)) {
             proposal.setStatus(ProposalStatus.REJECTED);
+            proposalsRepository.save(proposal);
+        }
         else
             throw new ProposalException("Cannot proposal cannot be rejected from status " + proposal.getStatus());
     }
 
     @Override
+    @Transactional
     public void withdrawProposal(Long proposalId) {
         ProposalModel proposal = proposalsRepository.findById(proposalId).orElseThrow(
                 () -> new ResourceNotFoundException("Proposal id: " + proposalId + "not found")
         );
-        if (proposal.getStatus().equals(ProposalStatus.PENDING))
+        if (proposal.getStatus().equals(ProposalStatus.PENDING)) {
             proposal.setStatus(ProposalStatus.WITHDRAWN);
+            proposalsRepository.save(proposal);
+        }
         else
             throw new ProposalException(" Proposal cannot be withdraw from status " + proposal.getStatus());
     }
@@ -377,7 +385,7 @@ public class ProposalServiceImp implements ProposalService {
                 dateTime.plusHours(estimatedHours);
                 contract.setEndDate(Timestamp.valueOf(dateTime));
             }
-        };
+        }
 
         contract.setStatus(ContractStatus.ACTIVE);
         contract.setProposal(proposalModel);
